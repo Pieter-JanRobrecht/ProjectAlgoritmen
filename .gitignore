@@ -1,0 +1,8 @@
+.metadata/
+*bin/
+.settings/
+Liften/.classpath
+*.project
+kraan/target/
+.recommenders/
+*.iml
