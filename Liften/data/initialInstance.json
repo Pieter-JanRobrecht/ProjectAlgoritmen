@@ -1,0 +1,973 @@
+{
+  "levels": [
+    {
+      "id": 0
+    },
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    },
+    {
+      "id": 3
+    },
+    {
+      "id": 4
+    }
+  ],
+  "lifts": [
+    {
+      "id": 0,
+      "capacity": 8,
+      "levelSpeed": 5,
+      "openingTime": 3,
+      "closingTime": 3,
+      "range": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        }
+      ],
+      "startLevel": 0
+    },
+    {
+      "id": 1,
+      "capacity": 8,
+      "levelSpeed": 5,
+      "openingTime": 3,
+      "closingTime": 3,
+      "range": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        }
+      ],
+      "startLevel": 3
+    }
+  ],
+  "users": [
+    {
+      "id": 0,
+      "arrivalTime": 7.1244189219259475,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 1
+    },
+    {
+      "id": 1,
+      "arrivalTime": 9.37607161793454,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 3
+    },
+    {
+      "id": 2,
+      "arrivalTime": 12.361285425373605,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 2
+    },
+    {
+      "id": 3,
+      "arrivalTime": 14.935911521910846,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 0
+    },
+    {
+      "id": 4,
+      "arrivalTime": 20.430697270390294,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 3
+    },
+    {
+      "id": 5,
+      "arrivalTime": 25.20080065263744,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 1
+    },
+    {
+      "id": 6,
+      "arrivalTime": 25.277173270862814,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 2
+    },
+    {
+      "id": 7,
+      "arrivalTime": 25.92098707196731,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 8,
+      "arrivalTime": 26.223723929970127,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 0
+    },
+    {
+      "id": 9,
+      "arrivalTime": 32.67948188778253,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 2
+    },
+    {
+      "id": 10,
+      "arrivalTime": 42.923184251109916,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 0
+    },
+    {
+      "id": 11,
+      "arrivalTime": 52.52336516270237,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 0
+    },
+    {
+      "id": 12,
+      "arrivalTime": 71.33317085465559,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 3
+    },
+    {
+      "id": 13,
+      "arrivalTime": 74.35208262254073,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 4
+    },
+    {
+      "id": 14,
+      "arrivalTime": 74.53287797087361,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 15,
+      "arrivalTime": 85.82616466254491,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 1
+    },
+    {
+      "id": 16,
+      "arrivalTime": 88.1750120381302,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 0
+    },
+    {
+      "id": 17,
+      "arrivalTime": 92.6233023490804,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 3
+    },
+    {
+      "id": 18,
+      "arrivalTime": 93.88930436180584,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 3
+    },
+    {
+      "id": 19,
+      "arrivalTime": 93.9359069400882,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 4
+    },
+    {
+      "id": 20,
+      "arrivalTime": 97.53097266432054,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 1
+    },
+    {
+      "id": 21,
+      "arrivalTime": 98.99450332180882,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 3
+    },
+    {
+      "id": 22,
+      "arrivalTime": 100.54651400112851,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 4
+    },
+    {
+      "id": 23,
+      "arrivalTime": 101.55527718971364,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 24,
+      "arrivalTime": 102.43365355120814,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 2
+    },
+    {
+      "id": 25,
+      "arrivalTime": 105.6392796810106,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 26,
+      "arrivalTime": 106.16977800475287,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 27,
+      "arrivalTime": 116.22160065817245,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 1
+    },
+    {
+      "id": 28,
+      "arrivalTime": 128.66241649713552,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 29,
+      "arrivalTime": 128.77070910439576,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 30,
+      "arrivalTime": 130.3968872916987,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 4
+    },
+    {
+      "id": 31,
+      "arrivalTime": 132.07403409776967,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 4
+    },
+    {
+      "id": 32,
+      "arrivalTime": 141.79088749345004,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 3
+    },
+    {
+      "id": 33,
+      "arrivalTime": 145.64148416327694,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 2
+    },
+    {
+      "id": 34,
+      "arrivalTime": 172.67589679583733,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 35,
+      "arrivalTime": 185.86630378420372,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 0
+    },
+    {
+      "id": 36,
+      "arrivalTime": 191.13803363843095,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 0
+    },
+    {
+      "id": 37,
+      "arrivalTime": 196.55020809169832,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 0
+    },
+    {
+      "id": 38,
+      "arrivalTime": 197.30806492105944,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 2
+    },
+    {
+      "id": 39,
+      "arrivalTime": 197.45239314112925,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 1
+    },
+    {
+      "id": 40,
+      "arrivalTime": 198.17321241284566,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 2
+    },
+    {
+      "id": 41,
+      "arrivalTime": 200.62358206022873,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 2
+    },
+    {
+      "id": 42,
+      "arrivalTime": 209.2257650648874,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 4
+    },
+    {
+      "id": 43,
+      "arrivalTime": 216.85192879762056,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 0
+    },
+    {
+      "id": 44,
+      "arrivalTime": 217.63819777076574,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 1
+    },
+    {
+      "id": 45,
+      "arrivalTime": 240.83002462005618,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 46,
+      "arrivalTime": 242.66875458270314,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 0
+    },
+    {
+      "id": 47,
+      "arrivalTime": 243.9670599096164,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 2
+    },
+    {
+      "id": 48,
+      "arrivalTime": 245.66062163154734,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 0
+    },
+    {
+      "id": 49,
+      "arrivalTime": 253.43453286275994,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 0
+    },
+    {
+      "id": 50,
+      "arrivalTime": 254.65705520105595,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 2
+    },
+    {
+      "id": 51,
+      "arrivalTime": 254.93814410020283,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 4
+    },
+    {
+      "id": 52,
+      "arrivalTime": 276.19792593811883,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 53,
+      "arrivalTime": 280.8523652965074,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 3
+    },
+    {
+      "id": 54,
+      "arrivalTime": 281.6427108414769,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 1
+    },
+    {
+      "id": 55,
+      "arrivalTime": 282.8464332381841,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 4
+    },
+    {
+      "id": 56,
+      "arrivalTime": 282.87918046752407,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 1
+    },
+    {
+      "id": 57,
+      "arrivalTime": 283.50073969401586,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 1
+    },
+    {
+      "id": 58,
+      "arrivalTime": 292.3519568282968,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 2
+    },
+    {
+      "id": 59,
+      "arrivalTime": 292.54530277996736,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 1
+    },
+    {
+      "id": 60,
+      "arrivalTime": 294.15808510327145,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 1
+    },
+    {
+      "id": 61,
+      "arrivalTime": 296.1058901510107,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 62,
+      "arrivalTime": 297.1942117421849,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 1
+    },
+    {
+      "id": 63,
+      "arrivalTime": 301.2829273958502,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 2
+    },
+    {
+      "id": 64,
+      "arrivalTime": 305.14292715020116,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 1
+    },
+    {
+      "id": 65,
+      "arrivalTime": 305.9389172428924,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 66,
+      "arrivalTime": 309.386338228249,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 2
+    },
+    {
+      "id": 67,
+      "arrivalTime": 309.42678649212127,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 2
+    },
+    {
+      "id": 68,
+      "arrivalTime": 309.5828472973594,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 1
+    },
+    {
+      "id": 69,
+      "arrivalTime": 314.78778119449294,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 70,
+      "arrivalTime": 330.04761532162615,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 71,
+      "arrivalTime": 343.2292669387744,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 3
+    },
+    {
+      "id": 72,
+      "arrivalTime": 360.91306178375555,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 1
+    },
+    {
+      "id": 73,
+      "arrivalTime": 364.5448219334756,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 4
+    },
+    {
+      "id": 74,
+      "arrivalTime": 364.68707589212363,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 4
+    },
+    {
+      "id": 75,
+      "arrivalTime": 364.7417883952833,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 3
+    },
+    {
+      "id": 76,
+      "arrivalTime": 366.06524958616654,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 0
+    },
+    {
+      "id": 77,
+      "arrivalTime": 369.5170314684392,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 0
+    },
+    {
+      "id": 78,
+      "arrivalTime": 376.33920051879403,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 1
+    },
+    {
+      "id": 79,
+      "arrivalTime": 382.2087115199704,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 80,
+      "arrivalTime": 383.03143111628225,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 0
+    },
+    {
+      "id": 81,
+      "arrivalTime": 397.80586684808634,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 82,
+      "arrivalTime": 420.7447512320161,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 0
+    },
+    {
+      "id": 83,
+      "arrivalTime": 425.9391201916747,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 2
+    },
+    {
+      "id": 84,
+      "arrivalTime": 438.16344453190175,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 0
+    },
+    {
+      "id": 85,
+      "arrivalTime": 438.97420707236205,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 1,
+      "destination-id": 2
+    },
+    {
+      "id": 86,
+      "arrivalTime": 467.0026302345676,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 87,
+      "arrivalTime": 472.89264230710495,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 88,
+      "arrivalTime": 476.0518815920871,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 4,
+      "destination-id": 1
+    },
+    {
+      "id": 89,
+      "arrivalTime": 476.47523834880894,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 2,
+      "destination-id": 4
+    },
+    {
+      "id": 90,
+      "arrivalTime": 482.89013756501606,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 2
+    },
+    {
+      "id": 91,
+      "arrivalTime": 483.5620122477934,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 1
+    },
+    {
+      "id": 92,
+      "arrivalTime": 486.03446515191763,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 2
+    },
+    {
+      "id": 93,
+      "arrivalTime": 486.5135010150096,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 1
+    },
+    {
+      "id": 94,
+      "arrivalTime": 502.0758854901154,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 2
+    },
+    {
+      "id": 95,
+      "arrivalTime": 504.2550645538564,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 4
+    },
+    {
+      "id": 96,
+      "arrivalTime": 507.7528654171643,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 97,
+      "arrivalTime": 511.1520305011918,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 3
+    },
+    {
+      "id": 98,
+      "arrivalTime": 514.4150439529217,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 0,
+      "destination-id": 2
+    },
+    {
+      "id": 99,
+      "arrivalTime": 519.4357279042069,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 10,
+      "source-id": 3,
+      "destination-id": 0
+    }
+  ]
+}
