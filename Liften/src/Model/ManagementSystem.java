@@ -100,4 +100,12 @@ public class ManagementSystem {
         this.additionalProperties.put(name, value);
     }
 
+	@Override
+	public String toString() {
+		return "ManagementSystem [levels=" + levels + ", lifts=" + lifts + ", users=" + users
+				+ "] \n";
+	}
+
+    
+    
 }

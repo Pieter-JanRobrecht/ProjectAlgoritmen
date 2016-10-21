@@ -51,4 +51,9 @@ public class Range {
         this.additionalProperties.put(name, value);
     }
 
+	@Override
+	public String toString() {
+		return "Range [id=" + id + "]";
+	}
+
 }

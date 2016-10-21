@@ -189,4 +189,11 @@ public class User {
         this.additionalProperties.put(name, value);
     }
 
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", arrivalTime=" + arrivalTime + ", boardingTime=" + boardingTime
+				+ ", unboardingTime=" + unboardingTime + ", timeout=" + timeout + ", sourceId=" + sourceId
+				+ ", destinationId=" + destinationId + "] \n";
+	}
+
 }
