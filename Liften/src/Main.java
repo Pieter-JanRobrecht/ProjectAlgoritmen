@@ -22,8 +22,8 @@ public class Main {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         
     	ManagementSystem ms = null;
-    	
-		try {
+
+			try {
 			ms = (ManagementSystem) objectMapper.readValue(file, ManagementSystem.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
