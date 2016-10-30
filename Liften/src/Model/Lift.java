@@ -49,6 +49,7 @@ public class Lift {
     private int currentLevel;
     private int direction;
     private int unavailableUntil;
+    private int destination;
 
     /**
      * 
@@ -231,6 +232,14 @@ public class Lift {
 
 	public void setUnavailableUntil(int unavailableUntil) {
 		this.unavailableUntil = unavailableUntil;
+	}
+	
+	public int getDestination() {
+		return destination;
+	}
+
+	public void setDestination(int destination) {
+		this.destination = destination;
 	}
 
 	@Override
