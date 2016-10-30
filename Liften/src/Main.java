@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -10,14 +11,19 @@ import Model.ManagementSystem;
 public class Main {
 
 	public static void main(String[] args) {
-    	File file = new File("./data/initialInstance.json");
-    
+		File file = null;
+		try {
+			file = new File(Main.class.getClassLoader().getResource("initialInstance.json").toURI());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+
 		ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         
     	ManagementSystem ms = null;
-    	
-		try {
+
+			try {
 			ms = (ManagementSystem) objectMapper.readValue(file, ManagementSystem.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
