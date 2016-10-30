@@ -20,7 +20,6 @@
     {
       "id": 0,
       "capacity": 8,
-      "currentUsers": 0,
       "levelSpeed": 5,
       "openingTime": 3,
       "closingTime": 3,
@@ -41,14 +40,11 @@
           "id": 4
         }
       ],
-      "startLevel": 0,
-      "currentLevel": 0,
-      "direction": true
+      "startLevel": 0
     },
     {
       "id": 1,
       "capacity": 8,
-      "currentUsers": 0,
       "levelSpeed": 5,
       "openingTime": 3,
       "closingTime": 3,
@@ -69,9 +65,7 @@
           "id": 4
         }
       ],
-      "startLevel": 3,
-      "currentLevel": 3,
-      "direction": false
+      "startLevel": 3
     }
   ],
   "users": [

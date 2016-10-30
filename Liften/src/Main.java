@@ -43,6 +43,10 @@ public class Main {
         	System.out.println("\n");
         	System.out.println("Aantal users: " + ms.getUsers().size());
         }
+        
+        Simulation sim = new Simulation(ms);
+        sim.startSimulationSimple();
+        
 	}
 
 }

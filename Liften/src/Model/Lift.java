@@ -31,8 +31,6 @@ public class Lift {
     private Integer id;
     @JsonProperty("capacity")
     private Integer capacity;
-    @JsonProperty("currentUsers")
-    private Integer currentUsers;
     @JsonProperty("levelSpeed")
     private Integer levelSpeed;
     @JsonProperty("openingTime")
@@ -43,12 +41,14 @@ public class Lift {
     private List<Range> range = new ArrayList<Range>();
     @JsonProperty("startLevel")
     private Integer startLevel;
-    @JsonProperty("currentLevel")
-    private Integer currentLevel;
-    @JsonProperty("direction")
-    private Boolean direction;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    
+
+    private int currentUsers;
+    private int currentLevel;
+    private int direction;
+    private int unavailableUntil;
 
     /**
      * 
@@ -88,26 +88,6 @@ public class Lift {
     @JsonProperty("capacity")
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
-    }
-
-    /**
-     * 
-     * @return
-     *     The currentUsers
-     */
-    @JsonProperty("currentUsers")
-    public Integer getCurrentUsers() {
-        return currentUsers;
-    }
-
-    /**
-     * 
-     * @param currentUsers
-     *     The currentUsers
-     */
-    @JsonProperty("currentUsers")
-    public void setCurrentUsers(Integer currentUsers) {
-        this.currentUsers = currentUsers;
     }
 
     /**
@@ -210,45 +190,6 @@ public class Lift {
         this.startLevel = startLevel;
     }
 
-    /**
-     * 
-     * @return
-     *     The currentLevel
-     */
-    @JsonProperty("currentLevel")
-    public Integer getCurrentLevel() {
-        return currentLevel;
-    }
-
-    /**
-     * 
-     * @param currentLevel
-     *     The currentLevel
-     */
-    @JsonProperty("currentLevel")
-    public void setCurrentLevel(Integer currentLevel) {
-        this.currentLevel = currentLevel;
-    }
-
-    /**
-     * 
-     * @return
-     *     The direction
-     */
-    @JsonProperty("direction")
-    public Boolean getDirection() {
-        return direction;
-    }
-
-    /**
-     * 
-     * @param direction
-     *     The direction
-     */
-    @JsonProperty("direction")
-    public void setDirection(Boolean direction) {
-        this.direction = direction;
-    }
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
@@ -259,6 +200,38 @@ public class Lift {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
+
+	public int getCurrentUsers() {
+		return currentUsers;
+	}
+
+	public void setCurrentUsers(int currentUsers) {
+		this.currentUsers = currentUsers;
+	}
+
+	public int getCurrentLevel() {
+		return currentLevel;
+	}
+
+	public void setCurrentLevel(int currentLevel) {
+		this.currentLevel = currentLevel;
+	}
+
+	public int getDirection() {
+		return direction;
+	}
+
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+
+	public int getUnavailableUntil() {
+		return unavailableUntil;
+	}
+
+	public void setUnavailableUntil(int unavailableUntil) {
+		this.unavailableUntil = unavailableUntil;
+	}
 
 	@Override
 	public String toString() {
