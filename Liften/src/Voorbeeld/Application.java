@@ -228,6 +228,10 @@ public class Application extends javafx.application.Application {
         Sphere oxygenSphere = new Sphere(40.0);
         oxygenSphere.setMaterial(redMaterial);
 
+        Box test = new Box(70.0,70.0,70.0);
+//        test.setTranslateX(20.0);
+        moleculeXform.getChildren().add(test);
+
         Sphere hydrogen1Sphere = new Sphere(30.0);
         hydrogen1Sphere.setMaterial(whiteMaterial);
         hydrogen1Sphere.setTranslateX(0.0);
@@ -248,16 +252,16 @@ public class Application extends javafx.application.Application {
         bond2Cylinder.setRotationAxis(Rotate.Z_AXIS);
         bond2Cylinder.setRotate(90.0);
 
-        moleculeXform.getChildren().add(oxygenXform);
-        moleculeXform.getChildren().add(hydrogen1SideXform);
-        moleculeXform.getChildren().add(hydrogen2SideXform);
-        oxygenXform.getChildren().add(oxygenSphere);
-        hydrogen1SideXform.getChildren().add(hydrogen1Xform);
-        hydrogen2SideXform.getChildren().add(hydrogen2Xform);
-        hydrogen1Xform.getChildren().add(hydrogen1Sphere);
-        hydrogen2Xform.getChildren().add(hydrogen2Sphere);
-        hydrogen1SideXform.getChildren().add(bond1Cylinder);
-        hydrogen2SideXform.getChildren().add(bond2Cylinder);
+//        moleculeXform.getChildren().add(oxygenXform);
+//        moleculeXform.getChildren().add(hydrogen1SideXform);
+//        moleculeXform.getChildren().add(hydrogen2SideXform);
+//        oxygenXform.getChildren().add(oxygenSphere);
+//        hydrogen1SideXform.getChildren().add(hydrogen1Xform);
+//        hydrogen2SideXform.getChildren().add(hydrogen2Xform);
+//        hydrogen1Xform.getChildren().add(hydrogen1Sphere);
+//        hydrogen2Xform.getChildren().add(hydrogen2Sphere);
+//        hydrogen1SideXform.getChildren().add(bond1Cylinder);
+//        hydrogen2SideXform.getChildren().add(bond2Cylinder);
 
         hydrogen1Xform.setTx(100.0);
         hydrogen2Xform.setTx(100.0);
@@ -271,7 +275,7 @@ public class Application extends javafx.application.Application {
     @Override
     public void start(Stage primaryStage) {
 
-        // setUserAgentStylesheet(STYLESHEET_MODENA);
+//         setUserAgentStylesheet(STYLESHEET_MODENA);
         System.out.println("start()");
 
         root.getChildren().add(world);
