@@ -39,6 +39,12 @@ public class User {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+    private boolean inElevator;
+    
+    public User() {
+    	inElevator = false;
+    }
+    
     /**
      * 
      * @return
@@ -189,11 +195,20 @@ public class User {
         this.additionalProperties.put(name, value);
     }
 
+	public boolean isInElevator() {
+		return inElevator;
+	}
+
+	public void setInElevator(boolean inElevator) {
+		this.inElevator = inElevator;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", arrivalTime=" + arrivalTime + ", boardingTime=" + boardingTime
 				+ ", unboardingTime=" + unboardingTime + ", timeout=" + timeout + ", sourceId=" + sourceId
-				+ ", destinationId=" + destinationId + "] \n";
+				+ ", destinationId=" + destinationId + ", additionalProperties=" + additionalProperties
+				+ ", inElevator=" + inElevator + "]";
 	}
-
+	
 }

@@ -50,8 +50,12 @@ public class Lift {
     private int direction;
     private int unavailableUntil;
     private int destination;
-
-    /**
+    private int operationTimer;
+    private String mode;
+    private int movingTimer;
+    
+   
+	/**
      * 
      * @return
      *     The id
@@ -242,12 +246,74 @@ public class Lift {
 		this.destination = destination;
 	}
 
-	@Override
-	public String toString() {
-		return "\n Lift [id=" + id + ", capacity=" + capacity + ", currentUsers=" + currentUsers + ", levelSpeed="
-				+ levelSpeed + ", openingTime=" + openingTime + ", closingTime=" + closingTime + ", range=" + range
-				+ ", startLevel=" + startLevel + ", currentLevel=" + currentLevel + ", direction=" + direction
-				+ "] \n";
+	public String getMode() {
+		return mode;
 	}
 
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+	public int getOperationTimer() {
+		return operationTimer;
+	}
+
+	public void setOperationTimer(int operationTimer) {
+		this.operationTimer = operationTimer;
+	}
+
+	public int getMovingTimer() {
+		return movingTimer;
+	}
+
+	public void setMovingTimer(int movingTimer) {
+		this.movingTimer = movingTimer;
+	}
+	
+	public void initiateLift() {
+    	currentUsers = 0;
+    	if(range != null) currentLevel = range.get(0).getId();
+    	direction = 0; // idle
+    	unavailableUntil = -1;
+    	destination = -1;
+    	operationTimer = -1;
+    	mode = "idle";
+    	movingTimer = -1;
+		System.out.println("DEBUG - initiated " + toString());
+	}
+	
+	public void setNextLevel() {
+		if(direction == 1) {
+			System.out.println("DEBUG setNextLevel - Elevator is ascending!");
+			for(int i = 0; i < range.size(); i++) {
+				if(range.get(i).getId() == currentLevel) {
+					if(i+1 < range.size())
+						currentLevel = range.get(i+1).getId();					
+					i = range.size();
+				}
+			}
+		} else if(direction == -1) {
+			System.out.println("DEBUG setNextLevel - Elevator is decending!");
+			for(int i = 0; i < range.size(); i++) {
+				if(range.get(i).getId() == currentLevel) {
+					if(i > 0) 
+						currentLevel = range.get(i-1).getId();	
+					i = range.size();
+				}
+			}
+		} else {
+			System.out.println("DEBUG - something went wrong, setting next level whilst idling");
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "Elevator [id=" + id + ", capacity=" + capacity + ", levelSpeed=" + levelSpeed + ", openingTime="
+				+ openingTime + ", closingTime=" + closingTime + ", range=" + range + ", startLevel=" + startLevel
+				+ ", additionalProperties=" + additionalProperties + ", currentUsers=" + currentUsers
+				+ ", currentLevel=" + currentLevel + ", direction=" + direction + ", unavailableUntil="
+				+ unavailableUntil + ", destination=" + destination + ", operationTimer=" + operationTimer + ", mode="
+				+ mode + ", movingTimer=" + movingTimer + "]";
+	}
+	
 }
