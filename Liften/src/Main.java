@@ -36,13 +36,13 @@ public class Main {
 			e.printStackTrace();
 		}
 
-        if (ms != null) {
-        	System.out.println(ms.getLevels().toString());
-        	System.out.println("\n");
-        	System.out.println(ms.getLifts().toString());
-        	System.out.println("\n");
-        	System.out.println("Aantal users: " + ms.getUsers().size());
-        }
+//        if (ms != null) {
+//        	System.out.println(ms.getLevels().toString());
+//        	System.out.println("\n");
+//        	System.out.println(ms.getLifts().toString());
+//        	System.out.println("\n");
+//        	System.out.println("Aantal users: " + ms.getUsers().size());
+//        }
         
         Simulation sim = new Simulation(ms);
         sim.startSimulationSimple();
