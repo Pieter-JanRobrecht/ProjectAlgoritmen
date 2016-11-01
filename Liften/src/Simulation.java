@@ -10,7 +10,6 @@ public class Simulation {
 	private ElevatorController ec;
 	private List<User> queue;
 	private HashMap<User, Lift> database;
-	private List<User> removeFromDatabase;
 
 	public Simulation() {
 		System.out.println("Please initiate using the correct setup");
@@ -45,8 +44,9 @@ public class Simulation {
 	 * if no elevator found -- add user to (priority?)queue
 	 * 
 	 * KEEP IN MIND: REMOVE USER IF TIMEOUT HAS BEEN REACHED!
+	 * @throws Exception 
 	 */
-	public void startSimulationSimple() {
+	public void startSimulationSimple() throws Exception {
 		database = new HashMap<User, Lift>();
 		for (Lift l : ec.getLifts()) {
 			l.initiateLift();
@@ -55,8 +55,6 @@ public class Simulation {
 		// while(!ec.getUsers().isEmpty()) {
 		while (ec.getUsers().size() != 0 || database.size() != 0) {
 			System.out.println("\nGametick (" + mainTicker + ") \t queue size: " + queue.size() + " \t");
-			// resetting variables
-			removeFromDatabase = new ArrayList<>();
 
 			// 1. add all users waiting to a queue
 			addValidUsers(mainTicker);
@@ -65,30 +63,31 @@ public class Simulation {
 			List<User> nextQueue = new ArrayList<>();
 			for (int i = 0; i < queue.size(); i++) {
 				User tempUser = queue.get(i);
-				Lift tempLift = assignElevator(tempUser);
-				if (tempLift != null) {
-					System.out.println("\tE\t DEBUG - Elevator found, " + tempUser.getId() + " assigned elevator "
-							+ tempLift.getId());
-					database.put(tempUser, tempLift);
-					if (tempLift.getDirection() == 0) {
-						if (tempUser.getSourceId() > tempLift.getCurrentLevel()) {
-							tempLift.setDirection(1);
-							tempLift.setDestination(tempUser.getDestinationId());
-						} else if (tempUser.getSourceId() < tempLift.getCurrentLevel()) {
-							tempLift.setDirection(-1);
-							tempLift.setDestination(tempUser.getDestinationId());
+				if (!tempUser.isFinished()) {
+					Lift tempLift = assignElevator(tempUser);
+					if (tempLift != null) {
+						System.out.println("\tE\t DEBUG - Elevator found, " + tempUser.getId() + " assigned elevator "
+								+ tempLift.getId());
+						database.put(tempUser, tempLift);
+						if (tempLift.getDirection() == 0) {
+							if (tempUser.getSourceId() > tempLift.getCurrentLevel()) {
+								tempLift.setDirection(1);
+								tempLift.setDestination(tempUser.getDestinationId());
+							} else if (tempUser.getSourceId() < tempLift.getCurrentLevel()) {
+								tempLift.setDirection(-1);
+								tempLift.setDestination(tempUser.getDestinationId());
+							}
 						}
+					} else {
+						System.out.println("\tE\t DEBUG - Elevator not found");
+						nextQueue.add(tempUser);
 					}
-				} else {
-					System.out.println("\tE\t DEBUG - Elevator not found");
-					nextQueue.add(tempUser);
 				}
 			}
 
 			// 3. update old queue
 			queue = nextQueue;
 
-			// 4. handle elevator
 			/**
 			 * Pseudocode can be found on following image:
 			 * https://gyazo.com/c5ee38012c9f45206e329d354d4a6240
@@ -110,12 +109,16 @@ public class Simulation {
 			 */
 
 			if (!database.isEmpty()) {
-				System.out.println(
-						"\t\t DEBUG - current database size: " + database.size() + " | " + database.keySet().size());
+				System.out.println("\tSTART\t DEBUG - current database size: " + database.size() + " | "
+						+ database.keySet().size());
+
+				// 4. set appropriate variables
 				for (User u : database.keySet()) {
 					Lift l = database.get(u);
 
 					if (!u.isInElevator()) {
+						// System.out.println("\t\t DEBUG - user (" + u.getId()
+						// + ") is not in elevator yet.");
 						if (l.getCurrentLevel() < u.getSourceId()) {
 							l.setDirection(1);
 						} else if (l.getCurrentLevel() > u.getSourceId()) {
@@ -124,6 +127,8 @@ public class Simulation {
 							l.setDirection(0);
 						}
 					} else {
+						// System.out.println("\t\t DEBUG - user (" + u.getId()
+						// + ") is in elevator.");
 						if (l.getCurrentLevel() < u.getDestinationId()) {
 							l.setDirection(1);
 						} else if (l.getCurrentLevel() > u.getDestinationId()) {
@@ -133,152 +138,122 @@ public class Simulation {
 						}
 					}
 
-					// if on same level, aka user has to step in
-					System.out.println("\t\t DEBUG - current elevator ("+l.getId()+") floor: " + l.getCurrentLevel()
-							+ " | start user floor: " + u.getSourceId() + " | end user floor: " + u.getDestinationId());
-					if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) {
-						l.setDirection(0);
-						System.out.println("\tUser (" + u.getId() + ") should be enterring.. Elevator (" + l.getId()
-								+ ") mode: " + l.getMode());
-						switch (l.getMode()) {
-						case "idle":
-							l.setMode("openenIN");
-							l.setOperationTimer(mainTicker);
-							break;
-						case "openenIN":
-							if (l.getOperationTimer() + l.getOperationTimer() >= mainTicker) {
-								l.setMode("boardingIN");
-								l.setOperationTimer(mainTicker);
-							}
-							break;
-						case "boardingIN":
-							// GLITCH: als meerdere personen instappen gaan ze
-							// ten eerste allemaal tegelijk instappen, ipv
-							// sequentieel te wachten. Bovendien zal ook
-							// iedereen instappen aan de snelheid van de
-							// snelste, dus... fout :/
-							if (l.getOperationTimer() + u.getBoardingTime() >= mainTicker) {
-								l.setMode("closingIN");
-								l.setOperationTimer(mainTicker);
-							}
-							break;
-						case "closingIN":
-							if (l.getOperationTimer() + l.getClosingTime() >= mainTicker) {
-								l.setMode("idle");
-								l.setMovingTimer(mainTicker);
-								if (l.getCurrentUsers() < l.getCapacity()) {
-									System.out.println("\t\t DEBUG - User (" + u.getId() + ") joined elevator");
-									l.setCurrentUsers(l.getCurrentLevel() + 1);
-									u.setInElevator(true);
-								} else
-									System.out.println(
-											"WARNING - something went wrong.. Capacity reached of " + l.toString());
-							}
-							break;
-						case "openenOUT":
-							// doNothing
-							break;
-						case "unboardingOUT":
-							// doNothing
-							// GLITCH??? D: We gaan zeggen dat de persoon kan
-							// instappen met zelfde snelheid dat de andere
-							// persoon kan uitstappen
-							break;
-						case "closingOUT":
-							// equal to closingIN tbf
-							if (l.getCurrentUsers() < l.getCapacity()) {
-								System.out.println("\t\t DEBUG - User (" + u.getId() + ") joined elevator");
-								l.setCurrentUsers(l.getCurrentLevel() + 1);
-								u.setInElevator(true);
-							} else
-								System.out.println(
-										"WARNING - something went wrong.. Capacity reached of " + l.toString());
-							break;
-						default:
-							System.out
-									.println("\t!\t DEBUG - (" + l.getMode() + ").. this mode is not an elevator mode");
-							break;
+					
+					if (l.getHandlingUsers().contains(u) && !u.isHandled()) {
+						if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) { // UITSTAPPEN
+							System.out.println(
+									"\tSTATUS\t DEBUG - Elevator (" + l.getId() + ") is removing user (" + u.getId() + ").");
+							u.setHandled(true);
+							l.setUsersGettingOut(l.getUsersGettingOut() + 1);
+							l.setBoardingDelay(l.getBoardingDelay() + u.getUnboardingTime());
 						}
-
-						// if on same level, aka user has to step out
-					} else if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) {
-						l.setDirection(0);
-						System.out.println("\tUser (" + u.getId() + ") should be leaving.. Elevator (" + l.getId()
-								+ ") mode: " + l.getMode());
-						switch (l.getMode()) {
-						case "idle":
-							l.setMode("openenOUT");
-							l.setOperationTimer(mainTicker);
-							break;
-						case "openenOUT":
-							if (l.getOperationTimer() + l.getOperationTimer() >= mainTicker) {
-								l.setMode("unboardingOUT");
-								l.setOperationTimer(mainTicker);
-							}
-							break;
-						case "unboardingOUT":
-							if (l.getOperationTimer() + u.getUnboardingTime() >= mainTicker) {
-								l.setMode("closingOUT");
-								l.setOperationTimer(mainTicker);
-							}
-							break;
-						case "closingOUT":
-							if (l.getOperationTimer() + l.getClosingTime() >= mainTicker) {
-								l.setMode("idle");
-								l.setMovingTimer(mainTicker);
-								if (l.getCurrentUsers() > 0) {
-									System.out.println("\t\t DEBUG - handled " + u.toString());
-									l.setCurrentUsers(l.getCurrentLevel() - 1);
-									removeFromDatabase.add(u);
-								} else
-									System.out.println(
-											"WARNING - something went seriously wrong.. Negative amount of users in "
-													+ l.toString());
-							}
-							break;
-						case "openenIN":
-							// doNothing
-							break;
-						case "boardingIN":
-							// doNothing
-							// GLITCH??? D: We gaan zeggen dat de persoon kan
-							// uitstappen met zelfde snelheid dat de andere
-							// persoon kan instappen
-							break;
-						case "closingIN":
-							// equal to closingOUT tbf
-							if (l.getCurrentUsers() > 0) {
-								System.out.println("\t\t DEBUG - handled " + u.toString());
-								l.setCurrentUsers(l.getCurrentLevel() - 1);
-								removeFromDatabase.add(u);
-							} else
-								System.out.println(
-										"WARNING - something went seriously wrong.. Negative amount of users in "
-												+ l.toString());
-							break;
-						default:
-							System.out
-									.println("\t!\t DEBUG - (" + l.getMode() + ").. this mode is not an elevator mode");
-							break;
-						}
-					} else if (u.isInElevator() == false && u.getArrivalTime() + u.getTimeout() < mainTicker) {
-						// arguable to do <= instead of <.. personal preference?
-						removeFromDatabase.add(u);
-						System.out.println("\t\t DEBUG userTimeout- " + (u.getArrivalTime() + u.getTimeout()) + "/"
-								+ mainTicker + " - LEAVING " + u.toString());
 					} else {
-						System.out.println(
-								"\t\t DEBUG - No interaction for this user (" + u.getId() + ") this gametick!");
+//						System.out.println(
+//								"\t\t DEBUG - in elevator ("+l.getId()+"): user " + u.getId() + " | " + u.isInElevator() + " | " + l.getCurrentLevel() + "/"
+//										+ u.getSourceId() + " | " + l.getCurrentLevel() + "/" + u.getDestinationId());
+						if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // INSTAPPEN
+							System.out.println(
+									"\tSTATUS\t DEBUG - Elevator (" + l.getId() + ") is adding user (" + u.getId() + ").");
+							l.addHandlingUser(u);
+							l.setUsersGettingIn(l.getUsersGettingIn() + 1);
+							l.setBoardingDelay(l.getBoardingDelay() + u.getBoardingTime());
+						}
 					}
 				}
 
-				// 5. follow-up from 4 -> remove handled/timed-out users
-				for (User u : removeFromDatabase)
+				// 5. handle elevator handlings
+				for (Lift l : ec.getLifts()) {
+					System.out.println();
+					System.out.println("\t\t DEBUG - Elevator (" + l.getId() + ") contains "
+							+ l.getHandlingUsers().size() + " users.");
+					// debug:
+					for (User u : l.getHandlingUsers()) {
+						if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
+							System.out.println("\tUser (" + u.getId() + ") should be enterring.. Elevator (" + l.getId()
+									+ ") mode: " + l.getMode());
+						} else if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) { // uitstappen
+							System.out.println("\tUser (" + u.getId() + ") should be leaving.. Elevator (" + l.getId()
+									+ ") mode: " + l.getMode());
+						}
+					}
+
+					System.out.println("\t\t DEBUG - users getting in:" + l.getUsersGettingIn()
+							+ " | users getting out: " + l.getUsersGettingOut());
+					if ((l.getUsersGettingIn() + l.getUsersGettingOut()) > 0) {
+						switch (l.getMode()) {
+						case "idle":
+							l.setMode("openen");
+							l.setOperationTimer(mainTicker);
+							break;
+						case "openen":
+							if (l.getOperationTimer() + l.getOperationTimer() >= mainTicker) {
+								l.setMode("boarding");
+								l.setOperationTimer(mainTicker);
+							}
+							break;
+						case "boarding":
+							if (l.getOperationTimer() + l.getBoardingDelay() >= mainTicker) {
+								l.setMode("closing");
+								l.setOperationTimer(mainTicker);
+							}
+							break;
+						case "closing":
+							if (l.getOperationTimer() + l.getClosingTime() >= mainTicker) {
+								l.setMode("idle");
+								l.setMovingTimer(mainTicker);
+								l.setBoardingDelay(0);
+
+								List<User> removingUsers = new ArrayList<>();
+								
+								for (User u : l.getHandlingUsers()) {
+									//System.out.println("\t!!\t DEBUG - user (" + u.getId() + ") - " + u.getSourceId() + ", " + u.getDestinationId() + ", " + l.getCurrentLevel());
+									if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
+										System.out.println("\t\t DEBUG - User (" + u.getId() + ") joined elevator");
+										l.setCurrentUsers(l.getCurrentLevel() + 1);
+										u.setInElevator(true);
+										if(l.getUsersGettingIn() == 0) 
+											throw new Exception();
+										l.setUsersGettingIn(l.getUsersGettingIn() - 1);
+										
+
+									} else if (u.getDestinationId() == l.getCurrentLevel()) { // uitstappen
+										System.out.println("\t\t DEBUG - User (" + u.getId() + ") left elevator");
+										l.setCurrentUsers(l.getCurrentLevel() - 1);
+										u.setInElevator(false);
+										u.setFinished(true);
+										removingUsers.add(u);
+										if(l.getUsersGettingOut() == 0) 
+											throw new Exception();
+										l.setUsersGettingOut(l.getUsersGettingOut() - 1);
+									}
+								}
+								
+								for(User u : removingUsers)
+									l.removeHandlingUser(u);;
+
+							}
+							break;
+						default:
+							System.out
+									.println("\t!\t DEBUG - (" + l.getMode() + ").. this mode is not an elevator mode");
+							break;
+						}
+					}
+				}
+				System.out.println();
+				List<User> removingUsers = new ArrayList<>();
+				// 6. follow-up from 4 -> remove handled/timed-out users
+				for (User u : database.keySet())
+					if (u.isFinished()) {
+						removingUsers.add(u);
+						System.out.println("\tR\t DEBUG - removing user " + u.getId());
+					}
+				for(User u : removingUsers) 
 					database.remove(u);
 
-				// 6. handle elevator movements
+				// 7. handle elevator movements
 				for (Lift l : ec.getLifts()) {
-					if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() <= mainTicker) {
+					if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() <= mainTicker && (l.getUsersGettingIn() + l.getUsersGettingOut()) == 0) {
 						l.setNextLevel();
 						l.setMovingTimer(mainTicker);
 						System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker

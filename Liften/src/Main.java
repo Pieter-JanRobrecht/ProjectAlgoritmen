@@ -10,10 +10,10 @@ import Model.ManagementSystem;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		File file = null;
 		try {
-			file = new File(Main.class.getClassLoader().getResource("initialInstance.json").toURI());
+			file = new File(Main.class.getClassLoader().getResource("original.json").toURI());
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}

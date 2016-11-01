@@ -41,6 +41,11 @@ public class Lift {
 	private int operationTimer;
 	private String mode;
 	private int movingTimer;
+	
+	private int usersGettingIn;
+	private int usersGettingOut;
+	private List<User> handlingUsers;
+	private int boardingDelay;
 
 	/**
 	 * 
@@ -249,6 +254,46 @@ public class Lift {
 		this.movingTimer = movingTimer;
 	}
 
+	public int getUsersGettingIn() {
+		return usersGettingIn;
+	}
+
+	public void setUsersGettingIn(int usersGettingIn) {
+		this.usersGettingIn = usersGettingIn;
+	}
+
+	public int getUsersGettingOut() {
+		return usersGettingOut;
+	}
+
+	public void setUsersGettingOut(int usersGettingOut) {
+		this.usersGettingOut = usersGettingOut;
+	}
+
+	public List<User> getHandlingUsers() {
+		return handlingUsers;
+	}
+
+	public void setHandlingUsers(List<User> handlingUsers) {
+		this.handlingUsers = handlingUsers;
+	}
+	
+	public void addHandlingUser(User u) {
+		this.handlingUsers.add(u);
+	}
+	
+	public void removeHandlingUser(User u) {
+		this.handlingUsers.remove(u);
+	}
+
+	public int getBoardingDelay() {
+		return boardingDelay;
+	}
+
+	public void setBoardingDelay(int boardingDelay) {
+		this.boardingDelay = boardingDelay;
+	}
+
 	public void initiateLift() {
 		currentUsers = 0;
 		if (range != null)
@@ -259,6 +304,9 @@ public class Lift {
 		operationTimer = 0;
 		mode = "idle";
 		movingTimer = 0;
+		usersGettingIn = 0;
+		usersGettingOut = 0;
+		handlingUsers = new ArrayList<User>();
 		System.out.println("\t.\t DEBUG - initiated " + toString());
 	}
 
@@ -286,15 +334,31 @@ public class Lift {
 			System.out.println("\t\t\t" + toString());
 		}
 	}
+	
+	public boolean hasUsersOnFloor() {
+		boolean found = false;
+		for(User u : handlingUsers) {
+			if(!u.isInElevator() && u.getSourceId() == currentLevel) {
+				usersGettingIn++;
+				found = true;
+			} else if(u.isInElevator() && u.getDestinationId() == currentLevel) {
+				usersGettingOut++;
+				found = true;
+			}
+		}
+		
+		return found;
+	}
 
 	@Override
 	public String toString() {
-		return "Elevator [id=" + id + ", capacity=" + capacity + ", levelSpeed=" + levelSpeed + ", openingTime="
+		return "Lift [id=" + id + ", capacity=" + capacity + ", levelSpeed=" + levelSpeed + ", openingTime="
 				+ openingTime + ", closingTime=" + closingTime + ", range=" + range + ", startLevel=" + startLevel
 				+ ", additionalProperties=" + additionalProperties + ", currentUsers=" + currentUsers
 				+ ", currentLevel=" + currentLevel + ", direction=" + direction + ", unavailableUntil="
 				+ unavailableUntil + ", destination=" + destination + ", operationTimer=" + operationTimer + ", mode="
-				+ mode + ", movingTimer=" + movingTimer + "]";
+				+ mode + ", movingTimer=" + movingTimer + ", usersGettingIn=" + usersGettingIn + ", usersGettingOut="
+				+ usersGettingOut + ", handlingUsers=" + handlingUsers + ", boardingDelay=" + boardingDelay + "]";
 	}
 
 }

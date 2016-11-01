@@ -40,9 +40,13 @@ public class User {
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     private boolean inElevator;
+    private boolean finished;
+    private boolean handled;
     
     public User() {
     	inElevator = false;
+    	finished = false;
+    	handled = false;
     }
     
     /**
@@ -203,12 +207,27 @@ public class User {
 		this.inElevator = inElevator;
 	}
 
+	public boolean isFinished() {
+		return finished;
+	}
+
+	public void setFinished(boolean finished) {
+		this.finished = finished;
+	}
+
+	public boolean isHandled() {
+		return handled;
+	}
+
+	public void setHandled(boolean handled) {
+		this.handled = handled;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", arrivalTime=" + arrivalTime + ", boardingTime=" + boardingTime
 				+ ", unboardingTime=" + unboardingTime + ", timeout=" + timeout + ", sourceId=" + sourceId
 				+ ", destinationId=" + destinationId + ", additionalProperties=" + additionalProperties
-				+ ", inElevator=" + inElevator + "]";
+				+ ", inElevator=" + inElevator + ", finished=" + finished + ", handled=" + handled + "]";
 	}
-	
 }
