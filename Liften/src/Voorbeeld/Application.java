@@ -71,6 +71,8 @@ public class Application extends javafx.application.Application {
     private static final double ROTATION_SPEED = 2.0;
     private static final double TRACK_SPEED = 0.3;
 
+    private static final int AANTAL_LIFTEN=4;
+
     private double mousePosX;
     private double mousePosY;
     private double mouseOldX;
@@ -228,32 +230,43 @@ public class Application extends javafx.application.Application {
         Sphere oxygenSphere = new Sphere(40.0);
         oxygenSphere.setMaterial(redMaterial);
 
-        Box test = new Box(70.0,140.0,70.0);
-        test.setTranslateX(35.5);
-        test.setTranslateY(70.0);
-        test.setTranslateZ(35.5);
-        moleculeXform.getChildren().add(test);
+        Box test;
+        for(int i = 0;i<AANTAL_LIFTEN;i++){
+            test = new Box(70.0,140.0,70.0);
 
-        Sphere hydrogen1Sphere = new Sphere(30.0);
-        hydrogen1Sphere.setMaterial(whiteMaterial);
-        hydrogen1Sphere.setTranslateX(0.0);
+            if(i%2==0){
+                test.setTranslateX(35.5);
+                test.setTranslateZ(i*100+35.5);
+            }else{
+                test.setTranslateX(-(100+35.5));
+                test.setTranslateZ((i-1)*100+35.5);
+            }
 
-        Sphere hydrogen2Sphere = new Sphere(30.0);
-        hydrogen2Sphere.setMaterial(whiteMaterial);
-        hydrogen2Sphere.setTranslateZ(0.0);
+            test.setTranslateY(70.0);
+            moleculeXform.getChildren().add(test);
+        }
 
-        Cylinder bond1Cylinder = new Cylinder(5, 100);
-        bond1Cylinder.setMaterial(greyMaterial);
-        bond1Cylinder.setTranslateX(50.0);
-        bond1Cylinder.setRotationAxis(Rotate.Z_AXIS);
-        bond1Cylinder.setRotate(90.0);
 
-        Cylinder bond2Cylinder = new Cylinder(5, 100);
-        bond2Cylinder.setMaterial(greyMaterial);
-        bond2Cylinder.setTranslateX(50.0);
-        bond2Cylinder.setRotationAxis(Rotate.Z_AXIS);
-        bond2Cylinder.setRotate(90.0);
-
+//        Sphere hydrogen1Sphere = new Sphere(30.0);
+//        hydrogen1Sphere.setMaterial(whiteMaterial);
+//        hydrogen1Sphere.setTranslateX(0.0);
+//
+//        Sphere hydrogen2Sphere = new Sphere(30.0);
+//        hydrogen2Sphere.setMaterial(whiteMaterial);
+//        hydrogen2Sphere.setTranslateZ(0.0);
+//
+//        Cylinder bond1Cylinder = new Cylinder(5, 100);
+//        bond1Cylinder.setMaterial(greyMaterial);
+//        bond1Cylinder.setTranslateX(50.0);
+//        bond1Cylinder.setRotationAxis(Rotate.Z_AXIS);
+//        bond1Cylinder.setRotate(90.0);
+//
+//        Cylinder bond2Cylinder = new Cylinder(5, 100);
+//        bond2Cylinder.setMaterial(greyMaterial);
+//        bond2Cylinder.setTranslateX(50.0);
+//        bond2Cylinder.setRotationAxis(Rotate.Z_AXIS);
+//        bond2Cylinder.setRotate(90.0);
+//
 //        moleculeXform.getChildren().add(oxygenXform);
 //        moleculeXform.getChildren().add(hydrogen1SideXform);
 //        moleculeXform.getChildren().add(hydrogen2SideXform);
