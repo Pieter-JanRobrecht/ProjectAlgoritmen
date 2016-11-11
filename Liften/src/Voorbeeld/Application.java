@@ -32,20 +32,18 @@ package Voorbeeld;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-        import javafx.scene.*;
-        import javafx.scene.paint.Color;
-        import javafx.stage.Stage;
-        import javafx.scene.paint.PhongMaterial;
-        import javafx.scene.shape.Box;
-        import javafx.scene.shape.Cylinder;
-        import javafx.scene.shape.Sphere;
-        import javafx.scene.transform.Rotate;
-        import javafx.event.EventHandler;
-        import javafx.scene.input.KeyEvent;
-        import javafx.scene.input.MouseEvent;
+import javafx.scene.*;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Box;
+import javafx.scene.shape.Sphere;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 /**
- *
  * @author cmcastil
  */
 public class Application extends javafx.application.Application {
@@ -71,7 +69,16 @@ public class Application extends javafx.application.Application {
     private static final double ROTATION_SPEED = 2.0;
     private static final double TRACK_SPEED = 0.3;
 
-    private static final int AANTAL_LIFTEN=4;
+    private static final int AANTAL_LIFTEN = 4;
+    private static final int LENGTE_X = 100;
+    private static final int LENGTE_Y = 140;
+    private static final int LENGTE_Z = 100;
+
+    private static final int AFSTAND_TUSSEN_LIFTEN = 70;
+    private static final int LENGTE_GANG = 100;
+
+    private static final double MAX_SCALE = 2.5d;
+    private static final double MIN_SCALE = .5d;
 
     private double mousePosX;
     private double mousePosY;
@@ -127,7 +134,8 @@ public class Application extends javafx.application.Application {
 
     private void handleMouse(Scene scene, final Node root) {
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent me) {
+            @Override
+            public void handle(MouseEvent me) {
                 mousePosX = me.getSceneX();
                 mousePosY = me.getSceneY();
                 mouseOldX = me.getSceneX();
@@ -135,7 +143,8 @@ public class Application extends javafx.application.Application {
             }
         });
         scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent me) {
+            @Override
+            public void handle(MouseEvent me) {
                 mouseOldX = mousePosX;
                 mouseOldY = mousePosY;
                 mousePosX = me.getSceneX();
@@ -152,18 +161,41 @@ public class Application extends javafx.application.Application {
                     modifier = SHIFT_MULTIPLIER;
                 }
                 if (me.isPrimaryButtonDown()) {
-                    cameraXform.ry.setAngle(cameraXform.ry.getAngle() - mouseDeltaX*MOUSE_SPEED*modifier*ROTATION_SPEED);
-                    cameraXform.rx.setAngle(cameraXform.rx.getAngle() + mouseDeltaY*MOUSE_SPEED*modifier*ROTATION_SPEED);
-                }
-                else if (me.isSecondaryButtonDown()) {
+                    cameraXform.ry.setAngle(cameraXform.ry.getAngle() - mouseDeltaX * MOUSE_SPEED * modifier * ROTATION_SPEED);
+                    cameraXform.rx.setAngle(cameraXform.rx.getAngle() + mouseDeltaY * MOUSE_SPEED * modifier * ROTATION_SPEED);
+                } else if (me.isSecondaryButtonDown()) {
                     double z = camera.getTranslateZ();
-                    double newZ = z + mouseDeltaX*MOUSE_SPEED*modifier;
+                    double newZ = z + mouseDeltaX * MOUSE_SPEED * modifier;
                     camera.setTranslateZ(newZ);
+                } else if (me.isMiddleButtonDown()) {
+                    cameraXform2.t.setX(cameraXform2.t.getX() + mouseDeltaX * MOUSE_SPEED * modifier * TRACK_SPEED * 10);
+                    cameraXform2.t.setY(cameraXform2.t.getY() + mouseDeltaY * MOUSE_SPEED * modifier * TRACK_SPEED * 10);
                 }
-                else if (me.isMiddleButtonDown()) {
-                    cameraXform2.t.setX(cameraXform2.t.getX() + mouseDeltaX*MOUSE_SPEED*modifier*TRACK_SPEED);
-                    cameraXform2.t.setY(cameraXform2.t.getY() + mouseDeltaY*MOUSE_SPEED*modifier*TRACK_SPEED);
+            }
+        });
+        scene.setOnScroll(new EventHandler<ScrollEvent>() {
+            private Node nodeToZoom = root;
+
+            @Override
+            public void handle(ScrollEvent scrollEvent) {
+//                if (scrollEvent.isControlDown()) {
+                final double scale = calculateScale(scrollEvent);
+                nodeToZoom.setScaleX(scale);
+                nodeToZoom.setScaleY(scale);
+                nodeToZoom.setScaleZ(scale);
+                scrollEvent.consume();
+//                }
+            }
+
+            private double calculateScale(ScrollEvent scrollEvent) {
+                double scale = nodeToZoom.getScaleX() + scrollEvent.getDeltaY() / 100;
+
+                if (scale <= MIN_SCALE) {
+                    scale = MIN_SCALE;
+                } else if (scale >= MAX_SCALE) {
+                    scale = MAX_SCALE;
                 }
+                return scale;
             }
         });
     }
@@ -191,7 +223,7 @@ public class Application extends javafx.application.Application {
         });
     }
 
-    private void buildMolecule() {
+    private void buildElevatorHall() {
         //======================================================================
         // THIS IS THE IMPORTANT MATERIAL FOR THE TUTORIAL
         //======================================================================
@@ -231,18 +263,18 @@ public class Application extends javafx.application.Application {
         oxygenSphere.setMaterial(redMaterial);
 
         Box test;
-        for(int i = 0;i<AANTAL_LIFTEN;i++){
-            test = new Box(70.0,140.0,70.0);
+        for (int i = 0; i < AANTAL_LIFTEN; i++) {
+            test = new Box(LENGTE_X, LENGTE_Y, LENGTE_Z);
 
-            if(i%2==0){
-                test.setTranslateX(35.5);
-                test.setTranslateZ(i*100+35.5);
-            }else{
-                test.setTranslateX(-(100+35.5));
-                test.setTranslateZ((i-1)*100+35.5);
+            if (i % 2 == 0) {
+                test.setTranslateX(LENGTE_X/2);
+                test.setTranslateZ(i * AFSTAND_TUSSEN_LIFTEN + LENGTE_Z/2);
+            } else {
+                test.setTranslateX(-(LENGTE_GANG + LENGTE_X));
+                test.setTranslateZ((i - 1) * AFSTAND_TUSSEN_LIFTEN + LENGTE_Z/2);
             }
 
-            test.setTranslateY(70.0);
+            test.setTranslateY(LENGTE_Y/2);
             moleculeXform.getChildren().add(test);
         }
 
@@ -299,7 +331,7 @@ public class Application extends javafx.application.Application {
         // buildScene();
         buildCamera();
         buildAxes();
-        buildMolecule();
+        buildElevatorHall();
 
         Scene scene = new Scene(root, 1024, 768, true);
         scene.setFill(Color.GREY);
