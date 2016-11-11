@@ -32,8 +32,10 @@ package Voorbeeld;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.paint.PhongMaterial;
@@ -42,6 +44,11 @@ import javafx.scene.shape.Sphere;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author cmcastil
@@ -73,6 +80,8 @@ public class Application extends javafx.application.Application {
     private static final int LENGTE_X = 100;
     private static final int LENGTE_Y = 140;
     private static final int LENGTE_Z = 100;
+
+    private List<Box> liften = new ArrayList<Box>();
 
     private static final int AFSTAND_TUSSEN_LIFTEN = 70;
     private static final int LENGTE_GANG = 100;
@@ -132,7 +141,7 @@ public class Application extends javafx.application.Application {
         world.getChildren().addAll(axisGroup);
     }
 
-    private void handleMouse(Scene scene, final Node root) {
+    private void handleMouse(SubScene scene, final Node root) {
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
@@ -200,7 +209,7 @@ public class Application extends javafx.application.Application {
         });
     }
 
-    private void handleKeyboard(Scene scene, final Node root) {
+    private void handleKeyboard(SubScene scene, final Node root) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -276,8 +285,8 @@ public class Application extends javafx.application.Application {
 
             test.setTranslateY(LENGTE_Y/2);
             moleculeXform.getChildren().add(test);
+            liften.add(test);
         }
-
 
 //        Sphere hydrogen1Sphere = new Sphere(30.0);
 //        hydrogen1Sphere.setMaterial(whiteMaterial);
@@ -322,6 +331,36 @@ public class Application extends javafx.application.Application {
     @Override
     public void start(Stage primaryStage) {
 
+        AnchorPane anchorPane = null;
+        Scene scene = null;
+        try {
+            //Laden van de fxml file waarin alle gui elementen zitten
+            FXMLLoader loader = new FXMLLoader();
+            InputStream s = null;
+            try{
+                s = getClass().getClassLoader().getResource("Sample.fxml").openStream();
+            }catch(Exception e){
+
+            }
+            Parent root = (Parent) loader.load(s);
+
+            //Setten van enkele elementen van het hoofdscherm
+            primaryStage.setTitle("Liften");
+            primaryStage.setScene(new Scene(root));
+            primaryStage.show();
+
+            //Ophalen van de controller horende bij de view klasse
+            Controller viewController = loader.<Controller>getController() ;
+            assert(viewController != null);
+
+            //Link tussen controller en view
+            anchorPane = viewController.getAnchorPane();
+            viewController.setApplication(this);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 //         setUserAgentStylesheet(STYLESHEET_MODENA);
         System.out.println("start()");
 
@@ -333,16 +372,28 @@ public class Application extends javafx.application.Application {
         buildAxes();
         buildElevatorHall();
 
-        Scene scene = new Scene(root, 1024, 768, true);
-        scene.setFill(Color.GREY);
-        handleKeyboard(scene, world);
-        handleMouse(scene, world);
+        SubScene test = new SubScene(root, 670, 630, true, SceneAntialiasing.BALANCED);
+        test.setDepthTest(DepthTest.ENABLE);
 
-        primaryStage.setTitle("Molecule Sample Application");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+//        Scene extraScene = new Scene(root, 500, 400, true);
 
-        scene.setCamera(camera);
+        test.setFill(Color.GREY);
+        handleKeyboard(test, world);
+        handleMouse(test, world);
+
+//        extraScene.setFill(Color.GREY);
+//        handleKeyboard(extraScene, world);
+//        handleMouse(extraScene, world);
+
+//        primaryStage.setTitle("Molecule Sample Application");
+//        primaryStage.setScene(extraScene);
+//        primaryStage.show();
+//        extraScene.setCamera(camera);
+
+        camera.setNearClip(0.01);
+        test.setCamera(camera);
+        anchorPane.getChildren().add(test);
+
     }
 
     /**
@@ -357,5 +408,8 @@ public class Application extends javafx.application.Application {
         launch(args);
     }
 
+    public List<Box> getLiften() {
+        return liften;
+    }
 }
 
