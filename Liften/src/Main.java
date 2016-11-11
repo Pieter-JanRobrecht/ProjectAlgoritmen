@@ -10,10 +10,10 @@ import Model.ManagementSystem;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		File file = null;
 		try {
-			file = new File(Main.class.getClassLoader().getResource("initialInstance.json").toURI());
+			file = new File(Main.class.getClassLoader().getResource("original.json").toURI());
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
@@ -36,13 +36,13 @@ public class Main {
 			e.printStackTrace();
 		}
 
-        if (ms != null) {
-        	System.out.println(ms.getLevels().toString());
-        	System.out.println("\n");
-        	System.out.println(ms.getLifts().toString());
-        	System.out.println("\n");
-        	System.out.println("Aantal users: " + ms.getUsers().size());
-        }
+//        if (ms != null) {
+//        	System.out.println(ms.getLevels().toString());
+//        	System.out.println("\n");
+//        	System.out.println(ms.getLifts().toString());
+//        	System.out.println("\n");
+//        	System.out.println("Aantal users: " + ms.getUsers().size());
+//        }
         
         Simulation sim = new Simulation(ms);
         sim.startSimulationSimple();
