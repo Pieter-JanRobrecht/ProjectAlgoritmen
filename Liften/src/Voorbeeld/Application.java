@@ -58,8 +58,8 @@ public class Application extends javafx.application.Application {
     private final Xform cameraXform = new Xform();
     private final Xform cameraXform2 = new Xform();
     private final Xform cameraXform3 = new Xform();
-    private static final double CAMERA_INITIAL_DISTANCE = -450;
-    private static final double CAMERA_INITIAL_X_ANGLE = 70.0;
+    private static final double CAMERA_INITIAL_DISTANCE = -700;
+    private static final double CAMERA_INITIAL_X_ANGLE = 30.0;
     private static final double CAMERA_INITIAL_Y_ANGLE = 320.0;
     private static final double CAMERA_NEAR_CLIP = 0.1;
     private static final double CAMERA_FAR_CLIP = 10000.0;
@@ -228,8 +228,10 @@ public class Application extends javafx.application.Application {
         Sphere oxygenSphere = new Sphere(40.0);
         oxygenSphere.setMaterial(redMaterial);
 
-        Box test = new Box(70.0,70.0,70.0);
-//        test.setTranslateX(20.0);
+        Box test = new Box(70.0,140.0,70.0);
+        test.setTranslateX(35.5);
+        test.setTranslateY(70.0);
+        test.setTranslateZ(35.5);
         moleculeXform.getChildren().add(test);
 
         Sphere hydrogen1Sphere = new Sphere(30.0);
