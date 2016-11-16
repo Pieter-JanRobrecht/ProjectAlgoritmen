@@ -1,8 +1,7 @@
 package Voorbeeld;
 
 
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,7 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Sphere;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class Controller {
     private final Xform axisGroup = new Xform();
     private final Xform moleculeGroup = new Xform();
     private final Xform world = new Xform();
-    private final Xform moleculeXform = new Xform();
+    private final Xform xForm = new Xform();
     private final PerspectiveCamera camera = new PerspectiveCamera(true);
     private final Xform cameraXform = new Xform();
     private final Xform cameraXform2 = new Xform();
@@ -51,17 +49,21 @@ public class Controller {
     private static final double TRACK_SPEED = 0.3;
 
     private static final int ANIMATIE_DUUR = 2000;
+    private static final int AFSTAND_TUSSEN_LIFTEN = 70;
+    private static final int LENGTE_GANG = 200;
     private static final int AANTAL_VERDIEPINGEN = 8;
     private static final int VEILIGHEIDSAFSTAND = 10;
-    private static final int AANTAL_LIFTEN = 4;
+    private static final int AANTAL_LIFTEN = 6;
     private static final int LENGTE_X = 100;
     private static final int LENGTE_Y = 140;
     private static final int LENGTE_Z = 100;
+    private static final int DIKTE_VERDIEP = 5;
+    private static final int DIKTE_USER = 30;
+    private static final int START_USER = 80;
 
-    private List<Box> liften = new ArrayList<Box>();
-
-    private static final int AFSTAND_TUSSEN_LIFTEN = 70;
-    private static final int LENGTE_GANG = 100;
+    private List<Box> liften = new ArrayList<>();
+    private List<Sphere> users = new ArrayList<>();
+    SequentialTransition sequence = new SequentialTransition();
 
     private static final double MAX_SCALE = 2.5d;
     private static final double MIN_SCALE = .5d;
@@ -207,57 +209,27 @@ public class Controller {
     }
 
     public void buildElevatorHall() {
-
-        final PhongMaterial redMaterial = new PhongMaterial();
-        redMaterial.setDiffuseColor(Color.DARKRED);
-        redMaterial.setSpecularColor(Color.RED);
-
-        final PhongMaterial whiteMaterial = new PhongMaterial();
-        whiteMaterial.setDiffuseColor(Color.WHITE);
-        whiteMaterial.setSpecularColor(Color.LIGHTBLUE);
-
-        final PhongMaterial greyMaterial = new PhongMaterial();
-        greyMaterial.setDiffuseColor(Color.DARKGREY);
-        greyMaterial.setSpecularColor(Color.GREY);
-
-
-        Xform oxygenXform = new Xform();
-        Xform hydrogen1SideXform = new Xform();
-        Xform hydrogen1Xform = new Xform();
-        Xform hydrogen2SideXform = new Xform();
-        Xform hydrogen2Xform = new Xform();
-
-        Sphere oxygenSphere = new Sphere(40.0);
-        oxygenSphere.setMaterial(redMaterial);
-
-        Box test;
+        Box lift;
         for (int i = 0; i < AANTAL_LIFTEN; i++) {
-            test = new Box(LENGTE_X, LENGTE_Y, LENGTE_Z);
+            lift = new Box(LENGTE_X, LENGTE_Y, LENGTE_Z);
 
-            setBoxPlace(i, test);
+            setBoxPlace(i, lift);
 
-            test.setTranslateY(LENGTE_Y / 2);
-            moleculeXform.getChildren().add(test);
-            liften.add(test);
+            lift.setTranslateY(LENGTE_Y / 2);
+            xForm.getChildren().add(lift);
+            liften.add(lift);
         }
 
         Box verdieping;
         for (int i = 0; i < AANTAL_LIFTEN; i++) {
             for (int j = 1; j < AANTAL_VERDIEPINGEN; j++) {
-                verdieping = new Box(LENGTE_X, 5, LENGTE_Z);
+                verdieping = new Box(LENGTE_X, DIKTE_VERDIEP, LENGTE_Z);
                 setBoxPlace(i, verdieping);
-                verdieping.setTranslateY(j * (LENGTE_Y + VEILIGHEIDSAFSTAND + 2.5));
-
-                moleculeXform.getChildren().add(verdieping);
+                verdieping.setTranslateY(j * (LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2));
+                xForm.getChildren().add(verdieping);
             }
         }
-
-
-        hydrogen1Xform.setTx(100.0);
-        hydrogen2Xform.setTx(100.0);
-        hydrogen2SideXform.setRotateY(HYDROGEN_ANGLE);
-
-        moleculeGroup.getChildren().add(moleculeXform);
+        moleculeGroup.getChildren().add(xForm);
 
         world.getChildren().addAll(moleculeGroup);
     }
@@ -265,10 +237,10 @@ public class Controller {
     private void setBoxPlace(int i, Box test) {
         if (i % 2 == 0) {
             test.setTranslateX(LENGTE_X / 2);
-            test.setTranslateZ(i * AFSTAND_TUSSEN_LIFTEN + LENGTE_Z / 2);
+            test.setTranslateZ(i / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z) + LENGTE_Z / 2);
         } else {
-            test.setTranslateX(-(LENGTE_GANG + LENGTE_X));
-            test.setTranslateZ((i - 1) * AFSTAND_TUSSEN_LIFTEN + LENGTE_Z / 2);
+            test.setTranslateX(-(LENGTE_GANG + LENGTE_X / 2));
+            test.setTranslateZ((i - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z) + LENGTE_Z / 2);
         }
     }
 
@@ -277,44 +249,52 @@ public class Controller {
     void startSimulatie(ActionEvent event) {
         System.out.println("actie");
         Sphere sphere = makeUSerOnLevel(0);
-        moveUserToElevator(sphere,0);
-        moveElevator(liften.get(0), 1);
+        moveUserToElevator(sphere, 4);
+        moveElevator(liften.get(3), 5);
+        sequence.play();
     }
 
     private void moveElevator(Box lift, int aantalVerdiepingen) {
-        TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), liften.get(0));
-        double afstandEenVerdiep = LENGTE_Y + VEILIGHEIDSAFSTAND + 2.5;
-        tt.setByY(afstandEenVerdiep * aantalVerdiepingen);
-        tt.play();
+        TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR),lift);
+
+        double afstandEenVerdiep = LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2;
+        double afstand = afstandEenVerdiep * aantalVerdiepingen;
+
+        tt.setByY(afstand);
+
+        sequence.getChildren().add(tt);
     }
 
     private Sphere makeUSerOnLevel(int niveau) {
-        Sphere user = new Sphere(30.0);
-        user.setMaterial(new PhongMaterial(Color.WHITE));
-        user.setTranslateX(-(LENGTE_GANG + LENGTE_X) / 2 + 30);
-        user.setTranslateY(30 + niveau * (LENGTE_Y + VEILIGHEIDSAFSTAND + 2.5));
-        user.setTranslateZ(-50);
-        moleculeXform.getChildren().add(user);
+        Sphere user = new Sphere(DIKTE_USER);
+
+        user.setTranslateX(-LENGTE_GANG / 2);
+        user.setTranslateY(DIKTE_USER + niveau * (LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2));
+        user.setTranslateZ(-START_USER);
+
+        users.add(user);
+        xForm.getChildren().add(user);
         return user;
     }
 
     private void moveUserToElevator(Sphere user, int elevatorId) {
-        //TODO timeline onderzoeken. Hiermee miss mogelijk om alles in volgorde te doen;
-        TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR),user);
-        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
-        double afstandAfTeLeggenX = 0;
-        double afstandAfTeLeggenZ = 0;
+        double afstandAfTeLeggenX;
+        double afstandAfTeLeggenZ;
+
         if (elevatorId % 2 == 0) {
-            afstandAfTeLeggenX = -(-(LENGTE_GANG + LENGTE_X) / 2 + 30) - LENGTE_X/2;
-            afstandAfTeLeggenZ = 50 + LENGTE_Z/2 + elevatorId * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z/2);
+            afstandAfTeLeggenX = LENGTE_GANG / 2 - DIKTE_USER;
+            afstandAfTeLeggenZ = START_USER + LENGTE_Z / 2 + elevatorId / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
         } else {
-            afstandAfTeLeggenX = +(-(LENGTE_GANG + LENGTE_X) / 2 + 30) + LENGTE_X/2;
-            afstandAfTeLeggenZ = 50 + LENGTE_Z/2 + (elevatorId-1) * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z/2);
+            afstandAfTeLeggenX = -LENGTE_GANG / 2 + DIKTE_USER;
+            afstandAfTeLeggenZ = START_USER + LENGTE_Z / 2 + (elevatorId - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
         }
+        TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR),user);
+        tx.setByX(afstandAfTeLeggenX);
+
+        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR),user);
         tz.setByZ(afstandAfTeLeggenZ);
-        tz.play();
-        tz.setByX(100);
-        tz.play();
+
+        sequence.getChildren().addAll(tz,tx);
     }
 
     public AnchorPane getAnchorPane() {
