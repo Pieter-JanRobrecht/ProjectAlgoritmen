@@ -249,12 +249,12 @@ public class Controller {
     void startSimulatie(ActionEvent event) {
         System.out.println("actie");
         Sphere sphere = makeUSerOnLevel(0);
-        moveUserToElevator(sphere, 4);
-        moveElevator(liften.get(3), 5);
+        sequence.getChildren().addAll(moveUserToElevator(sphere, 4));
+        sequence.getChildren().addAll(moveElevator(liften.get(3), 5));
         sequence.play();
     }
 
-    private void moveElevator(Box lift, int aantalVerdiepingen) {
+    private TranslateTransition moveElevator(Box lift, int aantalVerdiepingen) {
         TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR),lift);
 
         double afstandEenVerdiep = LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2;
@@ -262,7 +262,7 @@ public class Controller {
 
         tt.setByY(afstand);
 
-        sequence.getChildren().add(tt);
+        return tt;
     }
 
     private Sphere makeUSerOnLevel(int niveau) {
@@ -277,7 +277,7 @@ public class Controller {
         return user;
     }
 
-    private void moveUserToElevator(Sphere user, int elevatorId) {
+    private List<TranslateTransition> moveUserToElevator(Sphere user, int elevatorId) {
         double afstandAfTeLeggenX;
         double afstandAfTeLeggenZ;
 
@@ -294,7 +294,10 @@ public class Controller {
         TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR),user);
         tz.setByZ(afstandAfTeLeggenZ);
 
-        sequence.getChildren().addAll(tz,tx);
+        List<TranslateTransition> transitions = new ArrayList<>();
+        transitions.add(tz);
+        transitions.add(tx);
+        return transitions;
     }
 
     public AnchorPane getAnchorPane() {
