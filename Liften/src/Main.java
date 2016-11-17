@@ -24,7 +24,7 @@ public class Main {
     	ManagementSystem ms = null;
 
 			try {
-			ms = (ManagementSystem) objectMapper.readValue(file, ManagementSystem.class);
+			ms = objectMapper.readValue(file, ManagementSystem.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

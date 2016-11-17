@@ -248,22 +248,33 @@ public class Controller {
 
 
     @FXML
-    void startSimulatie(ActionEvent event) {
-        sequence.setOnFinished(event1 -> contirueExecution());
+    void startSimulatie(ActionEvent event){
+        sequence.setOnFinished(event1 -> {
+            try {
+                contirueExecution();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         System.out.println("actie");
         Sphere sphere = makeUSerOnLevel(0);
         sequence.getChildren().addAll(moveUserToElevator(sphere, 4));
-        sequence.getChildren().addAll(userEnterElevator(sphere, liften.get(4)));
+        try {
+            sequence.getChildren().addAll(userEnterElevator(sphere, liften.get(4)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         sequence.play();
     }
 
-    private void contirueExecution() {
+    private void contirueExecution() throws Exception {
         System.out.println("Continue");
         sequence.getChildren().clear();
 
         sequence.getChildren().addAll(moveElevator(liften.get(4), 5));
         sequence.getChildren().addAll(userEnterElevator(users.get(0), liften.get(4)));
+
         sequence.play();
     }
 
@@ -313,16 +324,16 @@ public class Controller {
         return transitions;
     }
 
-    private List<TranslateTransition> userEnterElevator(Sphere user, Box lift) {
+    private List<TranslateTransition> userEnterElevator(Sphere user, Box lift) throws Exception {
         List<TranslateTransition> list = new ArrayList<>();
         TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
         if (lift.getTranslateZ() == user.getTranslateZ() &&
                 lift.getTranslateY() - LENGTE_Y / 2 == user.getTranslateY() - DIKTE_USER &&
-                (lift.getTranslateX() + LENGTE_X/2 == user.getTranslateX() - DIKTE_USER ||
-                        lift.getTranslateX() - LENGTE_X/2 == user.getTranslateX() + DIKTE_USER)) {
+                (lift.getTranslateX() + LENGTE_X / 2 == user.getTranslateX() - DIKTE_USER ||
+                        lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER)) {
             System.out.println("Touch");
         } else {
-            System.out.println("No touch");
+//            throw new Exception("Lift " + lift.getId() + " staat niet op hoogte met gebruiker " + user.getId());
         }
 
         list.add(tt);
