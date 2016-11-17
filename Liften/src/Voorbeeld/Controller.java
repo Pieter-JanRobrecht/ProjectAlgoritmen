@@ -248,34 +248,37 @@ public class Controller {
 
 
     @FXML
-    void startSimulatie(ActionEvent event){
-        sequence.setOnFinished(event1 -> {
-            try {
-                contirueExecution();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+    void startSimulatie(ActionEvent event) {
+        sequence.setOnFinished(event1 -> contirueExecution());
 
         System.out.println("actie");
-        Sphere sphere = makeUSerOnLevel(0);
-        sequence.getChildren().addAll(moveUserToElevator(sphere, 4));
-        try {
-            sequence.getChildren().addAll(userEnterElevator(sphere, liften.get(4)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Sphere sphere = makeUSerOnLevel(1);
+        sequence.getChildren().addAll(moveUserToElevator(sphere, 0));
+        sequence.getChildren().addAll(moveElevator(liften.get(0), 1));
         sequence.play();
     }
 
-    private void contirueExecution() throws Exception {
+    private int i = -1;
+
+    private void contirueExecution() {
+        if (i == 2) {
+            System.exit(0);
+        }
+        i++;
         System.out.println("Continue");
         sequence.getChildren().clear();
 
-        sequence.getChildren().addAll(moveElevator(liften.get(4), 5));
-        sequence.getChildren().addAll(userEnterElevator(users.get(0), liften.get(4)));
-
-        sequence.play();
+        if (i == 0) {
+            sequence.getChildren().addAll(userEnterElevator(users.get(0), liften.get(0)));
+            sequence.getChildren().addAll(moveElevator(liften.get(0), -1));
+            moveUserToLevel(users.get(0), 0);
+            sequence.play();
+        }
+        if (i == 1) {
+            sequence.getChildren().addAll(userExitElevator(users.get(0), 0));
+//        moveUserToLevel(users.get(0), 0);
+            sequence.play();
+        }
     }
 
     private TranslateTransition moveElevator(Box lift, int aantalVerdiepingen) {
@@ -324,19 +327,54 @@ public class Controller {
         return transitions;
     }
 
-    private List<TranslateTransition> userEnterElevator(Sphere user, Box lift) throws Exception {
+    private List<TranslateTransition> userEnterElevator(Sphere user, Box lift) {
         List<TranslateTransition> list = new ArrayList<>();
         TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
         if (lift.getTranslateZ() == user.getTranslateZ() &&
                 lift.getTranslateY() - LENGTE_Y / 2 == user.getTranslateY() - DIKTE_USER &&
                 (lift.getTranslateX() + LENGTE_X / 2 == user.getTranslateX() - DIKTE_USER ||
                         lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER)) {
-            System.out.println("Touch");
+            if (lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER) {
+                tt.setByX(LENGTE_X / 2 + DIKTE_USER);
+            } else {
+                tt.setByX(-LENGTE_X / 2 - DIKTE_USER);
+            }
+
+            user.setVisible(true);
         } else {
-//            throw new Exception("Lift " + lift.getId() + " staat niet op hoogte met gebruiker " + user.getId());
+            System.out.println("User " + user.getId() + " kan niet in lift " + lift.getId());
         }
 
         list.add(tt);
+        return list;
+    }
+
+    private void moveUserToLevel(Sphere user, int aantalVerdiepingen) {
+        int afstandVerdiep = LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2;
+        user.setTranslateZ(afstandVerdiep * aantalVerdiepingen);
+    }
+
+    private List<TranslateTransition> userExitElevator(Sphere user, int elevatorId) {
+        user.setVisible(true);
+
+        List<TranslateTransition> list = new ArrayList<>();
+        TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
+        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
+
+        int afstandX;
+        int afstandZ;
+        if (elevatorId % 2 == 0) {
+            afstandX = -(LENGTE_X / 2 + LENGTE_GANG / 2);
+            afstandZ = -(START_USER + LENGTE_Z / 2 + elevatorId / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
+        } else {
+            afstandX = (LENGTE_X / 2 + LENGTE_GANG / 2);
+            afstandZ = -(START_USER + LENGTE_Z / 2 + (elevatorId - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
+        }
+        tx.setByX(afstandX);
+        tz.setByZ(afstandZ);
+
+        list.add(tx);
+        list.add(tz);
         return list;
     }
 
