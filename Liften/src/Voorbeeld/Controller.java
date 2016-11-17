@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.Shape;
 import javafx.scene.shape.Sphere;
 import javafx.util.Duration;
 
@@ -250,7 +251,9 @@ public class Controller {
         System.out.println("actie");
         Sphere sphere = makeUSerOnLevel(0);
         sequence.getChildren().addAll(moveUserToElevator(sphere, 4));
-        sequence.getChildren().addAll(moveElevator(liften.get(3), 5));
+        sequence.getChildren().addAll(userEnterElevator(sphere,liften.get(4)));
+        sequence.getChildren().addAll(moveElevator(liften.get(4), 5));
+        sequence.getChildren().addAll(userEnterElevator(sphere,liften.get(4)));
         sequence.play();
     }
 
@@ -298,6 +301,19 @@ public class Controller {
         transitions.add(tz);
         transitions.add(tx);
         return transitions;
+    }
+
+    private List<TranslateTransition> userEnterElevator(Sphere user, Box lift){
+        List<TranslateTransition> list = new ArrayList<>();
+        TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR),user);
+
+//        Shape intersect = Shape.intersect(user, lift);
+//        if (intersect.getBoundsInLocal().getWidth() != -1) {
+//            System.out.println("De user leunt tegen de lift");
+//        }
+
+        list.add(tt);
+        return list;
     }
 
     public AnchorPane getAnchorPane() {
