@@ -276,7 +276,7 @@ public class Controller {
 //        sequence.getChildren().addAll(userEnterElevator(users.get(0), liften.get(3)));
 //        sequence.getChildren().addAll(moveElevator(liften.get(3), -1));
 //
-//        moveUserWithAmountOf(users.get(0), -1);
+//        moveUserToLevel(users.get(0), -1);
 //        sequence.getChildren().addAll(userExitElevator(users.get(0), 3));
 //
 //        sequence.play();
@@ -305,7 +305,7 @@ public class Controller {
         return user;
     }
 
-    public List<TranslateTransition> moveUserToElevator(Sphere user, int elevatorId) {
+    public SequentialTransition moveUserToElevator(Sphere user, int elevatorId) {
         System.out.println("Move user " + user + " naar lift " + elevatorId);
         double afstandAfTeLeggenX;
         double afstandAfTeLeggenZ;
@@ -323,37 +323,37 @@ public class Controller {
         TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
         tz.setByZ(afstandAfTeLeggenZ);
 
-        List<TranslateTransition> transitions = new ArrayList<>();
-        transitions.add(tz);
-        transitions.add(tx);
-        return transitions;
+        SequentialTransition sq = new SequentialTransition();
+
+        sq.getChildren().addAll(tz,tx);
+        return sq;
     }
 
     public List<TranslateTransition> userEnterElevator(Sphere user, Box lift) {
         System.out.println("User " + user + " enter lift " + lift);
         List<TranslateTransition> list = new ArrayList<>();
         TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
-        if (lift.getTranslateZ() == user.getTranslateZ() &&
-                lift.getTranslateY() - LENGTE_Y / 2 == user.getTranslateY() - DIKTE_USER &&
-                (lift.getTranslateX() + LENGTE_X / 2 == user.getTranslateX() - DIKTE_USER ||
-                        lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER)) {
+//        if (lift.getTranslateZ() == user.getTranslateZ() &&
+//                lift.getTranslateY() - LENGTE_Y / 2 == user.getTranslateY() - DIKTE_USER &&
+//                (lift.getTranslateX() + LENGTE_X / 2 == user.getTranslateX() - DIKTE_USER ||
+//                        lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER)) {
             if (lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER) {
                 tt.setToX(lift.getTranslateX());
             } else {
                 tt.setByX(-LENGTE_X / 2 - DIKTE_USER);
             }
             tt.setOnFinished(event -> user.setVisible(false));
-        } else {
-            System.out.println("User " + user.getId() + " kan niet in lift " + lift.getId());
-        }
+//        } else {
+//            System.out.println("User " + user.getId() + " kan niet in lift " + lift.getId());
+//        }
 
         list.add(tt);
         return list;
     }
 
-    public void moveUserWithAmountOf(Sphere user, int aantalVerdiepingen) {
+    public void moveUserToLevel(Sphere user, int aantalVerdiepingen) {
         int afstandVerdiep = LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2;
-        user.setTranslateY(user.getTranslateY() + afstandVerdiep * aantalVerdiepingen);
+        user.setTranslateY(afstandVerdiep * aantalVerdiepingen + DIKTE_USER);
     }
 
     public List<TranslateTransition> userExitElevator(Sphere user, int elevatorId) {

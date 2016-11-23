@@ -4,7 +4,10 @@ import Controller.ElevatorController;
 import Model.Lift;
 import Model.ManagementSystem;
 import Model.User;
-import javafx.application.Platform;
+import javafx.animation.FillTransition;
+import javafx.animation.ParallelTransition;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,11 +64,7 @@ public class Simulation {
 
         // while(!ec.getUsers().isEmpty()) {
         while (ec.getUsers().size() != 0 || database.size() != 0) {
-//            System.out.println("\t\t GUI - Clearing sequence");
-//            GUIController.sequence.setOnFinished(event -> {
-//                GUIController.sequence.getChildren().clear();
-//                //TODO oplossing zoeken voor te wekken
-//            });
+            ParallelTransition thisTurnTransition = new ParallelTransition();
 
             System.out.println("\nGametick (" + mainTicker + ") \t queue size: " + queue.size() + " \t");
 
@@ -81,7 +80,7 @@ public class Simulation {
                     if (tempLift != null) {
 
                         System.out.println("\t\t GUI - Moving " + tempUser + " to elevator " + tempLift);
-                        GUIController.sequence.getChildren().addAll(GUIController.moveUserToElevator(tempUser.getSphere(), tempLift.getId()));
+                        thisTurnTransition.getChildren().addAll(GUIController.moveUserToElevator(tempUser.getSphere(), tempLift.getId()));
 
                         System.out.println("\tE\t DEBUG - Elevator found, " + tempUser.getId() + " assigned elevator "
                                 + tempLift.getId());
@@ -226,7 +225,14 @@ public class Simulation {
                                         //System.out.println("\t!!\t DEBUG - user (" + u.getId() + ") - " + u.getSourceId() + ", " + u.getDestinationId() + ", " + l.getCurrentLevel());
                                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") joined elevator");
+
+                                            System.out.println("\t\t GUI - " + u + " joining elevator " + l);
+                                            thisTurnTransition.getChildren().addAll(GUIController.userEnterElevator(u.getSphere(), l.getBox()));
+
                                             l.setCurrentUsers(l.getCurrentLevel() + 1);
+
+                                            System.out.println("\t\t GUI - Setting color of lift "+l.getId());
+
                                             u.setInElevator(true);
                                             if (l.getUsersGettingIn() == 0)
                                                 throw new Exception();
@@ -235,6 +241,10 @@ public class Simulation {
 
                                         } else if (u.getDestinationId() == l.getCurrentLevel()) { // uitstappen
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") left elevator");
+
+                                            System.out.println("\t\t GUI - Moving " + u + " to level " + l.getCurrentLevel());
+                                            GUIController.moveUserToLevel(u.getSphere(), l.getCurrentLevel());
+
                                             l.setCurrentUsers(l.getCurrentLevel() - 1);
                                             u.setInElevator(false);
                                             u.setFinished(true);
@@ -272,7 +282,7 @@ public class Simulation {
                 // 7. handle elevator movements
                 for (Lift l : ec.getLifts()) {
                     if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() <= mainTicker && (l.getUsersGettingIn() + l.getUsersGettingOut()) == 0) {
-                        l.setNextLevel(GUIController);
+                        l.setNextLevel(thisTurnTransition, GUIController);
                         l.setMovingTimer(mainTicker);
                         System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
                                 + ", next movement in atleast " + (l.getMovingTimer() + l.getLevelSpeed()));
@@ -280,21 +290,15 @@ public class Simulation {
                 }
             }
 
-            if(GUIController.sequence.getChildren().size()!=0){
-                PlayThread b = new PlayThread(GUIController,this);
-                b.start();
-                synchronized (b){
-                    while (GUIController.sequence.getChildren().size() != 0){
-                        b.wait();
-                    }
-                }
-//                System.out.println("\t\t GUI - Sequence playing on gametick " + mainTicker);
-//                GUIController.sequence.play();
-            }
+            System.out.println("\t\t GUI - End of gametick adding parallelmovement");
+            GUIController.sequence.getChildren().addAll(thisTurnTransition);
 
             mainTicker++;
         }
         System.out.println("DEBUG - queue size: " + queue.size() + " | Userlist size: " + ec.getUsers().size());
+
+        System.out.println("\t\t GUI - Playing everything");
+        GUIController.sequence.play();
     }
 
     public void addValidUsers(int time) {
