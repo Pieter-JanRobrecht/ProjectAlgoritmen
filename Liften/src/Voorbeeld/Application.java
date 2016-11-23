@@ -9,9 +9,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * @author cmcastil
- */
 public class Application extends javafx.application.Application {
 
     @Override

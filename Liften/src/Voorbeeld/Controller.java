@@ -1,11 +1,17 @@
 package Voorbeeld;
 
+import Model.User;
+import javafx.fxml.FXML;
 
+import Model.ManagementSystem;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.scene.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -14,10 +20,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Shape;
 import javafx.scene.shape.Sphere;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,25 +45,26 @@ public class Controller {
     private final Xform cameraXform = new Xform();
     private final Xform cameraXform2 = new Xform();
     private final Xform cameraXform3 = new Xform();
-    private static final double CAMERA_INITIAL_DISTANCE = -700;
+    private static final double CAMERA_INITIAL_DISTANCE = -1300;
     private static final double CAMERA_INITIAL_X_ANGLE = 30.0;
-    private static final double CAMERA_INITIAL_Y_ANGLE = 320.0;
+    private static final double CAMERA_INITIAL_Y_ANGLE = 0.0;
     private static final double CAMERA_NEAR_CLIP = 0.1;
     private static final double CAMERA_FAR_CLIP = 10000.0;
     private static final double AXIS_LENGTH = 250.0;
-    private static final double HYDROGEN_ANGLE = 104.5;
     private static final double CONTROL_MULTIPLIER = 0.1;
     private static final double SHIFT_MULTIPLIER = 10.0;
     private static final double MOUSE_SPEED = 0.1;
     private static final double ROTATION_SPEED = 2.0;
     private static final double TRACK_SPEED = 0.3;
 
+    private ManagementSystem ms = null;
+
     private static final int ANIMATIE_DUUR = 2000;
     private static final int AFSTAND_TUSSEN_LIFTEN = 70;
     private static final int LENGTE_GANG = 200;
-    private static final int AANTAL_VERDIEPINGEN = 8;
-    private static final int VEILIGHEIDSAFSTAND = 10;
-    private static final int AANTAL_LIFTEN = 6;
+    private int AANTAL_VERDIEPINGEN;
+    private final int VEILIGHEIDSAFSTAND = 10;
+    private int AANTAL_LIFTEN;
     private static final int LENGTE_X = 100;
     private static final int LENGTE_Y = 140;
     private static final int LENGTE_Z = 100;
@@ -63,9 +72,9 @@ public class Controller {
     private static final int DIKTE_USER = 30;
     private static final int START_USER = 80;
 
-    private List<Box> liften = new ArrayList<>();
-    private List<Sphere> users = new ArrayList<>();
-    SequentialTransition sequence = new SequentialTransition();
+    //    private List<Box> liften = new ArrayList<>();
+//    private List<Sphere> users = new ArrayList<>();
+    public SequentialTransition sequence = new SequentialTransition();
 
     private static final double MAX_SCALE = 2.5d;
     private static final double MIN_SCALE = .5d;
@@ -219,7 +228,8 @@ public class Controller {
 
             lift.setTranslateY(LENGTE_Y / 2);
             xForm.getChildren().add(lift);
-            liften.add(lift);
+            ms.getLifts().get(i).setBox(lift);
+//            liften.add(lift);
         }
 
         Box verdieping;
@@ -246,42 +256,33 @@ public class Controller {
         }
     }
 
-
     @FXML
     void startSimulatie(ActionEvent event) {
-        sequence.setOnFinished(event1 -> contirueExecution());
+        Simulation sim = new Simulation(ms);
+        sim.setGUIController(this);
+        try {
+            sim.startSimulationSimple();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        System.out.println("actie");
-        Sphere sphere = makeUSerOnLevel(1);
-        sequence.getChildren().addAll(moveUserToElevator(sphere, 0));
-        sequence.getChildren().addAll(moveElevator(liften.get(0), 1));
-        sequence.play();
+//        System.out.println("actie");
+//
+//        Sphere sphere = makeUserOnLevel(0,1);
+//        sequence.getChildren().addAll(moveUserToElevator(sphere, 3));
+//        sequence.getChildren().addAll(moveElevator(liften.get(3), 1));
+//        //Na een move elevator moet gans dat stuk al gespeeld worden
+//
+//        sequence.getChildren().addAll(userEnterElevator(users.get(0), liften.get(3)));
+//        sequence.getChildren().addAll(moveElevator(liften.get(3), -1));
+//
+//        moveUserWithAmountOf(users.get(0), -1);
+//        sequence.getChildren().addAll(userExitElevator(users.get(0), 3));
+//
+//        sequence.play();
     }
 
-    private int i = -1;
-
-    private void contirueExecution() {
-        if (i == 2) {
-            System.exit(0);
-        }
-        i++;
-        System.out.println("Continue");
-        sequence.getChildren().clear();
-
-        if (i == 0) {
-            sequence.getChildren().addAll(userEnterElevator(users.get(0), liften.get(0)));
-            sequence.getChildren().addAll(moveElevator(liften.get(0), -1));
-            moveUserToLevel(users.get(0), 0);
-            sequence.play();
-        }
-        if (i == 1) {
-            sequence.getChildren().addAll(userExitElevator(users.get(0), 0));
-//        moveUserToLevel(users.get(0), 0);
-            sequence.play();
-        }
-    }
-
-    private TranslateTransition moveElevator(Box lift, int aantalVerdiepingen) {
+    public TranslateTransition moveElevator(Box lift, int aantalVerdiepingen) {
         TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), lift);
 
         double afstandEenVerdiep = LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2;
@@ -292,19 +293,20 @@ public class Controller {
         return tt;
     }
 
-    private Sphere makeUSerOnLevel(int niveau) {
+    public Sphere makeUserOnLevel(User idUser, int niveau) {
         Sphere user = new Sphere(DIKTE_USER);
 
         user.setTranslateX(-LENGTE_GANG / 2);
         user.setTranslateY(DIKTE_USER + niveau * (LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2));
         user.setTranslateZ(-START_USER);
 
-        users.add(user);
+        idUser.setSphere(user);
         xForm.getChildren().add(user);
         return user;
     }
 
-    private List<TranslateTransition> moveUserToElevator(Sphere user, int elevatorId) {
+    public List<TranslateTransition> moveUserToElevator(Sphere user, int elevatorId) {
+        System.out.println("Move user " + user + " naar lift " + elevatorId);
         double afstandAfTeLeggenX;
         double afstandAfTeLeggenZ;
 
@@ -327,7 +329,8 @@ public class Controller {
         return transitions;
     }
 
-    private List<TranslateTransition> userEnterElevator(Sphere user, Box lift) {
+    public List<TranslateTransition> userEnterElevator(Sphere user, Box lift) {
+        System.out.println("User " + user + " enter lift " + lift);
         List<TranslateTransition> list = new ArrayList<>();
         TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
         if (lift.getTranslateZ() == user.getTranslateZ() &&
@@ -335,12 +338,11 @@ public class Controller {
                 (lift.getTranslateX() + LENGTE_X / 2 == user.getTranslateX() - DIKTE_USER ||
                         lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER)) {
             if (lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER) {
-                tt.setByX(LENGTE_X / 2 + DIKTE_USER);
+                tt.setToX(lift.getTranslateX());
             } else {
                 tt.setByX(-LENGTE_X / 2 - DIKTE_USER);
             }
-
-            user.setVisible(true);
+            tt.setOnFinished(event -> user.setVisible(false));
         } else {
             System.out.println("User " + user.getId() + " kan niet in lift " + lift.getId());
         }
@@ -349,12 +351,13 @@ public class Controller {
         return list;
     }
 
-    private void moveUserToLevel(Sphere user, int aantalVerdiepingen) {
+    public void moveUserWithAmountOf(Sphere user, int aantalVerdiepingen) {
         int afstandVerdiep = LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2;
-        user.setTranslateZ(afstandVerdiep * aantalVerdiepingen);
+        user.setTranslateY(user.getTranslateY() + afstandVerdiep * aantalVerdiepingen);
     }
 
-    private List<TranslateTransition> userExitElevator(Sphere user, int elevatorId) {
+    public List<TranslateTransition> userExitElevator(Sphere user, int elevatorId) {
+        System.out.println("User " + user + " verlaat lift " + elevatorId);
         user.setVisible(true);
 
         List<TranslateTransition> list = new ArrayList<>();
@@ -387,6 +390,31 @@ public class Controller {
     }
 
     public void makeWorld() {
+        File file = null;
+        try {
+            file = new File(Controller.class.getClassLoader().getResource("original.json").toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        try {
+            ms = objectMapper.readValue(file, ManagementSystem.class);
+        } catch (JsonParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        initValues();
+
         System.out.println("start()");
 
         root.getChildren().add(world);
@@ -406,6 +434,14 @@ public class Controller {
         camera.setNearClip(0.01);
         test.setCamera(camera);
         anchorPane.getChildren().add(test);
+    }
 
+    private void initValues() {
+        AANTAL_VERDIEPINGEN = ms.getLevels().size();
+        AANTAL_LIFTEN = ms.getLifts().size();
+    }
+
+    public ManagementSystem getMs() {
+        return ms;
     }
 }

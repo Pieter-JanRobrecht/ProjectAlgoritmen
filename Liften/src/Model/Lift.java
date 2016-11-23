@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import Voorbeeld.Controller;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import javafx.scene.shape.Box;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "id", "capacity", "currentUsers", "levelSpeed", "openingTime", "closingTime", "range",
@@ -46,6 +48,9 @@ public class Lift {
 	private int usersGettingOut;
 	private List<User> handlingUsers;
 	private int boardingDelay;
+
+    @JsonIgnore
+	private Box box;
 
 	/**
 	 * 
@@ -310,7 +315,11 @@ public class Lift {
 		System.out.println("\t.\t DEBUG - initiated " + toString());
 	}
 
-	public void setNextLevel() {
+	@JsonIgnore
+	public void setNextLevel(Controller GUIController) {
+        System.out.println("\t\t GUI - Moving elevator "+id+ " in direction "+direction);
+        GUIController.sequence.getChildren().addAll(GUIController.moveElevator(GUIController.getMs().getLifts().get(id).getBox(),direction));
+
 		if (direction == 1) {
 			System.out.println("\t^\t DEBUG - Elevator (" + id + ") is ascending!");
 			for (int i = 0; i < range.size(); i++) {
@@ -361,4 +370,11 @@ public class Lift {
 				+ usersGettingOut + ", handlingUsers=" + handlingUsers + ", boardingDelay=" + boardingDelay + "]";
 	}
 
+    public Box getBox() {
+        return box;
+    }
+
+    public void setBox(Box box) {
+        this.box = box;
+    }
 }

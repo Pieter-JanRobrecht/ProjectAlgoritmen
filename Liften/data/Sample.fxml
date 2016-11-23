@@ -12,7 +12,7 @@
          <right>
             <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" onAction="#startSimulatie" text="Button">
+                  <Button mnemonicParsing="false" onAction="#startSimulatie" text="Start">
                      <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
@@ -21,7 +21,7 @@
             </VBox>
          </right>
          <center>
-            <AnchorPane fx:id="anchorPane" BorderPane.alignment="CENTER" />
+            <AnchorPane fx:id="anchorPane" prefHeight="630.0" prefWidth="670.0" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
    </children>
