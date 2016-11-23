@@ -6,3 +6,4 @@ Liften/.classpath
 kraan/target/
 .recommenders/
 *.iml
+/Liften/.idea
