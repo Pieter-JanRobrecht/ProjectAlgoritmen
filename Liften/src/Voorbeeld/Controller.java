@@ -266,31 +266,33 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//        System.out.println("actie");
-//
-//        Sphere sphere = makeUserOnLevel(0,1);
-//        sequence.getChildren().addAll(moveUserToElevator(sphere, 3));
-//        sequence.getChildren().addAll(moveElevator(liften.get(3), 1));
-//        //Na een move elevator moet gans dat stuk al gespeeld worden
-//
-//        sequence.getChildren().addAll(userEnterElevator(users.get(0), liften.get(3)));
-//        sequence.getChildren().addAll(moveElevator(liften.get(3), -1));
-//
-//        moveUserToLevel(users.get(0), -1);
-//        sequence.getChildren().addAll(userExitElevator(users.get(0), 3));
-//
-//        sequence.play();
     }
 
-    public TranslateTransition moveElevator(Box lift, int aantalVerdiepingen) {
-        TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), lift);
+
+    @FXML
+    void pauseAnimation(ActionEvent event) {
+        sequence.pause();
+    }
+
+    @FXML
+    void resume(ActionEvent event) {
+        sequence.play();
+    }
+
+    public TranslateTransition moveElevator(Lift lift, int aantalVerdiepingen) {
+        TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), lift.getBox());
 
         double afstandEenVerdiep = LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2;
         double afstand = afstandEenVerdiep * aantalVerdiepingen;
 
         tt.setByY(afstand);
 
+        tt.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("\t\t GUI - Moving elevator " + lift.getId() + " in direction " + aantalVerdiepingen);
+            }
+        });
         return tt;
     }
 
@@ -303,49 +305,57 @@ public class Controller {
 
         idUser.setSphere(user);
         xForm.getChildren().add(user);
+        user.setVisible(false);
         return user;
     }
 
-    public SequentialTransition moveUserToElevator(Sphere user, int elevatorId) {
-        System.out.println("Move user " + user + " naar lift " + elevatorId);
+    public SequentialTransition moveUserToElevator(User user, Lift elevatorId) {
+        user.getSphere().setVisible(true);
         double afstandAfTeLeggenX;
         double afstandAfTeLeggenZ;
 
-        if (elevatorId % 2 == 0) {
+        if (elevatorId.getId() % 2 == 0) {
             afstandAfTeLeggenX = LENGTE_GANG / 2 - DIKTE_USER;
-            afstandAfTeLeggenZ = START_USER + LENGTE_Z / 2 + elevatorId / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
+            afstandAfTeLeggenZ = START_USER + LENGTE_Z / 2 + elevatorId.getId() / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
         } else {
             afstandAfTeLeggenX = -LENGTE_GANG / 2 + DIKTE_USER;
-            afstandAfTeLeggenZ = START_USER + LENGTE_Z / 2 + (elevatorId - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
+            afstandAfTeLeggenZ = START_USER + LENGTE_Z / 2 + (elevatorId.getId() - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
         }
-        TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
+        TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
         tx.setByX(afstandAfTeLeggenX);
 
-        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
+        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
         tz.setByZ(afstandAfTeLeggenZ);
 
         SequentialTransition sq = new SequentialTransition();
 
         sq.getChildren().addAll(tz, tx);
+
+        sq.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("\t\t GUI - Moving User " + user.getId() + " to elevator " + elevatorId.getId());
+            }
+        });
         return sq;
     }
 
-    public List<TranslateTransition> userEnterElevator(Sphere user, Lift lift) {
-        System.out.println("User " + user + " enter lift " + lift);
+    public List<TranslateTransition> userEnterElevator(User user, Lift lift) {
         List<TranslateTransition> list = new ArrayList<>();
-        TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
+        TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
 //        if (lift.getTranslateZ() == user.getTranslateZ() &&
 //                lift.getTranslateY() - LENGTE_Y / 2 == user.getTranslateY() - DIKTE_USER &&
 //                (lift.getTranslateX() + LENGTE_X / 2 == user.getTranslateX() - DIKTE_USER ||
 //                        lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER)) {
 
-        if (lift.getBox().getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER) {
+        if (lift.getBox().getTranslateX() - LENGTE_X / 2 == user.getSphere().getTranslateX() + DIKTE_USER) {
             tt.setToX(lift.getBox().getTranslateX());
         } else {
             tt.setByX(-LENGTE_X / 2 - DIKTE_USER);
         }
         tt.setOnFinished(event -> {
-            user.setVisible(false);
+            System.out.println("\t\t GUI - User " + user.getId() + " joining elevator " + lift.getId());
+            user.getSphere().setVisible(false);
 
             if (lift.getCapacity() == lift.getCurrentUsers()) {
                 lift.getBox().setMaterial(new PhongMaterial(Color.RED));
@@ -365,33 +375,47 @@ public class Controller {
         return list;
     }
 
-    public void moveUserToLevel(Sphere user, int aantalVerdiepingen) {
+    public TranslateTransition moveUserToLevel(User user, int aantalVerdiepingen) {
+        TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), null);
         int afstandVerdiep = LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2;
-        user.setTranslateY(afstandVerdiep * aantalVerdiepingen + DIKTE_USER);
+        user.getSphere().setTranslateY(afstandVerdiep * aantalVerdiepingen + DIKTE_USER);
+        tt.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("\t\t GUI - Moving User" + user + " to level " + aantalVerdiepingen);
+                user.getSphere().setVisible(true);
+            }
+        });
+        return tt;
     }
 
-    public List<TranslateTransition> userExitElevator(Sphere user, int elevatorId) {
-        System.out.println("User " + user + " verlaat lift " + elevatorId);
-        user.setVisible(true);
+    public List<TranslateTransition> userExitElevator(User user, Lift elevatorId) {
+        user.getSphere().setVisible(true);
 
         List<TranslateTransition> list = new ArrayList<>();
-        TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
-        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
+        TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
+        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
 
         int afstandX;
         int afstandZ;
-        if (elevatorId % 2 == 0) {
+        if (elevatorId.getId() % 2 == 0) {
             afstandX = -(LENGTE_X / 2 + LENGTE_GANG / 2);
-            afstandZ = -(START_USER + LENGTE_Z / 2 + elevatorId / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
+            afstandZ = -(START_USER + LENGTE_Z / 2 + elevatorId.getId() / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
         } else {
             afstandX = (LENGTE_X / 2 + LENGTE_GANG / 2);
-            afstandZ = -(START_USER + LENGTE_Z / 2 + (elevatorId - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
+            afstandZ = -(START_USER + LENGTE_Z / 2 + (elevatorId.getId() - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
         }
         tx.setByX(afstandX);
         tz.setByZ(afstandZ);
 
         list.add(tx);
         list.add(tz);
+        tz.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("\t\t GUI - User " + user.getId() + " left elevator " + elevatorId.getId());
+            }
+        });
         return list;
     }
 

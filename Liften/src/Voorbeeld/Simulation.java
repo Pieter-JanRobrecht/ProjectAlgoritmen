@@ -79,8 +79,7 @@ public class Simulation {
                     Lift tempLift = assignElevator(tempUser);
                     if (tempLift != null) {
 
-                        System.out.println("\t\t GUI - Moving " + tempUser + " to elevator " + tempLift);
-                        thisTurnTransition.getChildren().addAll(GUIController.moveUserToElevator(tempUser.getSphere(), tempLift.getId()));
+                        thisTurnTransition.getChildren().addAll(GUIController.moveUserToElevator(tempUser, tempLift));
 
                         System.out.println("\tE\t DEBUG - Elevator found, " + tempUser.getId() + " assigned elevator "
                                 + tempLift.getId());
@@ -225,11 +224,9 @@ public class Simulation {
                                         //System.out.println("\t!!\t DEBUG - user (" + u.getId() + ") - " + u.getSourceId() + ", " + u.getDestinationId() + ", " + l.getCurrentLevel());
                                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") joined elevator");
-
-                                            System.out.println("\t\t GUI - " + u + " joining elevator " + l);
-                                            thisTurnTransition.getChildren().addAll(GUIController.userEnterElevator(u.getSphere(), l));
-
                                             l.setCurrentUsers(l.getCurrentLevel() + 1);
+
+                                            thisTurnTransition.getChildren().addAll(GUIController.userEnterElevator(u, l));
 
                                             u.setInElevator(true);
                                             if (l.getUsersGettingIn() == 0)
@@ -240,8 +237,8 @@ public class Simulation {
                                         } else if (u.getDestinationId() == l.getCurrentLevel()) { // uitstappen
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") left elevator");
 
-                                            System.out.println("\t\t GUI - Moving " + u + " to level " + l.getCurrentLevel());
-                                            GUIController.moveUserToLevel(u.getSphere(), l.getCurrentLevel());
+                                            thisTurnTransition.getChildren().addAll(GUIController.moveUserToLevel(u, l.getCurrentLevel()));
+                                            thisTurnTransition.getChildren().addAll(GUIController.userExitElevator(u,l));
 
                                             l.setCurrentUsers(l.getCurrentLevel() - 1);
                                             u.setInElevator(false);
@@ -397,5 +394,9 @@ public class Simulation {
 
     public void setGUIController(Controller GUIController) {
         this.GUIController = GUIController;
+    }
+
+    public int getMainTicker() {
+        return mainTicker;
     }
 }

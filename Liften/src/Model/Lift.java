@@ -300,8 +300,7 @@ public class Lift {
 
     @JsonIgnore
     public void setNextLevel(ParallelTransition transition, Controller GUIController) {
-        System.out.println("\t\t GUI - Moving elevator " + id + " in direction " + direction);
-        transition.getChildren().addAll(GUIController.moveElevator(GUIController.getMs().getLifts().get(id).getBox(), direction));
+        transition.getChildren().addAll(GUIController.moveElevator(GUIController.getMs().getLifts().get(id), direction));
 
         if (direction == 1) {
             System.out.println("\t^\t DEBUG - Elevator (" + id + ") is ascending!");
