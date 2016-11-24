@@ -13,7 +13,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		File file = null;
 		try {
-			file = new File(Main.class.getClassLoader().getResource("initialInstance.json").toURI());
+			file = new File(Main.class.getClassLoader().getResource("test.json").toURI());
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}

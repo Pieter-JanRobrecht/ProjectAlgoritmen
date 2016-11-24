@@ -236,7 +236,7 @@ public class Simulation {
                                                 throw new Exception();
                                             l.setUsersGettingOut(l.getUsersGettingOut() - 1);
 
-                                            if (l.getCurrentUsers() == 0) {
+                                            if (l.getCurrentUsers() == 0 && l.getCurrentLevel() != -1) {
                                                 l.setDestination(-1);
                                                 l.setDirection(0);
                                             }

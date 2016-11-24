@@ -11,9 +11,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import DataGenereren.Exclude;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "id", "capacity", "currentUsers", "levelSpeed", "openingTime", "closingTime", "range",
-		"startLevel", "currentLevel", "direction" })
+//@JsonPropertyOrder({ "id", "capacity", "currentUsers", "levelSpeed", "openingTime", "closingTime", "range",
+//		"startLevel", "currentLevel", "direction" })
+@JsonPropertyOrder({ "id", "capacity","levelSpeed", "openingTime", "closingTime", "range",
+	"startLevel" })
 public class Lift {
 
 	@JsonProperty("id")
@@ -30,21 +34,32 @@ public class Lift {
 	private List<Range> range = new ArrayList<Range>();
 	@JsonProperty("startLevel")
 	private Integer startLevel;
-	@JsonIgnore
-	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
+	//@JsonIgnore
+//	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	
+	@Exclude
 	private int currentUsers;
+	@Exclude
 	private int currentLevel;
+	@Exclude
 	private int direction;
+	@Exclude
 	private int unavailableUntil;
+	@Exclude
 	private int destination;
+	@Exclude
 	private int operationTimer;
+	@Exclude
 	private String mode;
+	@Exclude
 	private int movingTimer;
 	
+	@Exclude
 	private int usersGettingIn;
+	@Exclude
 	private int usersGettingOut;
 	private List<User> handlingUsers;
+	@Exclude
 	private int boardingDelay;
 
 	/**
@@ -150,6 +165,9 @@ public class Lift {
 	public List<Range> getRange() {
 		return range;
 	}
+	
+	
+	
 
 	/**
 	 * 
@@ -180,15 +198,15 @@ public class Lift {
 		this.startLevel = startLevel;
 	}
 
-	@JsonAnyGetter
-	public Map<String, Object> getAdditionalProperties() {
-		return this.additionalProperties;
-	}
-
-	@JsonAnySetter
-	public void setAdditionalProperty(String name, Object value) {
-		this.additionalProperties.put(name, value);
-	}
+//	@JsonAnyGetter
+//	public Map<String, Object> getAdditionalProperties() {
+//		return this.additionalProperties;
+//	}
+//
+//	@JsonAnySetter
+//	public void setAdditionalProperty(String name, Object value) {
+//		this.additionalProperties.put(name, value);
+//	}
 
 	public int getCurrentUsers() {
 		return currentUsers;
@@ -354,7 +372,8 @@ public class Lift {
 	public String toString() {
 		return "Lift [id=" + id + ", capacity=" + capacity + ", levelSpeed=" + levelSpeed + ", openingTime="
 				+ openingTime + ", closingTime=" + closingTime + ", range=" + range + ", startLevel=" + startLevel
-				+ ", additionalProperties=" + additionalProperties + ", currentUsers=" + currentUsers
+				//+ ", additionalProperties=" + additionalProperties
+				+ ", currentUsers=" + currentUsers
 				+ ", currentLevel=" + currentLevel + ", direction=" + direction + ", unavailableUntil="
 				+ unavailableUntil + ", destination=" + destination + ", operationTimer=" + operationTimer + ", mode="
 				+ mode + ", movingTimer=" + movingTimer + ", usersGettingIn=" + usersGettingIn + ", usersGettingOut="

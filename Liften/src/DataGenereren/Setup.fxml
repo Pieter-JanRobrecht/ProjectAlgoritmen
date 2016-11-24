@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="500.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DataGenereren.GenDataController">
+   <children>
+      <HBox prefHeight="500.0" prefWidth="660.0">
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="300.0" prefWidth="300.0">
+               <children>
+                  <Label text="Levels">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="TOP_LEFT" text="#Verdiepen">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Slider fx:id="levelsSlider" blockIncrement="1.0" majorTickUnit="5.0" max="20.0" min="1" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="5.0" />
+                  <TextField fx:id="outputTextAreaLevels" />
+                  <Separator prefWidth="200.0">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Separator>
+                  <Label layoutX="137.0" layoutY="10.0" text="Elevators">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label alignment="TOP_LEFT" layoutX="129.0" layoutY="41.0" text="#Liften" />
+                  <Slider fx:id="liftSlider1" blockIncrement="1.0" layoutX="10.0" layoutY="58.0" majorTickUnit="5.0" max="20.0" min="1" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="5.0" />
+                  <TextField fx:id="outputTextAreaLift1" layoutX="10.0" layoutY="96.0" />
+                  <Separator prefWidth="10.0">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Separator>
+                  <Label alignment="TOP_LEFT" text="#Percentage defecte liften" />
+                  <Slider fx:id="liftSlider2" blockIncrement="1.0" majorTickUnit="10.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
+                  <TextField fx:id="outputTextAreaLift2" />
+                  <Label fx:id="statusLabel">
+                     <VBox.margin>
+                        <Insets top="100.0" />
+                     </VBox.margin>
+                  </Label>
+               </children>
+               <HBox.margin>
+                  <Insets left="20.0" top="20.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="TOP_CENTER" layoutX="30.0" layoutY="30.0" prefHeight="300.0" prefWidth="300.0">
+               <children>
+                  <Label text="Users">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="TOP_LEFT" text="#Users">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Slider fx:id="userSlider" blockIncrement="1.0" majorTickUnit="5.0" max="20.0" min="1" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="5.0" />
+                  <TextField fx:id="outputTextAreaUser" />
+                  <Separator prefWidth="200.0">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Separator>
+                  <Label alignment="TOP_LEFT" layoutX="129.0" layoutY="41.0" text="Percentage minder mobiele mensen" />
+                  <Slider fx:id="userSlider1" blockIncrement="1.0" layoutX="10.0" layoutY="58.0" majorTickUnit="10.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
+                  <TextField fx:id="outputTextAreaUser1" layoutX="10.0" layoutY="96.0" />
+                  <Separator prefWidth="10.0">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Separator>
+                  <Label alignment="TOP_LEFT" text="Geduldpercentage (100= extreem geduldig)" />
+                  <Slider fx:id="userSlider2" blockIncrement="1.0" majorTickUnit="10.0" minorTickCount="20" showTickLabels="true" showTickMarks="true" />
+                  <TextField fx:id="outputTextAreaUser2" />
+                  <Button fx:id="genereerKnop" mnemonicParsing="false" onAction="#generateJson" text="Genereer">
+                     <VBox.margin>
+                        <Insets left="100.0" top="150.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+               <HBox.margin>
+                  <Insets left="20.0" right="20.0" top="20.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
