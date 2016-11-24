@@ -227,11 +227,9 @@ public class Simulation {
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") joined elevator");
 
                                             System.out.println("\t\t GUI - " + u + " joining elevator " + l);
-                                            thisTurnTransition.getChildren().addAll(GUIController.userEnterElevator(u.getSphere(), l.getBox()));
+                                            thisTurnTransition.getChildren().addAll(GUIController.userEnterElevator(u.getSphere(), l));
 
                                             l.setCurrentUsers(l.getCurrentLevel() + 1);
-
-                                            System.out.println("\t\t GUI - Setting color of lift "+l.getId());
 
                                             u.setInElevator(true);
                                             if (l.getUsersGettingIn() == 0)
@@ -255,9 +253,9 @@ public class Simulation {
                                         }
                                     }
 
-                                    for (User u : removingUsers)
+                                    for (User u : removingUsers) {
                                         l.removeHandlingUser(u);
-                                    ;
+                                    }
 
                                 }
                                 break;

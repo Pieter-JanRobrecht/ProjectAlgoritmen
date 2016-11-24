@@ -1,5 +1,6 @@
 package Voorbeeld;
 
+import Model.Lift;
 import Model.User;
 import javafx.fxml.FXML;
 
@@ -226,7 +227,7 @@ public class Controller {
 
             setBoxPlace(i, lift);
 
-            lift.setTranslateY(LENGTE_Y / 2);
+            lift.setTranslateY(LENGTE_Y / 2 + ms.getLifts().get(i).getStartLevel() * (LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2));
             xForm.getChildren().add(lift);
             ms.getLifts().get(i).setBox(lift);
 //            liften.add(lift);
@@ -325,11 +326,11 @@ public class Controller {
 
         SequentialTransition sq = new SequentialTransition();
 
-        sq.getChildren().addAll(tz,tx);
+        sq.getChildren().addAll(tz, tx);
         return sq;
     }
 
-    public List<TranslateTransition> userEnterElevator(Sphere user, Box lift) {
+    public List<TranslateTransition> userEnterElevator(Sphere user, Lift lift) {
         System.out.println("User " + user + " enter lift " + lift);
         List<TranslateTransition> list = new ArrayList<>();
         TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user);
@@ -337,12 +338,25 @@ public class Controller {
 //                lift.getTranslateY() - LENGTE_Y / 2 == user.getTranslateY() - DIKTE_USER &&
 //                (lift.getTranslateX() + LENGTE_X / 2 == user.getTranslateX() - DIKTE_USER ||
 //                        lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER)) {
-            if (lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER) {
-                tt.setToX(lift.getTranslateX());
-            } else {
-                tt.setByX(-LENGTE_X / 2 - DIKTE_USER);
+
+        if (lift.getBox().getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER) {
+            tt.setToX(lift.getBox().getTranslateX());
+        } else {
+            tt.setByX(-LENGTE_X / 2 - DIKTE_USER);
+        }
+        tt.setOnFinished(event -> {
+            user.setVisible(false);
+
+            if (lift.getCapacity() == lift.getCurrentUsers()) {
+                lift.getBox().setMaterial(new PhongMaterial(Color.RED));
             }
-            tt.setOnFinished(event -> user.setVisible(false));
+            if (lift.getCurrentUsers() >= lift.getCapacity() / 2 && lift.getCurrentUsers() < lift.getCapacity()) {
+                lift.getBox().setMaterial(new PhongMaterial(Color.ORANGE));
+            }
+            if (lift.getCurrentUsers() >= 0 && lift.getCurrentUsers() < lift.getCapacity() / 2) {
+                lift.getBox().setMaterial(new PhongMaterial(Color.GREEN));
+            }
+        });
 //        } else {
 //            System.out.println("User " + user.getId() + " kan niet in lift " + lift.getId());
 //        }
