@@ -310,9 +310,9 @@ public class Controller {
 
     public SequentialTransition moveUserToElevator(User user, Lift elevatorId) {
         SequentialTransition sq = new SequentialTransition();
-        if(sq.getStatus() == Animation.Status.RUNNING){
+//        if(sq.getStatus() == Animation.Status.RUNNING){
             user.getSphere().setVisible(true);
-        }
+//        }
         double afstandAfTeLeggenX;
         double afstandAfTeLeggenZ;
 
@@ -397,9 +397,9 @@ public class Controller {
         TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
         TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
 
-        if(sq.getStatus() == Animation.Status.RUNNING){
+//        if(sq.getStatus() == Animation.Status.RUNNING){
             user.getSphere().setVisible(true);
-        }
+//        }
 
         int afstandX;
         int afstandZ;
