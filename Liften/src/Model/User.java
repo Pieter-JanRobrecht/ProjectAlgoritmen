@@ -42,13 +42,29 @@ public class User {
     private boolean inElevator;
     private boolean finished;
     private boolean handled;
+
+    private int originalSource;
+    private int originalDestination;
+    private boolean liftHopper;
+
+    private boolean up;
     
     public User() {
     	inElevator = false;
     	finished = false;
     	handled = false;
     }
-    
+
+    public void initialize() {
+        originalDestination = destinationId;
+        originalSource = sourceId;
+        liftHopper = false;
+        if(destinationId > sourceId) {
+            up = true;
+        } else {
+            up = false;
+        }
+    }
     /**
      * 
      * @return
@@ -223,11 +239,58 @@ public class User {
 		this.handled = handled;
 	}
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", arrivalTime=" + arrivalTime + ", boardingTime=" + boardingTime
-				+ ", unboardingTime=" + unboardingTime + ", timeout=" + timeout + ", sourceId=" + sourceId
-				+ ", destinationId=" + destinationId + ", additionalProperties=" + additionalProperties
-				+ ", inElevator=" + inElevator + ", finished=" + finished + ", handled=" + handled + "]";
-	}
+    public int getOriginalSource() {
+        return originalSource;
+    }
+
+    public void setOriginalSource(int originalSource) {
+        this.originalSource = originalSource;
+    }
+
+    public int getOriginalDestination() {
+        return originalDestination;
+    }
+
+    public void setOriginalDestination(int originalDestination) {
+        this.originalDestination = originalDestination;
+    }
+
+    public boolean isLiftHopper() {
+        return liftHopper;
+    }
+
+    public void setLiftHopper(boolean liftHopper) {
+        this.liftHopper = liftHopper;
+    }
+
+    public boolean isUp() {
+        return up;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", arrivalTime=" + arrivalTime +
+                ", boardingTime=" + boardingTime +
+                ", unboardingTime=" + unboardingTime +
+                ", timeout=" + timeout +
+                ", sourceId=" + sourceId +
+                ", destinationId=" + destinationId +
+                ", additionalProperties=" + additionalProperties +
+                ", inElevator=" + inElevator +
+                ", finished=" + finished +
+                ", handled=" + handled +
+                ", originalSource=" + originalSource +
+                ", originalDestination=" + originalDestination +
+                ", liftHopper=" + liftHopper +
+                ", originalSource=" + originalSource +
+                ", originalDestination=" + originalDestination +
+                ", liftHopper=" + liftHopper +
+                '}';
+    }
 }
