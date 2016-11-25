@@ -4,10 +4,7 @@ import Controller.ElevatorController;
 import Model.Lift;
 import Model.ManagementSystem;
 import Model.User;
-import javafx.animation.FillTransition;
 import javafx.animation.ParallelTransition;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -284,7 +281,6 @@ public class Simulation {
                     }
                 }
             }
-
             System.out.println("\t\t GUI - End of gametick adding parallelmovement");
             GUIController.sequence.getChildren().addAll(thisTurnTransition);
 
@@ -306,7 +302,6 @@ public class Simulation {
                 System.out.println("\t\t DEBUG - Adding " + ec.getUsers().get(i).toString());
                 queue.add(ec.getUsers().get(i));
 
-                System.out.println("\t\t GUI - Creating user sphere for " + ec.getUsers().get(i) + " on level " + ec.getUsers().get(i).getSourceId());
                 GUIController.makeUserOnLevel(ec.getUsers().get(i), ec.getUsers().get(i).getSourceId());
 
                 ec.getUsers().remove(i);
