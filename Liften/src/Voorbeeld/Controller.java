@@ -60,7 +60,7 @@ public class Controller {
 
     private ManagementSystem ms = null;
 
-    public static final int ANIMATIE_DUUR = 250;
+    public static final int ANIMATIE_DUUR = 100;
     private static final int AFSTAND_TUSSEN_LIFTEN = 70;
     private static final int LENGTE_GANG = 200;
     private int AANTAL_VERDIEPINGEN;
@@ -311,7 +311,7 @@ public class Controller {
     public SequentialTransition moveUserToElevator(User user, Lift elevatorId) {
         SequentialTransition sq = new SequentialTransition();
 //        if(sq.getStatus() == Animation.Status.RUNNING){
-            user.getSphere().setVisible(true);
+        user.getSphere().setVisible(true);
 //        }
         double afstandAfTeLeggenX;
         double afstandAfTeLeggenZ;
@@ -324,9 +324,11 @@ public class Controller {
             afstandAfTeLeggenZ = START_USER + LENGTE_Z / 2 + (elevatorId.getId() - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
         }
         TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
+        tx.setFromY(user.getSphere().getTranslateY());
         tx.setByX(afstandAfTeLeggenX);
 
         TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
+        tz.setFromY(user.getSphere().getTranslateY());
         tz.setByZ(afstandAfTeLeggenZ);
 
         sq.getChildren().addAll(tz, tx);
@@ -340,41 +342,37 @@ public class Controller {
         return sq;
     }
 
-    public List<TranslateTransition> userEnterElevator(User user, Lift lift) {
-        List<TranslateTransition> list = new ArrayList<>();
+    public ParallelTransition userEnterElevator(User user, Lift lift) {
         TranslateTransition tt = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
-//        if (lift.getTranslateZ() == user.getTranslateZ() &&
-//                lift.getTranslateY() - LENGTE_Y / 2 == user.getTranslateY() - DIKTE_USER &&
-//                (lift.getTranslateX() + LENGTE_X / 2 == user.getTranslateX() - DIKTE_USER ||
-//                        lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER)) {
 
-//        tt.setByX(lift.getBox().getTranslateX());
-//        if (lift.getBox().getTranslateX() - LENGTE_X / 2 == user.getSphere().getTranslateX() + DIKTE_USER) {
-            if (lift.getId()% 2 ==0){
-            tt.setToX(LENGTE_X / 2 );
+        ColorTransition c = new ColorTransition(lift.getBox(), Color.GREEN);
+        if (lift.getCapacity() == lift.getCurrentUsers()) {
+            System.out.println("\t\t\t COLOR - Color is now RED for elevator " + lift.getId());
+             c = new ColorTransition(lift.getBox(), Color.RED);
+        }
+        if (lift.getCurrentUsers() >= lift.getCapacity() / 2 && lift.getCurrentUsers() < lift.getCapacity()) {
+            System.out.println("\t\t\t COLOR - Color is now ORANGE for elevator " + lift.getId());
+            c = new ColorTransition(lift.getBox(), Color.ORANGE);
+        }
+        if (lift.getCurrentUsers() >= 0 && lift.getCurrentUsers() < lift.getCapacity() / 2) {
+            System.out.println("\t\t\t COLOR - Color is now GREEN for elevator " + lift.getId());
+            c = new ColorTransition(lift.getBox(), Color.GREEN);
+        }
+
+        if (lift.getId() % 2 == 0) {
+            tt.setToX(LENGTE_X / 2);
         } else {
             tt.setByX(-LENGTE_X / 2 - DIKTE_USER);
         }
+
         tt.setOnFinished(event -> {
             System.out.println("\t\t GUI - User " + user.getId() + " joining elevator " + lift.getId());
             user.getSphere().setVisible(false);
-
-            if (lift.getCapacity() == lift.getCurrentUsers()) {
-                lift.getBox().setMaterial(new PhongMaterial(Color.RED));
-            }
-            if (lift.getCurrentUsers() >= lift.getCapacity() / 2 && lift.getCurrentUsers() < lift.getCapacity()) {
-                lift.getBox().setMaterial(new PhongMaterial(Color.ORANGE));
-            }
-            if (lift.getCurrentUsers() >= 0 && lift.getCurrentUsers() < lift.getCapacity() / 2) {
-                lift.getBox().setMaterial(new PhongMaterial(Color.GREEN));
-            }
         });
-//        } else {
-//            System.out.println("User " + user.getId() + " kan niet in lift " + lift.getId());
-//        }
 
-        list.add(tt);
-        return list;
+        ParallelTransition p = new ParallelTransition();
+        p.getChildren().addAll(c,tt);
+        return p;
     }
 
     public TranslateTransition moveUserToLevel(User user, int aantalVerdiepingen) {
@@ -391,37 +389,50 @@ public class Controller {
         return tt;
     }
 
-    public SequentialTransition userExitElevator(User user, Lift elevatorId) {
+    public SequentialTransition userExitElevator(User user, Lift lift) {
 
         SequentialTransition sq = new SequentialTransition();
 
         TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
-        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
+        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR * 2), user.getSphere());
 
 //        if(sq.getStatus() == Animation.Status.RUNNING){
-            user.getSphere().setVisible(true);
+        user.getSphere().setVisible(true);
 //        }
+
+        ColorTransition c = new ColorTransition(lift.getBox(), Color.GREEN);
+        if (lift.getCapacity() == lift.getCurrentUsers()) {
+            System.out.println("\t\t\t COLOR - Color is now RED for elevator " + lift.getId());
+            c = new ColorTransition(lift.getBox(), Color.RED);
+        }
+        if (lift.getCurrentUsers() >= lift.getCapacity() / 2 && lift.getCurrentUsers() < lift.getCapacity()) {
+            System.out.println("\t\t\t COLOR - Color is now ORANGE for elevator " + lift.getId());
+            c = new ColorTransition(lift.getBox(), Color.ORANGE);
+        }
+        if (lift.getCurrentUsers() >= 0 && lift.getCurrentUsers() < lift.getCapacity() / 2) {
+            System.out.println("\t\t\t COLOR - Color is now GREEN for elevator " + lift.getId());
+            c = new ColorTransition(lift.getBox(), Color.GREEN);
+        }
 
         int afstandX;
         int afstandZ;
-        if (elevatorId.getId() % 2 == 0) {
+        if (lift.getId() % 2 == 0) {
             afstandX = -(LENGTE_X / 2 + LENGTE_GANG / 2);
-            afstandZ = -(START_USER + LENGTE_Z / 2 + elevatorId.getId() / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
+            afstandZ = -(START_USER * 3 + LENGTE_Z / 2 + lift.getId() / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
         } else {
             afstandX = (LENGTE_X / 2 + LENGTE_GANG / 2);
-            afstandZ = -(START_USER + LENGTE_Z / 2 + (elevatorId.getId() - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
+            afstandZ = -(START_USER * 3 + LENGTE_Z / 2 + (lift.getId() - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
         }
         tx.setByX(afstandX);
+        tx.setFromY(user.getSphere().getTranslateY());
         tz.setByZ(afstandZ);
+        tz.setFromY(user.getSphere().getTranslateY());
 
-        sq.getChildren().addAll(tx,tz);
+        sq.getChildren().addAll(c, tx, tz);
 
-        tz.setOnFinished(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                user.getSphere().setVisible(false);
-                System.out.println("\t\t GUI - User " + user.getId() + " left elevator " + elevatorId.getId());
-            }
+        tz.setOnFinished(event -> {
+            user.getSphere().setVisible(false);
+            System.out.println("\t\t GUI - User " + user.getId() + " left elevator " + lift.getId());
         });
         return sq;
     }
