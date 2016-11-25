@@ -182,7 +182,7 @@ public class Simulation {
                     for (User u : l.getHandlingUsers()) {
                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
                             System.out.println("\tUser (" + u.getId() + ") should be enterring.. Elevator (" + l.getId()
-                                    + ") mode: " + l.getMode());
+                                    + ") mode: " + l.getMode() +" on level "+l.getCurrentLevel());
                         } else if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) { // uitstappen
                             System.out.println("\tUser (" + u.getId() + ") should be leaving.. Elevator (" + l.getId()
                                     + ") mode: " + l.getMode());
