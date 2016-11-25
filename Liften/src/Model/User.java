@@ -30,9 +30,9 @@ public class User {
     @JsonProperty("arrivalTime")
     private Double arrivalTime;
     @JsonProperty("boardingTime")
-    private Integer boardingTime;
+    private Double boardingTime;
     @JsonProperty("unboardingTime")
-    private Integer unboardingTime;
+    private Double unboardingTime;
     @JsonProperty("timeout")
     private Integer timeout;
    // @JsonProperty("source-id")
@@ -102,18 +102,18 @@ public class User {
      *     The boardingTime
      */
     @JsonProperty("boardingTime")
-    public Integer getBoardingTime() {
+    public Double getBoardingTime() {
         return boardingTime;
     }
 
     /**
      * 
-     * @param boardingTime
+     * @param tempBoardingTime
      *     The boardingTime
      */
     @JsonProperty("boardingTime")
-    public void setBoardingTime(Integer boardingTime) {
-        this.boardingTime = boardingTime;
+    public void setBoardingTime(Double tempBoardingTime) {
+        this.boardingTime = tempBoardingTime;
     }
 
     /**
@@ -122,7 +122,7 @@ public class User {
      *     The unboardingTime
      */
     @JsonProperty("unboardingTime")
-    public Integer getUnboardingTime() {
+    public Double getUnboardingTime() {
         return unboardingTime;
     }
 
@@ -132,7 +132,7 @@ public class User {
      *     The unboardingTime
      */
     @JsonProperty("unboardingTime")
-    public void setUnboardingTime(Integer unboardingTime) {
+    public void setUnboardingTime(Double unboardingTime) {
         this.unboardingTime = unboardingTime;
     }
 

@@ -54,6 +54,8 @@ public class GenDataController {
 	@FXML
 	private Slider levelsSlider;
 	@FXML
+	private Slider levelsSlider1;
+	@FXML
 	private Slider liftSlider1;
 	@FXML
 	private Slider liftSlider2;
@@ -64,9 +66,27 @@ public class GenDataController {
 	@FXML
 	private Slider userSlider2;
 	@FXML
+	private Slider userSlider3;
+	@FXML
+	private Slider variableSlider;
+	@FXML
+	private Slider variableSlider1;
+	@FXML
+	private Slider variableSlider2;
+	@FXML
+	private Slider variableSlider3;
+	@FXML
+	private Slider variableSlider4;
+	@FXML
+	private Slider variableSlider5;
+	@FXML
+	private Slider variableSlider6;
+	@FXML
 	private TextField textField;
 	@FXML
 	protected TextField outputTextAreaLevels;
+	@FXML
+	protected TextField outputTextAreaLevels1;
 	@FXML
 	protected TextField outputTextAreaLift1;
 	@FXML
@@ -77,9 +97,16 @@ public class GenDataController {
 	protected TextField outputTextAreaUser1;
 	@FXML
 	protected TextField outputTextAreaUser2;
+	@FXML
+	protected TextField outputTextAreaUser3;
+	
+	@FXML
+	protected CheckBox offSetCheckbox;
 	
 	@FXML
 	protected Label statusLabel;
+	
+	@FXML protected ComboBox<String> spreidingCombo;
 	
 	
 	
@@ -103,6 +130,14 @@ public class GenDataController {
 					Number oldValue, Number newValue) {
 				
 				outputTextAreaLevels.setText(""+ newValue.intValue() );
+			}
+		});
+		levelsSlider1.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
+				
+				outputTextAreaLevels1.setText("NOT IMPLEMENTED YET") ;
 			}
 		});
 		liftSlider1.valueProperty().addListener(new ChangeListener<Number>() {
@@ -145,34 +180,48 @@ public class GenDataController {
 				outputTextAreaUser2.setText(""+ newValue.intValue() );
 			}
 		});
+		userSlider3.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
+				
+				outputTextAreaUser3.setText(""+ newValue.intValue() );
+			}
+		});
 	
 
 	}
 	
 	public void generateJson() {
+		double offsetPercentage=(offSetCheckbox.isSelected())?variableSlider.getValue()/100:0;
+		
 		Random random= new Random();
 		double  arrivalTime=0;
 
-		int liftCapacity=10;
-		int levelSpeed=2;
-		int openingTime = 1;
-		int closingTime=1;
-
-		double patiencePercentage=userSlider2.getValue();
-		double oldAgePercentage=userSlider1.getValue();
-		double brokenElevators=liftSlider2.getValue();
-
-		int boardingTime=1;
-		int unboardingTime=1;
+		int liftCapacity=(int) variableSlider3.getValue();
+		double levelSpeed=variableSlider6.getValue();
+		double openingTime = variableSlider4.getValue();
+		double closingTime=variableSlider5.getValue();;
+		//TODO
+		String spreiding=spreidingCombo.getValue();
+	
+		double boardingTime=variableSlider1.getValue();
+		double unboardingTime=variableSlider2.getValue();
 		int timeout=100;
 
 		boolean [] levelsReached;
-		int chanceOfStopOnFloor=0; //0= stops on every floor 0.5= stops on roughly half of the floors
+		double chanceOfStopOnFloor=0;//1-levelsSlider1.getValue()/100; //0= stops on every floor 0.5= stops on roughly half of the floors
 
 
 		int amountOfLevels=(int)levelsSlider.getValue();
 		int amountOfLifts= (int)liftSlider1.getValue();
 		int amountOfUsers= (int) userSlider.getValue();
+		int tempoOfArrival=(int) userSlider3.getValue();
+
+		double patiencePercentage=userSlider2.getValue();
+		double oldAgePercentage=userSlider1.getValue();
+		double brokenElevators=liftSlider2.getValue();
+
 
 
 		//INSTELLEN VERDIEPEN
@@ -194,7 +243,7 @@ public class GenDataController {
 			lft.setId(i);
 			lft.setCapacity(liftCapacity);
 			lft.setLevelSpeed(levelSpeed);
-			if (random.nextDouble()>brokenElevators/100) {lft.setOpeningTime(openingTime); lft.setClosingTime(closingTime);} else {lft.setOpeningTime(openingTime*5); lft.setClosingTime(closingTime*5);}
+			if (random.nextDouble()>brokenElevators/100) {lft.setOpeningTime(openingTime*(1-offsetPercentage+2*offsetPercentage*random.nextDouble())); lft.setClosingTime(closingTime*(1-offsetPercentage+2*offsetPercentage*random.nextDouble()));} else {lft.setOpeningTime((1-offsetPercentage+2*offsetPercentage*random.nextDouble())*openingTime*5); lft.setClosingTime((1-offsetPercentage+2*offsetPercentage*random.nextDouble())*closingTime*5);}
 			
 			
 			
@@ -232,14 +281,23 @@ public class GenDataController {
 		for (int i=0; i< amountOfUsers;i++){
 			User usr= new User();
 			usr.setId(i);
-			double temp=arrivalTime+ random.nextInt(10);
-			usr.setArrivalTime(temp);
-			arrivalTime= 1+temp;
+			double temp;
+			switch(spreiding){
+			case "'s Ochtends": if(arrivalTime<300) temp=arrivalTime+ random.nextInt(tempoOfArrival/2); else temp=arrivalTime+ random.nextInt(tempoOfArrival); usr.setArrivalTime(temp); arrivalTime= temp;break;
+			case "'s Middags": if(arrivalTime>300 && arrivalTime<600) temp=arrivalTime+ random.nextInt(tempoOfArrival/2); else temp=arrivalTime+ random.nextInt(tempoOfArrival);usr.setArrivalTime(temp);arrivalTime=temp; break;
+			case "'s Avonds": if(arrivalTime>600) temp=arrivalTime+ random.nextInt(tempoOfArrival/2); else temp=arrivalTime+ random.nextInt(tempoOfArrival);usr.setArrivalTime(temp);arrivalTime= temp; break;
+			case "Gelijktijdig verdeeld over de dag": temp=arrivalTime+ random.nextInt(tempoOfArrival);usr.setArrivalTime(temp);arrivalTime=temp; break;
+			default: temp=arrivalTime+ random.nextInt(tempoOfArrival);usr.setArrivalTime(temp);arrivalTime= temp;
+			}
 			
-			if(random.nextDouble()> oldAgePercentage/100) {usr.setUnboardingTime(unboardingTime);usr.setBoardingTime(boardingTime);} else {usr.setBoardingTime(2*boardingTime); usr.setUnboardingTime(2*unboardingTime);}
+			
+			
+			double tempBoardingTime= boardingTime* (1-offsetPercentage+2*offsetPercentage*random.nextDouble());
+			double tempUnboardingTime= unboardingTime* (1-offsetPercentage+2*offsetPercentage*random.nextDouble());
+			if(random.nextDouble()> oldAgePercentage/100) {usr.setUnboardingTime(tempUnboardingTime);usr.setBoardingTime(tempBoardingTime);} else {usr.setBoardingTime(2*tempBoardingTime); usr.setUnboardingTime(2*tempUnboardingTime);}
 			
 			//if(random.nextDouble()<patiencePercentage/100) usr.setTimeout(timeout); else 
-			usr.setTimeout((int) (timeout*patiencePercentage/100));
+			usr.setTimeout((int) ((timeout*patiencePercentage/100)* (1-offsetPercentage+2*offsetPercentage*random.nextDouble())));
 			usr.setSourceId(random.nextInt(amountOfLevels));
 			int temp2= usr.getSourceId();
 			while(temp2==usr.getSourceId()) {temp2= random.nextInt(amountOfLevels);}
@@ -257,12 +315,9 @@ public class GenDataController {
 		  msObj.setLevels(levels);  
 		  msObj.setLifts(lifts); 
 		  msObj.setUsers(users);
-		//  List<String> listOfStates=new ArrayList<String>();  
-		//  listOfStates.add("Madhya Pradesh");  
-		//  listOfStates.add("Maharastra");  
-		//  listOfStates.add("Rajasthan");  
+		
 		    
-		//  msObj.setListOfStates(listOfStates);  
+		
 		  Gson gson = new GsonBuilder().setPrettyPrinting().setExclusionStrategies(new AnnotationExclusionStrategy()).create();
 		    
 		  // convert java object to JSON format,  

@@ -25,11 +25,11 @@ public class Lift {
 	@JsonProperty("capacity")
 	private Integer capacity;
 	@JsonProperty("levelSpeed")
-	private Integer levelSpeed;
+	private Double levelSpeed;
 	@JsonProperty("openingTime")
-	private Integer openingTime;
+	private Double openingTime;
 	@JsonProperty("closingTime")
-	private Integer closingTime;
+	private Double closingTime;
 	@JsonProperty("range")
 	private List<Range> range = new ArrayList<Range>();
 	@JsonProperty("startLevel")
@@ -60,7 +60,7 @@ public class Lift {
 	private int usersGettingOut;
 	private List<User> handlingUsers;
 	@Exclude
-	private int boardingDelay;
+	private double boardingDelay;
 
 	/**
 	 * 
@@ -105,18 +105,18 @@ public class Lift {
 	 * @return The levelSpeed
 	 */
 	@JsonProperty("levelSpeed")
-	public Integer getLevelSpeed() {
+	public Double getLevelSpeed() {
 		return levelSpeed;
 	}
 
 	/**
 	 * 
-	 * @param levelSpeed
+	 * @param levelSpeed2
 	 *            The levelSpeed
 	 */
 	@JsonProperty("levelSpeed")
-	public void setLevelSpeed(Integer levelSpeed) {
-		this.levelSpeed = levelSpeed;
+	public void setLevelSpeed(double levelSpeed2) {
+		this.levelSpeed = levelSpeed2;
 	}
 
 	/**
@@ -124,18 +124,18 @@ public class Lift {
 	 * @return The openingTime
 	 */
 	@JsonProperty("openingTime")
-	public Integer getOpeningTime() {
+	public Double getOpeningTime() {
 		return openingTime;
 	}
 
 	/**
 	 * 
-	 * @param openingTime
+	 * @param d
 	 *            The openingTime
 	 */
 	@JsonProperty("openingTime")
-	public void setOpeningTime(Integer openingTime) {
-		this.openingTime = openingTime;
+	public void setOpeningTime(double d) {
+		this.openingTime = d;
 	}
 
 	/**
@@ -143,18 +143,18 @@ public class Lift {
 	 * @return The closingTime
 	 */
 	@JsonProperty("closingTime")
-	public Integer getClosingTime() {
+	public Double getClosingTime() {
 		return closingTime;
 	}
 
 	/**
 	 * 
-	 * @param closingTime
+	 * @param closingTime2
 	 *            The closingTime
 	 */
 	@JsonProperty("closingTime")
-	public void setClosingTime(Integer closingTime) {
-		this.closingTime = closingTime;
+	public void setClosingTime(double closingTime2) {
+		this.closingTime = closingTime2;
 	}
 
 	/**
@@ -304,12 +304,12 @@ public class Lift {
 		this.handlingUsers.remove(u);
 	}
 
-	public int getBoardingDelay() {
+	public double getBoardingDelay() {
 		return boardingDelay;
 	}
 
-	public void setBoardingDelay(int boardingDelay) {
-		this.boardingDelay = boardingDelay;
+	public void setBoardingDelay(double d) {
+		this.boardingDelay = d;
 	}
 
 	public void initiateLift() {
