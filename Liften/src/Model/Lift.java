@@ -296,7 +296,7 @@ public class Lift {
         transition.getChildren().addAll(GUIController.moveElevator(GUIController.getMs().getLifts().get(id), direction));
 
         if (direction == 1) {
-            System.out.println("\t^\t DEBUG - Elevator (" + id + ") is ascending!");
+            System.out.println("\t^\t DEBUG - Elevator (" + id + ") is ascending! Current level is "+currentLevel);
             for (int i = 0; i < range.size(); i++) {
                 if (range.get(i).getId() == currentLevel) {
                     if (i + 1 < range.size())
