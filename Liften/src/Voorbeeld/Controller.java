@@ -60,7 +60,7 @@ public class Controller {
 
     private ManagementSystem ms = null;
 
-    public static final int ANIMATIE_DUUR = 2000;
+    public static final int ANIMATIE_DUUR = 250;
     private static final int AFSTAND_TUSSEN_LIFTEN = 70;
     private static final int LENGTE_GANG = 200;
     private int AANTAL_VERDIEPINGEN;
@@ -348,12 +348,13 @@ public class Controller {
 //                (lift.getTranslateX() + LENGTE_X / 2 == user.getTranslateX() - DIKTE_USER ||
 //                        lift.getTranslateX() - LENGTE_X / 2 == user.getTranslateX() + DIKTE_USER)) {
 
-        tt.setByX(lift.getBox().getTranslateX());
+//        tt.setByX(lift.getBox().getTranslateX());
 //        if (lift.getBox().getTranslateX() - LENGTE_X / 2 == user.getSphere().getTranslateX() + DIKTE_USER) {
-//            tt.setToX(lift.getBox().getTranslateX());
-//        } else {
-//            tt.setByX(-LENGTE_X / 2 - DIKTE_USER);
-//        }
+            if (lift.getId()% 2 ==0){
+            tt.setToX(LENGTE_X / 2 );
+        } else {
+            tt.setByX(-LENGTE_X / 2 - DIKTE_USER);
+        }
         tt.setOnFinished(event -> {
             System.out.println("\t\t GUI - User " + user.getId() + " joining elevator " + lift.getId());
             user.getSphere().setVisible(false);
@@ -418,6 +419,7 @@ public class Controller {
         tz.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                user.getSphere().setVisible(false);
                 System.out.println("\t\t GUI - User " + user.getId() + " left elevator " + elevatorId.getId());
             }
         });

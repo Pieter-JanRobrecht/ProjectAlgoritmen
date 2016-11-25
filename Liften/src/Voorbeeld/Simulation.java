@@ -1,12 +1,18 @@
 package Voorbeeld;
 
+import CSV.CSVUtils;
 import Controller.ElevatorController;
 import Model.Lift;
 import Model.ManagementSystem;
 import Model.User;
 import javafx.animation.ParallelTransition;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,12 +22,27 @@ public class Simulation {
     private List<User> queue;
     private HashMap<User, Lift> database;
     private Controller GUIController;
+    private FileWriter writer;
 
     public Simulation() {
         System.out.println("Please initiate using the correct setup");
     }
 
     public Simulation(ManagementSystem ms) {
+        File hulp = null;
+        try {
+            hulp = new File(Simulation.class.getClassLoader().getResource("output.csv").toURI());
+            writer = new FileWriter(hulp);
+
+            CSVUtils.writeLine(writer, Arrays.asList("timer", "liftID", "UserID", "open"));
+            writer.flush();
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         ec = new ElevatorController(ms); // is dit copy by reference or copy by
         // value? (call..)
         mainTicker = 0;
