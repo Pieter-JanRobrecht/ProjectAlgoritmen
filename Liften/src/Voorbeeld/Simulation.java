@@ -34,7 +34,7 @@ public class Simulation {
             hulp = new File(Simulation.class.getClassLoader().getResource("output.csv").toURI());
             writer = new FileWriter(hulp);
 
-            CSVUtils.writeLine(writer, Arrays.asList("timer", "liftID", "UserID", "open"));
+            CSVUtils.writeLine(writer, Arrays.asList("LiftId", "Time", "LevelId","UserId","OpenDoor"));
             writer.flush();
 
         } catch (URISyntaxException e) {
