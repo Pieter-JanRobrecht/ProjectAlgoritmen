@@ -55,6 +55,8 @@ public class Simulation {
 
         // while(!ec.getUsers().isEmpty()) {
         while (ec.getUsers().size() != 0 || database.size() != 0) {
+            ArrayList<User> removingUsers = new ArrayList<>();
+
             System.out.println("\nGametick (" + mainTicker + ") \t queue size: " + queue.size() + " \t");
 
             // 1. add all users waiting to a queue
@@ -83,12 +85,29 @@ public class Simulation {
                             }
                         }
 
+                    } else if (((tempUser.getTimeout() + tempUser.getArrivalTime()) < mainTicker) && !tempUser.isInElevator()) {
+                        System.out.println("\tR\t DEBUG - removing user " + tempUser.getId() + " due to timeout: " + (tempUser.getTimeout() + tempUser.getArrivalTime()) + " < " + mainTicker);
                     } else {
                         System.out.println("\tE\t DEBUG - Elevator not found");
                         nextQueue.add(tempUser);
                     }
                 }
             }
+
+
+            /*
+            if (tempUser.isFinished() || ((tempUser.getTimeout() + tempUser.getArrivalTime()) < mainTicker) && !tempUser.isInElevator()) {
+                if (tempUser.getTimeout() + tempUser.getArrivalTime() > mainTicker) {
+                    System.out.println("\tR\t DEBUG - removing user " + tempUser.getId() + " due to timeout: " + (tempUser.getTimeout() + tempUser.getArrivalTime()) + " < " + mainTicker);
+                    removingUsers.add(tempUser);
+                } else {
+                    removingUsers.add(tempUser);
+                    System.out.println("\tR\t DEBUG - removing user " + tempUser.getId());
+                }
+            }
+            for (User u : removingUsers)
+                queue.remove(u);
+            */
 
             // 3. update old queue
             queue = nextQueue;
@@ -122,26 +141,6 @@ public class Simulation {
                 for (User u : database.keySet()) {
                     Lift l = database.get(u);
 
-                    /*
-                    if (!u.isInElevator() && l.getDirection() == 0) {
-                        if (l.getCurrentLevel() < u.getSourceId()) {
-                            l.setDirection(1);
-                        } else if (l.getCurrentLevel() > u.getSourceId()) {
-                            l.setDirection(-1);
-                        } else if (l.getCurrentLevel() == u.getSourceId()) {
-                            l.setDirection(0);
-                        }
-                    } else if (l.getDirection() == 0){
-                        if (l.getCurrentLevel() < u.getDestinationId()) {
-                            l.setDirection(1);
-                        } else if (l.getCurrentLevel() > u.getDestinationId()) {
-                            l.setDirection(-1);
-                        } else if (l.getCurrentLevel() == u.getDestinationId()) {
-                            l.setDirection(0);
-                        }
-                    }
-                    */
-
                     if (l.getHandlingUsers().contains(u) && !u.isHandled()) {
                         if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) { // UITSTAPPEN
                             System.out.println(
@@ -159,7 +158,19 @@ public class Simulation {
                             l.setBoardingDelay(l.getBoardingDelay() + u.getBoardingTime());
                         }
                     }
+
+                    if (u.isFinished() || ((u.getTimeout() + u.getArrivalTime()) < mainTicker) && !u.isInElevator()) {
+                        if (u.getTimeout() + u.getArrivalTime() > mainTicker) {
+                            System.out.println("\tR\t DEBUG - removing user " + u.getId() + " due to timeout: " + (u.getTimeout() + u.getArrivalTime()) + " < " + mainTicker);
+                            removingUsers.add(u);
+                        } else {
+                            removingUsers.add(u);
+                            System.out.println("\tR\t DEBUG - removing user " + u.getId());
+                        }
+                    }
                 }
+                for (User u : removingUsers)
+                    queue.remove(u);
 
                 // 5. handle elevator handlings
                 for (Lift l : ec.getLifts()) {
@@ -193,7 +204,15 @@ public class Simulation {
                                 }
                                 break;
                             case "boarding":
-                                if (l.getOperationTimer() + l.getBoardingDelay() >= mainTicker) {
+                                double delay = 0;
+                                for (User u : l.getHandlingUsers()) {
+                                    if ((u.getSourceId() == l.getCurrentLevel() && !u.isInElevator())
+                                            || u.getDestinationId() == l.getCurrentLevel()) {
+                                        delay += u.getBoardingTime();
+                                    }
+                                }
+
+                                if (l.getOperationTimer() + delay >= mainTicker) {
                                     l.setMode("closing");
                                     l.setOperationTimer(mainTicker);
                                 }
@@ -204,7 +223,7 @@ public class Simulation {
                                     l.setMovingTimer(mainTicker);
                                     l.setBoardingDelay(0);
 
-                                    List<User> removingUsers = new ArrayList<>();
+                                    removingUsers = new ArrayList<>();
 
                                     for (User u : l.getHandlingUsers()) {
                                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
@@ -214,7 +233,6 @@ public class Simulation {
                                             if (l.getUsersGettingIn() == 0)
                                                 throw new Exception();
                                             l.setUsersGettingIn(l.getUsersGettingIn() - 1);
-
 
                                             System.out.println("\t!!!\t DEBUG - Amount of users in elevator: " + l.getCurrentUsers());
                                             if (l.getCurrentUsers() == 1) {
@@ -245,8 +263,15 @@ public class Simulation {
 
                                     for (User u : removingUsers)
                                         l.removeHandlingUser(u);
-                                    ;
 
+                                    if (l.getHandlingUsers().size() == 1) {
+                                        l.setDestination(l.getHandlingUsers().get(0).getDestinationId());
+                                        if (l.getCurrentLevel() > l.getHandlingUsers().get(0).getDestinationId()) {
+                                            l.setDirection(-1);
+                                        } else {
+                                            l.setDirection(1);
+                                        }
+                                    }
                                 }
                                 break;
                             default:
@@ -257,7 +282,7 @@ public class Simulation {
                     }
                 }
                 System.out.println();
-                List<User> removingUsers = new ArrayList<>();
+                removingUsers = new ArrayList<>();
                 // 6. follow-up from 5 -> remove handled/timed-out users
                 for (User u : database.keySet())
                     if (u.isFinished()) {
@@ -316,7 +341,7 @@ public class Simulation {
         int distance = ec.getLevels().size() + 100;
         // first check if there are no idle elevators || WE DO CHECK ON CAPACITY, BUG-PREVENTION
         for (Lift l : ec.getLifts()) {
-            if (l.getDirection() == 0) {
+            if (l.getDirection() == 0 && l.getRange().contains(u.getSourceId())) {
                 if (distance > Math.abs(u.getSourceId() - l.getCurrentLevel())
                         && l.getCurrentUsers() < l.getCapacity()) {
                     returnLift = l;
@@ -324,13 +349,6 @@ public class Simulation {
                 }
             }
         }
-
-        /**
-         * UITBREIDING: Wat als lift niet weet wat de u.getDestinationId is? ...
-         * user mogelijkheid geven in te stappen op huidige niveau dan kijken of
-         * lift mogelijk is en dan terug uitstappen -> extra delay D: maar wel
-         * realistisch?
-         */
 
         // check if we can assign a lift which is in use
         for (Lift l : ec.getLifts()) {
@@ -340,7 +358,8 @@ public class Simulation {
                     && l.getCurrentUsers() < l.getCapacity() && l.getRange().contains(u.getSourceId())
                     && l.getRange().contains(u.getDestinationId())) {
                 if (l.getDirection() == 1 && l.getDestination() >= u.getSourceId()
-                        && l.getCurrentLevel() <= u.getSourceId()) {
+                        && l.getCurrentLevel() <= u.getSourceId()
+                        && u.isUp()) {
                     // ^^check if on path (UP)
                     /**
                      * Nog iets doen hier?
@@ -350,7 +369,8 @@ public class Simulation {
                         distance = Math.abs(u.getSourceId() - l.getCurrentLevel());
                     }
                 } else if (l.getDirection() == -1 && l.getDestination() <= u.getSourceId()
-                        && l.getCurrentLevel() >= u.getSourceId()) {
+                        && l.getCurrentLevel() >= u.getSourceId()
+                        && !u.isUp()) {
                     // ^^check if on path (DOWN)
                     /**
                      * Nog iets doen hier?
@@ -361,6 +381,64 @@ public class Simulation {
                     }
                 }
             }
+        }
+
+        if (returnLift == null) {
+            boolean rip = true;
+            for (Lift l : ec.getLifts()) {
+                if (l.getRange().contains(u.getSourceId()) && l.getRange().contains(u.getDestinationId())) {
+                    rip = false;
+                }
+            }
+
+            if (rip) {
+                //geen lift kan de gebruiker volledig helpen...
+                int afstand = Integer.MAX_VALUE;
+
+                for (Lift l : ec.getLifts()) {
+                    if (l.getDirection() == 0 && l.getRange().contains(u.getSourceId())) {
+                        for (int i = 0; i < l.getRange().size(); i++) {
+                            if (Math.abs(l.getRange().get(i).getId() - u.getSourceId()) < afstand) {
+                                returnLift = l;
+                                afstand = Math.abs(l.getRange().get(i).getId() - u.getSourceId());
+                            }
+                        }
+                    }
+                }
+
+
+                if (returnLift == null) {
+                    for (Lift l : ec.getLifts()) {
+                        // check if available (in use)
+                        if (l.getUnavailableUntil() > mainTicker
+                                // check if full && is able to handle
+                                && l.getCurrentUsers() < l.getCapacity()
+                                && l.getRange().contains(u.getSourceId())){
+                            if (l.getDirection() == 1 && l.getDestination() >= u.getSourceId()
+                                    && l.getCurrentLevel() <= u.getSourceId()
+                                    && u.isUp()) {
+                                for (int i = 0; i < l.getRange().size(); i++) {
+                                    if (Math.abs(l.getRange().get(i).getId() - u.getSourceId()) < afstand) {
+                                        returnLift = l;
+                                        afstand = Math.abs(l.getRange().get(i).getId() - u.getSourceId());
+                                    }
+                                }
+
+                            } else if (l.getDirection() == -1 && l.getDestination() <= u.getSourceId()
+                                    && l.getCurrentLevel() >= u.getSourceId()
+                                    && !u.isUp()) {
+                                for (int i = 0; i < l.getRange().size(); i++) {
+                                    if (Math.abs(l.getRange().get(i).getId() - u.getSourceId()) < afstand) {
+                                        returnLift = l;
+                                        afstand = Math.abs(l.getRange().get(i).getId() - u.getSourceId());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         return returnLift;
