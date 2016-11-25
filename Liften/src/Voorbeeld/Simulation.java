@@ -329,6 +329,7 @@ public class Simulation {
         return returnList;
     }
 
+    //TODO LELELELELELE
     public Lift assignElevator(User u) {
         Lift returnLift = null;
         int distance = ec.getLevels().size() + 100;

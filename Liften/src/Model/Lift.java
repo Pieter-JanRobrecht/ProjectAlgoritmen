@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({"id", "capacity", "currentUsers", "levelSpeed", "openingTime", "closingTime", "range",
         "startLevel", "currentLevel", "direction"})
@@ -277,8 +278,7 @@ public class Lift {
 
     public void initiateLift() {
         currentUsers = 0;
-        if (range != null)
-            currentLevel = range.get(0).getId();
+        currentLevel = startLevel;
         direction = 0; // idle
         unavailableUntil = -1;
         destination = -1;
