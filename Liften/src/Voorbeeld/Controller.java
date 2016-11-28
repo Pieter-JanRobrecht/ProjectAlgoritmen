@@ -60,7 +60,7 @@ public class Controller {
 
     private ManagementSystem ms = null;
 
-    public static final int ANIMATIE_DUUR = 250;
+    public static final int ANIMATIE_DUUR = 1000;
     private static final int AFSTAND_TUSSEN_LIFTEN = 70;
     private static final int LENGTE_GANG = 200;
     private int AANTAL_VERDIEPINGEN;
@@ -228,7 +228,6 @@ public class Controller {
             lift.setTranslateY(LENGTE_Y / 2 + ms.getLifts().get(i).getStartLevel() * (LENGTE_Y + VEILIGHEIDSAFSTAND + DIKTE_VERDIEP / 2));
             xForm.getChildren().add(lift);
             ms.getLifts().get(i).setBox(lift);
-//            liften.add(lift);
         }
 
         Box verdieping;
@@ -310,28 +309,35 @@ public class Controller {
 
     public SequentialTransition moveUserToElevator(User user, Lift elevatorId) {
         SequentialTransition sq = new SequentialTransition();
-//        if(sq.getStatus() == Animation.Status.RUNNING){
         user.getSphere().setVisible(true);
-//        }
         double afstandAfTeLeggenX;
         double afstandAfTeLeggenZ;
 
+        TranslateTransition part1 = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
+        afstandAfTeLeggenX = -LENGTE_GANG / 2;
+        part1.setToX(afstandAfTeLeggenX);
+        part1.setFromY(user.getSphere().getTranslateY());
+
         if (elevatorId.getId() % 2 == 0) {
-            afstandAfTeLeggenX = LENGTE_GANG / 2 - DIKTE_USER;
-            afstandAfTeLeggenZ = START_USER + LENGTE_Z / 2 + elevatorId.getId() / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
+            afstandAfTeLeggenZ = LENGTE_Z / 2 + elevatorId.getId() / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
         } else {
-            afstandAfTeLeggenX = -LENGTE_GANG / 2 + DIKTE_USER;
-            afstandAfTeLeggenZ = START_USER + LENGTE_Z / 2 + (elevatorId.getId() - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
+            afstandAfTeLeggenZ = LENGTE_Z / 2 + (elevatorId.getId() - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z);
         }
-        TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
-        tx.setFromY(user.getSphere().getTranslateY());
-        tx.setByX(afstandAfTeLeggenX);
 
         TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
         tz.setFromY(user.getSphere().getTranslateY());
-        tz.setByZ(afstandAfTeLeggenZ);
+        tz.setToZ(afstandAfTeLeggenZ);
 
-        sq.getChildren().addAll(tz, tx);
+        if (elevatorId.getId() % 2 == 0) {
+            afstandAfTeLeggenX = -DIKTE_USER;
+        } else {
+            afstandAfTeLeggenX = -LENGTE_GANG + DIKTE_USER;
+        }
+        TranslateTransition part2 = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
+        part2.setFromY(user.getSphere().getTranslateY());
+        part2.setToX(afstandAfTeLeggenX);
+
+        sq.getChildren().addAll(part1, tz, part2);
 
         sq.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
@@ -348,7 +354,7 @@ public class Controller {
         ColorTransition c = new ColorTransition(lift.getBox(), Color.GREEN);
         if (lift.getCapacity() == lift.getCurrentUsers()) {
             System.out.println("\t\t\t COLOR - Color is now RED for elevator " + lift.getId());
-             c = new ColorTransition(lift.getBox(), Color.RED);
+            c = new ColorTransition(lift.getBox(), Color.RED);
         }
         if (lift.getCurrentUsers() >= lift.getCapacity() / 2 && lift.getCurrentUsers() < lift.getCapacity()) {
             System.out.println("\t\t\t COLOR - Color is now ORANGE for elevator " + lift.getId());
@@ -371,7 +377,7 @@ public class Controller {
         });
 
         ParallelTransition p = new ParallelTransition();
-        p.getChildren().addAll(c,tt);
+        p.getChildren().addAll(c, tt);
         return p;
     }
 
@@ -390,15 +396,10 @@ public class Controller {
     }
 
     public SequentialTransition userExitElevator(User user, Lift lift) {
-
         SequentialTransition sq = new SequentialTransition();
 
         TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
-        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR * 2), user.getSphere());
-
-//        if(sq.getStatus() == Animation.Status.RUNNING){
         user.getSphere().setVisible(true);
-//        }
 
         ColorTransition c = new ColorTransition(lift.getBox(), Color.GREEN);
         if (lift.getCapacity() == lift.getCurrentUsers()) {
@@ -415,25 +416,44 @@ public class Controller {
         }
 
         int afstandX;
-        int afstandZ;
         if (lift.getId() % 2 == 0) {
-            afstandX = -(LENGTE_X / 2 + LENGTE_GANG / 2);
-            afstandZ = -(START_USER * 3 + LENGTE_Z / 2 + lift.getId() / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
+            afstandX = -(LENGTE_X / 2 + DIKTE_USER);
         } else {
-            afstandX = (LENGTE_X / 2 + LENGTE_GANG / 2);
-            afstandZ = -(START_USER * 3 + LENGTE_Z / 2 + (lift.getId() - 1) / 2 * (AFSTAND_TUSSEN_LIFTEN + LENGTE_Z));
+            afstandX = (LENGTE_X / 2 + DIKTE_USER);
         }
         tx.setByX(afstandX);
         tx.setFromY(user.getSphere().getTranslateY());
-        tz.setByZ(afstandZ);
-        tz.setFromY(user.getSphere().getTranslateY());
 
-        sq.getChildren().addAll(c, tx, tz);
+        sq.getChildren().addAll(c, tx);
 
-        tz.setOnFinished(event -> {
-            user.getSphere().setVisible(false);
+        tx.setOnFinished(event -> {
             System.out.println("\t\t GUI - User " + user.getId() + " left elevator " + lift.getId());
         });
+        return sq;
+    }
+
+    public SequentialTransition userLeaveHall(User user) {
+        SequentialTransition sq = new SequentialTransition();
+
+        TranslateTransition tx = new TranslateTransition(Duration.millis(ANIMATIE_DUUR), user.getSphere());
+        TranslateTransition tz = new TranslateTransition(Duration.millis(ANIMATIE_DUUR * 2), user.getSphere());
+
+        tx.setFromY(user.getSphere().getTranslateY());
+        tz.setFromY(user.getSphere().getTranslateY());
+
+        tx.setToX(-LENGTE_GANG / 2);
+        tz.setToZ(-START_USER * 2);
+
+        sq.getChildren().addAll(tx,tz);
+
+        tz.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("\t\t GUI - User "+user.getId()+ " is leaving the hall");
+                user.getSphere().setVisible(false);
+            }
+        });
+
         return sq;
     }
 

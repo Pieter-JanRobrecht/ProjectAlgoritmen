@@ -6,6 +6,7 @@ import Model.Lift;
 import Model.ManagementSystem;
 import Model.User;
 import javafx.animation.ParallelTransition;
+import javafx.animation.SequentialTransition;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -256,7 +257,12 @@ public class Simulation {
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") left elevator");
 
                                             thisTurnTransition.getChildren().addAll(GUIController.moveUserToLevel(u, l.getCurrentLevel()));
-                                            thisTurnTransition.getChildren().addAll(GUIController.userExitElevator(u, l));
+                                            SequentialTransition sq = new SequentialTransition();
+
+                                            sq.getChildren().addAll(GUIController.userExitElevator(u, l));
+                                            sq.getChildren().addAll(GUIController.userLeaveHall(u));
+
+                                            thisTurnTransition.getChildren().addAll(sq);
 
                                             l.setCurrentUsers(l.getCurrentLevel() - 1);
                                             u.setInElevator(false);
