@@ -34,7 +34,7 @@ public class Simulation {
             hulp = new File(Simulation.class.getClassLoader().getResource("output.csv").toURI());
             writer = new FileWriter(hulp);
 
-            CSVUtils.writeLine(writer, Arrays.asList("LiftId", "Time", "LevelId","UserId","OpenDoor"));
+            CSVUtils.writeLine(writer, Arrays.asList("LiftId", "Time", "LevelId", "UserId", "OpenDoor"));
             writer.flush();
 
         } catch (URISyntaxException e) {
@@ -203,7 +203,7 @@ public class Simulation {
                     for (User u : l.getHandlingUsers()) {
                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
                             System.out.println("\tUser (" + u.getId() + ") should be enterring.. Elevator (" + l.getId()
-                                    + ") mode: " + l.getMode() +" on level "+l.getCurrentLevel());
+                                    + ") mode: " + l.getMode() + " on level " + l.getCurrentLevel());
                         } else if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) { // uitstappen
                             System.out.println("\tUser (" + u.getId() + ") should be leaving.. Elevator (" + l.getId()
                                     + ") mode: " + l.getMode());
@@ -256,7 +256,7 @@ public class Simulation {
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") left elevator");
 
                                             thisTurnTransition.getChildren().addAll(GUIController.moveUserToLevel(u, l.getCurrentLevel()));
-                                            thisTurnTransition.getChildren().addAll(GUIController.userExitElevator(u,l));
+                                            thisTurnTransition.getChildren().addAll(GUIController.userExitElevator(u, l));
 
                                             l.setCurrentUsers(l.getCurrentLevel() - 1);
                                             u.setInElevator(false);
@@ -311,6 +311,39 @@ public class Simulation {
 
         System.out.println("\t\t GUI - Playing everything");
         GUIController.sequence.play();
+    }
+
+    private void writeToCsv(Lift tempLift, boolean open) {
+        String users = createUserString(tempLift);
+        ArrayList<String> info = new ArrayList<>();
+
+        info.add(tempLift.getId() + "");
+        info.add(mainTicker + "");
+        info.add(tempLift.getCurrentLevel() + "");
+        info.add(users);
+        if (open) {
+            info.add("true");
+        } else {
+            info.add("false");
+        }
+
+        try {
+            CSVUtils.writeLine(writer, info);
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String createUserString(Lift tempLift) {
+        StringBuilder users = new StringBuilder();
+        for (int i = 0; i < tempLift.getHandlingUsers().size(); i++) {
+            users.append(tempLift.getHandlingUsers().get(i).getId());
+            if (i != tempLift.getHandlingUsers().size() - 1) {
+                users.append(",");
+            }
+        }
+        return users.toString();
     }
 
     public void addValidUsers(int time) {
