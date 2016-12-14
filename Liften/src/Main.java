@@ -3,6 +3,7 @@
 //import java.net.URISyntaxException;
 //
 //import Voorbeeld.Simulation;
+import Model.User;
 //import com.fasterxml.jackson.core.JsonParseException;
 //import com.fasterxml.jackson.databind.DeserializationFeature;
 //import com.fasterxml.jackson.databind.JsonMappingException;
@@ -24,20 +25,20 @@
 //
 //    	ManagementSystem ms = null;
 //
-//			try {
-//			ms = objectMapper.readValue(file, ManagementSystem.class);
-//		} catch (JsonParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (JsonMappingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-////        if (ms != null) {
+        try {
+            ms = (ManagementSystem) objectMapper.readValue(file, ManagementSystem.class);
+            for(User u : ms.getUsers())
+                u.initialize();
+        } catch (JsonParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 ////        	System.out.println(ms.getLevels().toString());
 ////        	System.out.println("\n");
 ////        	System.out.println(ms.getLifts().toString());
