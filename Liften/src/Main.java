@@ -25,20 +25,20 @@ import Model.User;
 //
 //    	ManagementSystem ms = null;
 //
-        try {
-            ms = (ManagementSystem) objectMapper.readValue(file, ManagementSystem.class);
-            for(User u : ms.getUsers())
-                u.initialize();
-        } catch (JsonParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        try {
+//            ms = (ManagementSystem) objectMapper.readValue(file, ManagementSystem.class);
+//            for(User u : ms.getUsers())
+//                u.initialize();
+//        } catch (JsonParseException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (JsonMappingException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 ////        	System.out.println(ms.getLevels().toString());
 ////        	System.out.println("\n");
 ////        	System.out.println(ms.getLifts().toString());

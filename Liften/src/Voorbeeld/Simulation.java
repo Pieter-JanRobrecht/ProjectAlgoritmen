@@ -313,53 +313,55 @@ public class Simulation {
                                     for (User u : removingUsers) {
                                         l.removeHandlingUser(u);
 
-                                    if (l.getHandlingUsers().size() == 1) {
-                                        l.setDestination(l.getHandlingUsers().get(0).getDestinationId());
-                                        if (l.getCurrentLevel() > l.getHandlingUsers().get(0).getDestinationId()) {
-                                            l.setDirection(-1);
-                                        } else {
-                                            l.setDirection(1);
+                                        if (l.getHandlingUsers().size() == 1) {
+                                            l.setDestination(l.getHandlingUsers().get(0).getDestinationId());
+                                            if (l.getCurrentLevel() > l.getHandlingUsers().get(0).getDestinationId()) {
+                                                l.setDirection(-1);
+                                            } else {
+                                                l.setDirection(1);
+                                            }
                                         }
                                     }
+                                    break;
                                 }
-                                break;
+
                             default:
                                 System.out
                                         .println("\t!\t DEBUG - (" + l.getMode() + ").. this mode is not an elevator mode");
                                 break;
                         }
                     }
-                }
-                System.out.println();
-                removingUsers = new ArrayList<>();
-                // 6. follow-up from 4 -> remove handled/timed-out users
-                for (User u : database.keySet())
-                    if (u.isFinished()) {
-                        removingUsers.add(u);
-                        System.out.println("\tR\t DEBUG - removing user " + u.getId());
-                    }
-                for (User u : removingUsers)
-                    database.remove(u);
+                    System.out.println();
+                    removingUsers = new ArrayList<>();
+                    // 6. follow-up from 4 -> remove handled/timed-out users
+                    for (User u : database.keySet())
+                        if (u.isFinished()) {
+                            removingUsers.add(u);
+                            System.out.println("\tR\t DEBUG - removing user " + u.getId());
+                        }
+                    for (User u : removingUsers)
+                        database.remove(u);
 
-                // 7. handle elevator movements
-                for (Lift l : ec.getLifts()) {
-                    if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() <= mainTicker && (l.getUsersGettingIn() + l.getUsersGettingOut()) == 0) {
-                        l.setNextLevel(thisTurnTransition, GUIController);
-                        l.setMovingTimer(mainTicker);
-                        System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
-                                + ", next movement in atleast " + (l.getMovingTimer() + l.getLevelSpeed()));
+                    // 7. handle elevator movements
+                    for (Lift lift : ec.getLifts()) {
+                        if (lift.getDirection() != 0 && lift.getMovingTimer() + lift.getLevelSpeed() <= mainTicker && (lift.getUsersGettingIn() + lift.getUsersGettingOut()) == 0) {
+                            lift.setNextLevel(thisTurnTransition, GUIController);
+                            lift.setMovingTimer(mainTicker);
+                            System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
+                                    + ", next movement in atleast " + (lift.getMovingTimer() + lift.getLevelSpeed()));
+                        }
                     }
                 }
+                System.out.println("\t\t GUI - End of gametick adding parallelmovement");
+                GUIController.sequence.getChildren().addAll(thisTurnTransition);
+
+                mainTicker++;
             }
-            System.out.println("\t\t GUI - End of gametick adding parallelmovement");
-            GUIController.sequence.getChildren().addAll(thisTurnTransition);
+            System.out.println("DEBUG - queue size: " + queue.size() + " | Userlist size: " + ec.getUsers().size());
 
-            mainTicker++;
+            System.out.println("\t\t GUI - Playing everything");
+            GUIController.sequence.play();
         }
-        System.out.println("DEBUG - queue size: " + queue.size() + " | Userlist size: " + ec.getUsers().size());
-
-        System.out.println("\t\t GUI - Playing everything");
-        GUIController.sequence.play();
     }
 
     private void writeToCsv(Lift tempLift, boolean open) {
@@ -513,7 +515,7 @@ public class Simulation {
                         if (l.getUnavailableUntil() > mainTicker
                                 // check if full && is able to handle
                                 && l.getCurrentUsers() < l.getCapacity()
-                                && l.getRange().contains(u.getSourceId())){
+                                && l.getRange().contains(u.getSourceId())) {
                             if (l.getDirection() == 1 && l.getDestination() >= u.getSourceId()
                                     && l.getCurrentLevel() <= u.getSourceId()
                                     && u.isUp()) {

@@ -478,6 +478,8 @@ public class Controller {
 
         try {
             ms = objectMapper.readValue(file, ManagementSystem.class);
+            for(User u : ms.getUsers())
+                u.initialize();
         } catch (JsonParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
