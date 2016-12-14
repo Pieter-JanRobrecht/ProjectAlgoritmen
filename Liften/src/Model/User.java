@@ -43,8 +43,8 @@ public class User {
     private boolean finished;
     private boolean handled;
 
-    private int originalSource;
-    private int originalDestination;
+    private int originalSource = -1;
+    private int originalDestination = -1;
     private boolean liftHopper;
 
     private boolean up;
