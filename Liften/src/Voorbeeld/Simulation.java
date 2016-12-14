@@ -331,38 +331,39 @@ public class Simulation {
                                 break;
                         }
                     }
-                    System.out.println();
-                    removingUsers = new ArrayList<>();
-                    // 6. follow-up from 4 -> remove handled/timed-out users
-                    for (User u : database.keySet())
-                        if (u.isFinished()) {
-                            removingUsers.add(u);
-                            System.out.println("\tR\t DEBUG - removing user " + u.getId());
-                        }
-                    for (User u : removingUsers)
-                        database.remove(u);
+                }
+                System.out.println();
+                removingUsers = new ArrayList<>();
+                // 6. follow-up from 4 -> remove handled/timed-out users
+                for (User u : database.keySet())
+                    if (u.isFinished()) {
+                        removingUsers.add(u);
+                        System.out.println("\tR\t DEBUG - removing user " + u.getId());
+                    }
+                for (User u : removingUsers)
+                    database.remove(u);
 
-                    // 7. handle elevator movements
-                    for (Lift lift : ec.getLifts()) {
-                        if (lift.getDirection() != 0 && lift.getMovingTimer() + lift.getLevelSpeed() <= mainTicker && (lift.getUsersGettingIn() + lift.getUsersGettingOut()) == 0) {
-                            lift.setNextLevel(thisTurnTransition, GUIController);
-                            lift.setMovingTimer(mainTicker);
-                            System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
-                                    + ", next movement in atleast " + (lift.getMovingTimer() + lift.getLevelSpeed()));
-                        }
+                // 7. handle elevator movements
+                for (Lift lift : ec.getLifts()) {
+                    if (lift.getDirection() != 0 && lift.getMovingTimer() + lift.getLevelSpeed() <= mainTicker && (lift.getUsersGettingIn() + lift.getUsersGettingOut()) == 0) {
+                        lift.setNextLevel(thisTurnTransition, GUIController);
+                        lift.setMovingTimer(mainTicker);
+                        System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
+                                + ", next movement in atleast " + (lift.getMovingTimer() + lift.getLevelSpeed()));
                     }
                 }
-                System.out.println("\t\t GUI - End of gametick adding parallelmovement");
-                GUIController.sequence.getChildren().addAll(thisTurnTransition);
-
-                mainTicker++;
             }
-            System.out.println("DEBUG - queue size: " + queue.size() + " | Userlist size: " + ec.getUsers().size());
+            System.out.println("\t\t GUI - End of gametick adding parallelmovement");
+            GUIController.sequence.getChildren().addAll(thisTurnTransition);
 
-            System.out.println("\t\t GUI - Playing everything");
-            GUIController.sequence.play();
+            mainTicker++;
         }
+        System.out.println("DEBUG - queue size: " + queue.size() + " | Userlist size: " + ec.getUsers().size());
+
+        System.out.println("\t\t GUI - Playing everything");
+        GUIController.sequence.play();
     }
+
 
     private void writeToCsv(Lift tempLift, boolean open) {
         String users = createUserString(tempLift);
