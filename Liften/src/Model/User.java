@@ -46,9 +46,9 @@ public class User {
 
     @JsonIgnore
     private Sphere sphere;
+    private int originalSource = -1;
+    private int originalDestination = -1;
     
-    private int originalSource;
-    private int originalDestination;
     private boolean liftHopper;
 
     private boolean up;
