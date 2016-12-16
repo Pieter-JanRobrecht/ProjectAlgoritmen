@@ -69,7 +69,7 @@ public class Simulation {
                 if (!tempUser.isFinished()) {
                     Lift tempLift = assignElevator(tempUser);
                     if (tempLift != null) {
-                        System.out.println("\tE\t DEBUG - Elevator found, " + tempUser.getId() + " assigned elevator "
+                        System.out.println("\tE\t DEBUG - Elevator found, user " + tempUser.getId() + " assigned elevator "
                                 + tempLift.getId());
                         database.put(tempUser, tempLift);
 
@@ -354,7 +354,7 @@ public class Simulation {
         int distance = ec.getLevels().size() + 100;
         // first check if there are no idle elevators || WE DO CHECK ON CAPACITY, BUG-PREVENTION
         for (Lift l : ec.getLifts()) {
-            if (l.getDirection() == 0 && l.isInRange(u.getSourceId())) {
+            if (l.getDirection() == 0 && l.isInRange(u.getSourceId()) && l.isInRange(u.getDestinationId())) {
                 if (distance > Math.abs(u.getSourceId() - l.getCurrentLevel())
                         && l.getCurrentUsers() < l.getCapacity()) {
                     returnLift = l;
@@ -363,41 +363,45 @@ public class Simulation {
             }
         }
 
-        // check if we can assign a lift which is in use
-        for (Lift l : ec.getLifts()) {
-            // check if available (in use)
-            if (l.getUnavailableUntil() > mainTicker
-                    // check if full && is able to handle
-                    && l.getCurrentUsers() < l.getCapacity() && l.isInRange(u.getSourceId())
-                    && l.isInRange(u.getDestinationId())) {
-                if (l.getDirection() == 1 && l.getDestination() >= u.getSourceId()
-                        && l.getCurrentLevel() <= u.getSourceId()
-                        && u.isUp()) {
-                    // ^^check if on path (UP)
-                    /**
-                     * Nog iets doen hier?
-                     */
-                    if (distance > Math.abs(u.getSourceId() - l.getCurrentLevel())) {
-                        returnLift = l;
-                        distance = Math.abs(u.getSourceId() - l.getCurrentLevel());
-                    }
-                } else if (l.getDirection() == -1 && l.getDestination() <= u.getSourceId()
-                        && l.getCurrentLevel() >= u.getSourceId()
-                        && !u.isUp()) {
-                    // ^^check if on path (DOWN)
-                    /**
-                     * Nog iets doen hier?
-                     */
-                    if (distance > Math.abs(u.getSourceId() - l.getCurrentLevel())) {
-                        returnLift = l;
-                        distance = Math.abs(u.getSourceId() - l.getCurrentLevel());
+        if (returnLift == null) {
+            // check if we can assign a lift which is in use
+            for (Lift l : ec.getLifts()) {
+                // check if available (in use)
+                if (l.getUnavailableUntil() > mainTicker
+                        // check if full && is able to handle
+                        && l.getCurrentUsers() < l.getCapacity() && l.isInRange(u.getSourceId())
+                        && l.isInRange(u.getDestinationId())) {
+                    if (l.getDirection() == 1 && l.getDestination() >= u.getSourceId()
+                            && l.getCurrentLevel() <= u.getSourceId()
+                            && u.isUp()) {
+                        // ^^check if on path (UP)
+                        /**
+                         * Nog iets doen hier?
+                         */
+                        if (distance > Math.abs(u.getSourceId() - l.getCurrentLevel())) {
+                            returnLift = l;
+                            distance = Math.abs(u.getSourceId() - l.getCurrentLevel());
+                        }
+                    } else if (l.getDirection() == -1 && l.getDestination() <= u.getSourceId()
+                            && l.getCurrentLevel() >= u.getSourceId()
+                            && !u.isUp()) {
+                        // ^^check if on path (DOWN)
+                        /**
+                         * Nog iets doen hier?
+                         */
+                        if (distance > Math.abs(u.getSourceId() - l.getCurrentLevel())) {
+                            returnLift = l;
+                            distance = Math.abs(u.getSourceId() - l.getCurrentLevel());
+                        }
+
+
                     }
                 }
             }
         }
 
         if (returnLift == null) {
-            System.out.println("\tL\t DEBUG - no suitable elevator found at the moment");
+            System.out.println("\tL\t DEBUG - no suitable elevator found at the moment for user " + u.getId());
             boolean rip = true;
             for (Lift l : ec.getLifts()) {
                 //System.out.println(u.getSourceId() + " & " + u.getDestinationId() + " in " + l.toString());
@@ -409,16 +413,16 @@ public class Simulation {
 
             if (rip) {
                 //geen lift kan de gebruiker volledig helpen...
-                System.out.println("\tL\t DEBUG - There exists no elevator who can support this user");
+                System.out.println("\tL\t DEBUG - There exists no elevator who can support user " + u.getId());
                 int afstand = Integer.MAX_VALUE;
 
                 //kijken naar liften die idle zijn (direction == 0)
                 for (Lift l : ec.getLifts()) {
                     if (l.getDirection() == 0 && l.isInRange(u.getSourceId())) {
                         for (int i = 0; i < l.getRange().size(); i++) {
-                            if (Math.abs(l.getRange().get(i).getId() - u.getSourceId()) < afstand) {
+                            if (l.getRange().get(i).getId() - u.getSourceId() < afstand && l.getRange().get(i).getId() - u.getSourceId() > 0) {
                                 returnLift = l;
-                                afstand = Math.abs(l.getRange().get(i).getId() - u.getSourceId());
+                                afstand = l.getRange().get(i).getId() - u.getSourceId();
                             }
                         }
                     }
