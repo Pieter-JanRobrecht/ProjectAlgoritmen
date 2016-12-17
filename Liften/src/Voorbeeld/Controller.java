@@ -31,6 +31,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,6 +89,8 @@ public class Controller {
     private double mouseOldY;
     private double mouseDeltaX;
     private double mouseDeltaY;
+
+    private Simulation sim;
 
     private File file = null;
 
@@ -262,7 +265,7 @@ public class Controller {
 
     @FXML
     void startSimulatie(ActionEvent event) {
-        Simulation sim = new Simulation(ms);
+        sim = new Simulation(ms);
         sim.setGUIController(this);
         try {
             sim.startSimulationSimple();
@@ -594,5 +597,34 @@ public class Controller {
 
     public Application getApplication() {
         return application;
+    }
+
+    public void showData() {
+        Stage primaryStage = new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        InputStream s = null;
+        try{
+            s = getClass().getClassLoader().getResource("data.fxml").openStream();
+        }catch(Exception e){
+
+        }
+        Parent root = null;
+        try {
+            root = (Parent) loader.load(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Setten van enkele elementen van het hoofdscherm
+        primaryStage.setTitle("Kranen probleem");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+
+        //Ophalen van de controller horende bij de view klasse
+         DataController dataController = loader.<DataController>getController() ;
+        assert(dataController != null);
+
+        dataController.setSimulation(sim);
+        dataController.showData();
     }
 }

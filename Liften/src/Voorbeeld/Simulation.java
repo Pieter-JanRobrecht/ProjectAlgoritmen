@@ -446,6 +446,7 @@ public class Simulation {
 
         System.out.println("\tGUI - Playing everything");
         GUIController.sequence.play();
+        GUIController.showData();
     }
 
 
