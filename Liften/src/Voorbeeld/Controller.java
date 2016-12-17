@@ -473,7 +473,7 @@ public class Controller {
     public void makeWorld() {
         File file = null;
         try {
-            file = new File(Controller.class.getClassLoader().getResource("original.json").toURI());
+            file = new File(Controller.class.getClassLoader().getResource("testLiftHopping.json").toURI());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

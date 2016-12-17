@@ -391,6 +391,8 @@ public class Simulation {
             }
 
             System.out.println("\t\t GUI - End of gametick adding parallelmovement");
+            if(GUIController == null)
+                System.out.println("k aooo");
             GUIController.sequence.getChildren().addAll(thisTurnTransition);
             mainTicker++;
         }

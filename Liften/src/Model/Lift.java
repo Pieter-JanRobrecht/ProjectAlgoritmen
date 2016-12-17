@@ -10,42 +10,55 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import DataGenereren.Exclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({"id", "capacity", "currentUsers", "levelSpeed", "openingTime", "closingTime", "range",
         "startLevel", "currentLevel", "direction"})
 public class Lift {
 
-    @JsonProperty("id")
-    private Integer id;
-    @JsonProperty("capacity")
-    private Integer capacity;
-    @JsonProperty("levelSpeed")
-    private Double levelSpeed;
-    @JsonProperty("openingTime")
-    private Double openingTime;
-    @JsonProperty("closingTime")
-    private Double closingTime;
-    @JsonProperty("range")
-    private List<Range> range = new ArrayList<Range>();
-    @JsonProperty("startLevel")
-    private Integer startLevel;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	@JsonProperty("id")
+	private Integer id;
+	@JsonProperty("capacity")
+	private Integer capacity;
+	@JsonProperty("levelSpeed")
+	private Double levelSpeed;
+	@JsonProperty("openingTime")
+	private Double openingTime;
+	@JsonProperty("closingTime")
+	private Double closingTime;
+	@JsonProperty("range")
+	private List<Range> range = new ArrayList<Range>();
+	@JsonProperty("startLevel")
+	private Integer startLevel;
+	//@JsonIgnore
+//	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	
+	@Exclude
+	private int currentUsers;
+	@Exclude
+	private int currentLevel;
+	@Exclude
+	private int direction;
+	@Exclude
+	private int unavailableUntil;
+	@Exclude
+	private int destination;
+	@Exclude
+	private int operationTimer;
+	@Exclude
+	private String mode;
+	@Exclude
+	private int movingTimer;
+	
+	@Exclude
+	private int usersGettingIn;
+	@Exclude
+	private int usersGettingOut;
 
-    private int currentUsers;
-    private int currentLevel;
-    private int direction;
-    private int unavailableUntil;
-    private int destination;
-    private int operationTimer;
-    private String mode;
-    private int movingTimer;
-
-    private int usersGettingIn;
-    private int usersGettingOut;
-    private List<User> handlingUsers;
-    private double boardingDelay;
+	private List<User> handlingUsers;
+	@Exclude
+	private double boardingDelay;
 
     @JsonIgnore
     private Box box;
@@ -66,61 +79,53 @@ public class Lift {
         this.id = id;
     }
 
-    /**
-     * @return The capacity
-     */
-    @JsonProperty("capacity")
-    public Integer getCapacity() {
-        return capacity;
-    }
+	/**
+	 * 
+	 * @return The levelSpeed
+	 */
+	@JsonProperty("levelSpeed")
+	public Double getLevelSpeed() {
+		return levelSpeed;
+	}
 
-    /**
-     * @param capacity The capacity
-     */
-    @JsonProperty("capacity")
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
-    }
+	/**
+	 * 
+	 * @param levelSpeed2
+	 *            The levelSpeed
+	 */
+	@JsonProperty("levelSpeed")
+	public void setLevelSpeed(double levelSpeed2) {
+		this.levelSpeed = levelSpeed2;
+	}
 
-    /**
-     * @return The levelSpeed
-     */
-    @JsonProperty("levelSpeed")
-    public Double getLevelSpeed() {
-        return levelSpeed;
-    }
+	/**
+	 * 
+	 * @return The openingTime
+	 */
+	@JsonProperty("openingTime")
+	public Double getOpeningTime() {
+		return openingTime;
+	}
 
-    /**
-     * @param levelSpeed The levelSpeed
-     */
-    @JsonProperty("levelSpeed")
-    public void setLevelSpeed(Double levelSpeed) {
-        this.levelSpeed = levelSpeed;
-    }
+	/**
+	 * 
+	 * @param d
+	 *            The openingTime
+	 */
+	@JsonProperty("openingTime")
+	public void setOpeningTime(double d) {
+		this.openingTime = d;
+	}
 
-    /**
-     * @return The openingTime
-     */
-    @JsonProperty("openingTime")
-    public Double getOpeningTime() {
-        return openingTime;
-    }
+	/**
+	 * 
+	 * @return The closingTime
+	 */
+	@JsonProperty("closingTime")
+	public Double getClosingTime() {
+		return closingTime;
+	}
 
-    /**
-     * @param openingTime The openingTime
-     */
-    @JsonProperty("openingTime")
-    public void setOpeningTime(Double openingTime) {
-        this.openingTime = openingTime;
-    }
-
-    /**
-     * @return The closingTime
-     */
-    @JsonProperty("closingTime")
-    public Double getClosingTime() {
-        return closingTime;
-    }
 
     /**
      * @param closingTime The closingTime
@@ -146,13 +151,15 @@ public class Lift {
         return false;
     }
 
-    /**
-     * @param range The range
-     */
-    @JsonProperty("range")
-    public void setRange(List<Range> range) {
-        this.range = range;
-    }
+//	@JsonAnyGetter
+//	public Map<String, Object> getAdditionalProperties() {
+//		return this.additionalProperties;
+//	}
+//
+//	@JsonAnySetter
+//	public void setAdditionalProperty(String name, Object value) {
+//		this.additionalProperties.put(name, value);
+//	}
 
     /**
      * @return The startLevel
@@ -168,16 +175,6 @@ public class Lift {
     @JsonProperty("startLevel")
     public void setStartLevel(Integer startLevel) {
         this.startLevel = startLevel;
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
     public int getCurrentUsers() {
@@ -258,6 +255,33 @@ public class Lift {
 
     public void setUsersGettingOut(int usersGettingOut) {
         this.usersGettingOut = usersGettingOut;
+    }
+
+    /**
+     *
+     * @param range
+     *            The range
+     */
+    @JsonProperty("range")
+    public void setRange(List<Range> range) {
+        this.range = range;
+    }
+
+    /**
+     * @param capacity The capacity
+     */
+    @JsonProperty("capacity")
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+
+    /**
+     * @return The capacity
+     */
+    @JsonProperty("capacity")
+    public Integer getCapacity() {
+        return capacity;
     }
 
     public List<User> getHandlingUsers() {
@@ -346,7 +370,7 @@ public class Lift {
     public String toString() {
         return "Lift [id=" + id + ", capacity=" + capacity + ", levelSpeed=" + levelSpeed + ", openingTime="
                 + openingTime + ", closingTime=" + closingTime + ", range=" + range + ", startLevel=" + startLevel
-                + ", additionalProperties=" + additionalProperties + ", currentUsers=" + currentUsers
+                + ", currentUsers=" + currentUsers
                 + ", currentLevel=" + currentLevel + ", direction=" + direction + ", unavailableUntil="
                 + unavailableUntil + ", destination=" + destination + ", operationTimer=" + operationTimer + ", mode="
                 + mode + ", movingTimer=" + movingTimer + ", usersGettingIn=" + usersGettingIn + ", usersGettingOut="

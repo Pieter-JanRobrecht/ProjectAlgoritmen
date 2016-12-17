@@ -16,11 +16,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "id"
 })
 public class Level {
+	
+//	public Level(int id){
+//		this.id=id;
+//	}
 
     @JsonProperty("id")
     private Integer id;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+//    @JsonIgnore
+//    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
      * 
@@ -41,16 +45,16 @@ public class Level {
     public void setId(Integer id) {
         this.id = id;
     }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+//
+//    @JsonAnyGetter
+//    public Map<String, Object> getAdditionalProperties() {
+//        return this.additionalProperties;
+//    }
+//
+//    @JsonAnySetter
+//    public void setAdditionalProperty(String name, Object value) {
+//        this.additionalProperties.put(name, value);
+//    }
 
 	@Override
 	public String toString() {
