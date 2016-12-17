@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import javafx.scene.shape.Sphere;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -27,9 +28,9 @@ public class User {
     @JsonProperty("arrivalTime")
     private Double arrivalTime;
     @JsonProperty("boardingTime")
-    private Integer boardingTime;
+    private Double boardingTime;
     @JsonProperty("unboardingTime")
-    private Integer unboardingTime;
+    private Double unboardingTime;
     @JsonProperty("timeout")
     private Integer timeout;
     @JsonProperty("source-id")
@@ -43,8 +44,11 @@ public class User {
     private boolean finished;
     private boolean handled;
 
+    @JsonIgnore
+    private Sphere sphere;
     private int originalSource = -1;
     private int originalDestination = -1;
+    
     private boolean liftHopper;
 
     private boolean up;
@@ -111,7 +115,7 @@ public class User {
      *     The boardingTime
      */
     @JsonProperty("boardingTime")
-    public Integer getBoardingTime() {
+    public Double getBoardingTime() {
         return boardingTime;
     }
 
@@ -121,7 +125,7 @@ public class User {
      *     The boardingTime
      */
     @JsonProperty("boardingTime")
-    public void setBoardingTime(Integer boardingTime) {
+    public void setBoardingTime(Double boardingTime) {
         this.boardingTime = boardingTime;
     }
 
@@ -131,7 +135,7 @@ public class User {
      *     The unboardingTime
      */
     @JsonProperty("unboardingTime")
-    public Integer getUnboardingTime() {
+    public Double getUnboardingTime() {
         return unboardingTime;
     }
 
@@ -141,7 +145,7 @@ public class User {
      *     The unboardingTime
      */
     @JsonProperty("unboardingTime")
-    public void setUnboardingTime(Integer unboardingTime) {
+    public void setUnboardingTime(Double unboardingTime) {
         this.unboardingTime = unboardingTime;
     }
 
@@ -292,5 +296,13 @@ public class User {
                 ", originalDestination=" + originalDestination +
                 ", liftHopper=" + liftHopper +
                 '}';
+    }
+
+    public Sphere getSphere() {
+        return sphere;
+    }
+
+    public void setSphere(Sphere sphere) {
+        this.sphere = sphere;
     }
 }

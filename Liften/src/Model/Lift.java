@@ -1,16 +1,15 @@
 package Model;
 
+import Voorbeeld.Controller;
+import com.fasterxml.jackson.annotation.*;
+import javafx.animation.ParallelTransition;
+import javafx.scene.shape.Box;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({"id", "capacity", "currentUsers", "levelSpeed", "openingTime", "closingTime", "range",
@@ -22,11 +21,11 @@ public class Lift {
     @JsonProperty("capacity")
     private Integer capacity;
     @JsonProperty("levelSpeed")
-    private Integer levelSpeed;
+    private Double levelSpeed;
     @JsonProperty("openingTime")
-    private Integer openingTime;
+    private Double openingTime;
     @JsonProperty("closingTime")
-    private Integer closingTime;
+    private Double closingTime;
     @JsonProperty("range")
     private List<Range> range = new ArrayList<Range>();
     @JsonProperty("startLevel")
@@ -46,7 +45,10 @@ public class Lift {
     private int usersGettingIn;
     private int usersGettingOut;
     private List<User> handlingUsers;
-    private int boardingDelay;
+    private double boardingDelay;
+
+    @JsonIgnore
+    private Box box;
 
     /**
      * @return The id
@@ -84,7 +86,7 @@ public class Lift {
      * @return The levelSpeed
      */
     @JsonProperty("levelSpeed")
-    public Integer getLevelSpeed() {
+    public Double getLevelSpeed() {
         return levelSpeed;
     }
 
@@ -92,7 +94,7 @@ public class Lift {
      * @param levelSpeed The levelSpeed
      */
     @JsonProperty("levelSpeed")
-    public void setLevelSpeed(Integer levelSpeed) {
+    public void setLevelSpeed(Double levelSpeed) {
         this.levelSpeed = levelSpeed;
     }
 
@@ -100,7 +102,7 @@ public class Lift {
      * @return The openingTime
      */
     @JsonProperty("openingTime")
-    public Integer getOpeningTime() {
+    public Double getOpeningTime() {
         return openingTime;
     }
 
@@ -108,7 +110,7 @@ public class Lift {
      * @param openingTime The openingTime
      */
     @JsonProperty("openingTime")
-    public void setOpeningTime(Integer openingTime) {
+    public void setOpeningTime(Double openingTime) {
         this.openingTime = openingTime;
     }
 
@@ -116,7 +118,7 @@ public class Lift {
      * @return The closingTime
      */
     @JsonProperty("closingTime")
-    public Integer getClosingTime() {
+    public Double getClosingTime() {
         return closingTime;
     }
 
@@ -124,7 +126,7 @@ public class Lift {
      * @param closingTime The closingTime
      */
     @JsonProperty("closingTime")
-    public void setClosingTime(Integer closingTime) {
+    public void setClosingTime(Double closingTime) {
         this.closingTime = closingTime;
     }
 
@@ -274,11 +276,11 @@ public class Lift {
         this.handlingUsers.remove(u);
     }
 
-    public int getBoardingDelay() {
+    public double getBoardingDelay() {
         return boardingDelay;
     }
 
-    public void setBoardingDelay(int boardingDelay) {
+    public void setBoardingDelay(double boardingDelay) {
         this.boardingDelay = boardingDelay;
     }
 
@@ -297,9 +299,12 @@ public class Lift {
         System.out.println("\t.\t DEBUG - initiated " + toString());
     }
 
-    public void setNextLevel() {
+    @JsonIgnore
+    public void setNextLevel(ParallelTransition transition, Controller GUIController) {
+        transition.getChildren().addAll(GUIController.moveElevator(GUIController.getMs().getLifts().get(id), direction));
+
         if (direction == 1) {
-            System.out.println("\t^\t DEBUG - Elevator (" + id + ") is ascending!");
+            System.out.println("\t^\t DEBUG - Elevator (" + id + ") is ascending! Current level is "+currentLevel);
             for (int i = 0; i < range.size(); i++) {
                 if (range.get(i).getId() == currentLevel) {
                     if (i + 1 < range.size())
@@ -348,4 +353,11 @@ public class Lift {
                 + usersGettingOut + ", handlingUsers=" + handlingUsers + ", boardingDelay=" + boardingDelay + "]";
     }
 
+    public Box getBox() {
+        return box;
+    }
+
+    public void setBox(Box box) {
+        this.box = box;
+    }
 }
