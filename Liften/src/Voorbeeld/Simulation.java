@@ -115,6 +115,7 @@ public class Simulation {
                         }
                     } else if (((tempUser.getTimeout() + tempUser.getArrivalTime()) < mainTicker) && !tempUser.isInElevator()) {
                         System.out.println("\tR\t DEBUG - removing user " + tempUser.getId() + " due to timeout: " + (tempUser.getTimeout() + tempUser.getArrivalTime()) + " < " + mainTicker);
+                        thisTurnTransition.getChildren().addAll(GUIController.userLeaveHall(tempUser));
                     } else {
                         System.out.println("\tE\t DEBUG - Elevator not found");
                         nextQueue.add(tempUser);
@@ -300,14 +301,12 @@ public class Simulation {
                                             SequentialTransition sq = new SequentialTransition();
 
                                             sq.getChildren().addAll(GUIController.userExitElevator(u, l));
-                                            sq.getChildren().addAll(GUIController.userLeaveHall(u));
-
-                                            thisTurnTransition.getChildren().addAll(sq);
 
                                             l.setCurrentUsers(l.getCurrentLevel() - 1);
                                             u.setInElevator(false);
                                             if (u.getOriginalDestination() == -1 || u.getOriginalDestination() == l.getCurrentLevel()) {
                                                 u.setFinished(true);
+                                                sq.getChildren().addAll(GUIController.userLeaveHall(u));
                                             } else {
                                                 //reset user using the new source / old dest and put back in pool
                                                 u.setArrivalTime((double) mainTicker);
@@ -319,6 +318,8 @@ public class Simulation {
                                             if (l.getUsersGettingOut() == 0)
                                                 throw new Exception();
                                             l.setUsersGettingOut(l.getUsersGettingOut() - 1);
+
+                                            thisTurnTransition.getChildren().addAll(sq);
                                         }
                                     }
 
@@ -343,23 +344,23 @@ public class Simulation {
                         }
                     }
                 }
-            }
-            System.out.println();
-            removingUsers = new ArrayList<>();
-            // 6. follow-up from 4 -> remove handled/timed-out users
-            for (User u : database.keySet())
-                if (u.isFinished()) {
-                    removingUsers.add(u);
-                    System.out.println("\tR\t DEBUG - removing user " + u.getId());
-                }
-            for (User u : removingUsers)
-                database.remove(u);
 
-            // 7. handle elevator movements
-            for (Lift lift : ec.getLifts()) {
+                System.out.println();
+                removingUsers = new ArrayList<>();
+                // 6. follow-up from 4 -> remove handled/timed-out users
+                for (User u : database.keySet())
+                    if (u.isFinished()) {
+                        removingUsers.add(u);
+                        System.out.println("\tR\t DEBUG - removing user " + u.getId());
+                    }
+                for (User u : removingUsers)
+                    database.remove(u);
+
+                // 7. handle elevator movements
+                for (Lift lift : ec.getLifts()) {
                     //System.out.println("\t!!!\t DEBUG - " + l.toString());
                     if (lift.getDirection() != 0 && lift.getMovingTimer() + lift.getLevelSpeed() <= mainTicker && (lift.getUsersGettingIn() + lift.getUsersGettingOut()) == 0) {
-                        lift.setNextLevel();
+                        lift.setNextLevel(thisTurnTransition,GUIController);
                         lift.setMovingTimer(mainTicker);
                         System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
                                 + ", next movement in atleast " + (lift.getMovingTimer() + lift.getLevelSpeed()));
