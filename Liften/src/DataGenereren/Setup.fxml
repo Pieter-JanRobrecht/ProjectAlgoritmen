@@ -34,7 +34,7 @@
                   <Slider fx:id="levelsSlider" blockIncrement="1.0" majorTickUnit="5.0" max="20.0" min="1" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="5.0" />
                   <TextField fx:id="outputTextAreaLevels" />
                   <Label alignment="TOP_LEFT" text="Percentage vloeren dat een lift gemiddeld aandoet" />
-                  <Slider fx:id="levelsSlider1" blockIncrement="1.0" majorTickUnit="10.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
+                  <Slider fx:id="levelsSlider1" blockIncrement="1.0" majorTickUnit="10.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" value="100.0" />
                   <TextField fx:id="outputTextAreaLevels1" />
                   <Separator prefWidth="200.0">
                      <VBox.margin>

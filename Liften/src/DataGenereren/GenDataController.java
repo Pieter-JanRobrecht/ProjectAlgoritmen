@@ -284,9 +284,9 @@ public class GenDataController {
 			usr.setId(i);
 			double temp;
 			switch(spreiding){
-			case "'s Ochtends": if(arrivalTime<300) temp=arrivalTime+ random.nextInt(tempoOfArrival/2); else temp=arrivalTime+ random.nextInt(tempoOfArrival); usr.setArrivalTime(temp); arrivalTime= temp;break;
-			case "'s Middags": if(arrivalTime>300 && arrivalTime<600) temp=arrivalTime+ random.nextInt(tempoOfArrival/2); else temp=arrivalTime+ random.nextInt(tempoOfArrival);usr.setArrivalTime(temp);arrivalTime=temp; break;
-			case "'s Avonds": if(arrivalTime>600) temp=arrivalTime+ random.nextInt(tempoOfArrival/2); else temp=arrivalTime+ random.nextInt(tempoOfArrival);usr.setArrivalTime(temp);arrivalTime= temp; break;
+			case "'s Ochtends": if(i<amountOfUsers/3) temp=arrivalTime+ random.nextInt(tempoOfArrival/2)*(1+offsetPercentage*random.nextDouble()); else temp=arrivalTime+ random.nextInt(tempoOfArrival)*(1+offsetPercentage*random.nextDouble()); usr.setArrivalTime(temp); arrivalTime= temp;break;
+			case "'s Middags": if( i>amountOfUsers/3 && i<amountOfUsers*0.6666) temp=arrivalTime+ random.nextInt(tempoOfArrival/2)*(1+offsetPercentage*random.nextDouble()); else temp=arrivalTime+ random.nextInt(tempoOfArrival)*(1+offsetPercentage*random.nextDouble());usr.setArrivalTime(temp);arrivalTime=temp; break;
+			case "'s Avonds": if(i>amountOfUsers*0.6666) temp=arrivalTime+ random.nextInt(tempoOfArrival/2)*(1+offsetPercentage*random.nextDouble()); else temp=arrivalTime+ random.nextInt(tempoOfArrival)*(1+offsetPercentage*random.nextDouble());usr.setArrivalTime(temp);arrivalTime= temp; break;
 			case "Gelijktijdig verdeeld over de dag": temp=arrivalTime+ random.nextInt(tempoOfArrival);usr.setArrivalTime(temp);arrivalTime=temp; break;
 			default: temp=arrivalTime+ random.nextInt(tempoOfArrival);usr.setArrivalTime(temp);arrivalTime= temp;
 			}
