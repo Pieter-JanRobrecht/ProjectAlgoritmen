@@ -30,12 +30,20 @@ public class Simulation {
     private int totaleRekenTijd;
     private int totaleAfhandelTijd;
     private int aantalTimeouts;
+    private int aantalLiftHoppers;
 
     public Simulation() {
         System.out.println("Please initiate using the correct setup");
     }
 
     public Simulation(ManagementSystem ms) {
+        wachttijden = new ArrayList<>();
+        maxWachtTijd = 0;
+        totaleAfhandelTijd = 0;
+        totaleRekenTijd = 0;
+        aantalLiftHoppers = 0;
+        aantalTimeouts = 0;
+
         File hulp = null;
         try {
             hulp = new File(Simulation.class.getClassLoader().getResource("output.csv").toURI());
@@ -82,6 +90,7 @@ public class Simulation {
      * @throws Exception
      */
     public void startSimulationSimple() throws Exception {
+        long startTime = System.nanoTime();
         database = new HashMap<User, Lift>();
         for (Lift l : ec.getLifts()) {
             l.initiateLift();
@@ -124,6 +133,7 @@ public class Simulation {
                         }
                     } else if (((tempUser.getTimeout() + tempUser.getArrivalTime()) < mainTicker) && !tempUser.isInElevator()) {
                         System.out.println("\tR\t DEBUG - removing user " + tempUser.getId() + " due to timeout: " + (tempUser.getTimeout() + tempUser.getArrivalTime()) + " < " + mainTicker);
+                        aantalTimeouts++;
                         thisTurnTransition.getChildren().addAll(GUIController.userLeaveHall(tempUser));
                     } else {
                         System.out.println("\tE\t DEBUG - Elevator not found");
@@ -217,6 +227,11 @@ public class Simulation {
                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // INSTAPPEN
                             System.out.println(
                                     "\tSTATUS\t DEBUG - Elevator (" + l.getId() + ") is adding user (" + u.getId() + ").");
+                            System.out.println(u.getTimeout() +" ... "+ u.getArrivalTime() +" ... "+ mainTicker);
+                            int wachtTijd = mainTicker - (int) Math.ceil(u.getArrivalTime());
+                            wachttijden.add(wachtTijd);
+                            if(maxWachtTijd < wachtTijd)
+                                maxWachtTijd = wachtTijd;
                             l.addHandlingUser(u);
                             l.setUsersGettingIn(l.getUsersGettingIn() + 1);
                             l.setBoardingDelay(l.getBoardingDelay() + u.getBoardingTime());
@@ -333,6 +348,7 @@ public class Simulation {
                                             } else {
                                                 //reset user using the new source / old dest and put back in pool
                                                 u.setArrivalTime((double) mainTicker);
+                                                aantalLiftHoppers++;
                                                 u.setSourceId(u.getDestinationId());
                                                 u.setDestinationId(u.getOriginalDestination());
                                                 queue.add(u);
@@ -404,7 +420,24 @@ public class Simulation {
         }
         System.out.println("DEBUG - queue size: " + queue.size() + " | Userlist size: " + ec.getUsers().size());
 
-        System.out.println("\t\t GUI - Playing everything");
+        long endTime = System.nanoTime();
+
+        long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
+        totaleRekenTijd = (int) duration;
+        totaleAfhandelTijd = mainTicker;
+
+        System.out.println("Results...");
+        System.out.println("\t Totale wachttijd: " + getTotaleWachttijd() + " gameticks");
+        System.out.println("\t Datasets wachttijden: " + wachttijden.toString());
+        System.out.println("\t Maximale wachttijd: " + getMaxWachtTijd() + " gameticks");
+        System.out.println("\t Totale rekentijd: " + getTotaleRekenTijd() + " ms");
+        System.out.println("\t Totale afhandeltijd: " + getTotaleAfhandelTijd() + " gameticks");
+        System.out.println("\t Aantal timeouts: " + getAantalTimeouts());
+        System.out.println("\t Aantal lift hoppers: " + getAantalLiftHoppers());
+
+        System.out.println("\n\n\n\n");
+
+        System.out.println("\tGUI - Playing everything");
         GUIController.sequence.play();
     }
 
@@ -650,5 +683,37 @@ public class Simulation {
 
     public int getMainTicker() {
         return mainTicker;
+    }
+
+    public List<Integer> getWachttijden() {
+        return wachttijden;
+    }
+
+    public int getMaxWachtTijd() {
+        return maxWachtTijd;
+    }
+
+    public int getTotaleRekenTijd() {
+        return totaleRekenTijd;
+    }
+
+    public int getTotaleAfhandelTijd() {
+        return totaleAfhandelTijd;
+    }
+
+    public int getAantalTimeouts() {
+        return aantalTimeouts;
+    }
+
+    public int getAantalLiftHoppers() {
+        return aantalLiftHoppers;
+    }
+
+    public int getTotaleWachttijd() {
+        int sum = 0;
+        for(int i : wachttijden) {
+            sum += i;
+        }
+        return sum;
     }
 }
