@@ -1,5 +1,6 @@
 package Voorbeeld;
 
+import DataGenereren.GenDataController;
 import Model.Lift;
 import Model.User;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -27,6 +29,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -262,6 +265,37 @@ public class Controller {
         try {
             sim.startSimulationSimple();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void generateProblem(ActionEvent event) {
+        Stage primaryStage = (Stage) anchorPane.getScene().getWindow();
+        primaryStage.setTitle("Event Handler Demo");
+
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            InputStream s = null;
+            try{
+                s = getClass().getClassLoader().getResource("Setup.fxml").openStream();
+            }catch(Exception e){
+
+            }
+            Parent root = (Parent) loader.load(s);
+
+            //Setten van enkele elementen van het hoofdscherm
+            primaryStage.setTitle("Liften");
+            primaryStage.setScene(new Scene(root));
+            primaryStage.show();
+
+            GenDataController viewController;
+            viewController = loader.<GenDataController>getController() ;
+            assert(viewController != null);
+
+            viewController.setController(this);
+        } catch (IOException e) {
+            System.err.println("Error loading EventHandlerDemo.fxml!");
             e.printStackTrace();
         }
     }
@@ -526,5 +560,9 @@ public class Controller {
 
     public ManagementSystem getMs() {
         return ms;
+    }
+
+    public Application getApplication() {
+        return application;
     }
 }

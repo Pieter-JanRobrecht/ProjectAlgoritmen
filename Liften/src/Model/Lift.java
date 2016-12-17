@@ -56,6 +56,7 @@ public class Lift {
 	@Exclude
 	private int usersGettingOut;
 
+	@JsonIgnore
 	private List<User> handlingUsers;
 	@Exclude
 	private double boardingDelay;
