@@ -25,6 +25,12 @@ public class Simulation {
     private Controller GUIController;
     private FileWriter writer;
 
+    private List<Integer> wachttijden;
+    private int maxWachtTijd;
+    private int totaleRekenTijd;
+    private int totaleAfhandelTijd;
+    private int aantalTimeouts;
+
     public Simulation() {
         System.out.println("Please initiate using the correct setup");
     }
