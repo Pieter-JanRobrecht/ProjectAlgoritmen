@@ -13,7 +13,22 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) {
+        reset(primaryStage);
+    }
 
+    /**
+     * The main() method is ignored in correctly deployed JavaFX application.
+     * main() serves only as fallback in case the application can not be
+     * launched through deployment artifacts, e.g., in IDEs with limited FX
+     * support. NetBeans ignores main().
+     *
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    public void reset(Stage primaryStage) {
         AnchorPane anchorPane = null;
         Scene scene = null;
         Controller viewController=null;
@@ -34,7 +49,7 @@ public class Application extends javafx.application.Application {
             primaryStage.show();
 
             //Ophalen van de controller horende bij de view klasse
-             viewController = loader.<Controller>getController() ;
+            viewController = loader.<Controller>getController() ;
             assert(viewController != null);
 
             //Link tussen controller en view
@@ -46,18 +61,6 @@ public class Application extends javafx.application.Application {
         }
 
         viewController.makeWorld();
-    }
-
-    /**
-     * The main() method is ignored in correctly deployed JavaFX application.
-     * main() serves only as fallback in case the application can not be
-     * launched through deployment artifacts, e.g., in IDEs with limited FX
-     * support. NetBeans ignores main().
-     *
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
     }
 }
 

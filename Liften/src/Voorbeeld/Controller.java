@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Sphere;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -265,6 +266,10 @@ public class Controller {
         }
     }
 
+    @FXML
+    void resetWorld(ActionEvent event) {
+        application.reset((Stage) anchorPane.getScene().getWindow());
+    }
 
     @FXML
     void pauseAnimation(ActionEvent event) {
