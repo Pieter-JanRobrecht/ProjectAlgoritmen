@@ -22,11 +22,11 @@ public class Lift {
     @JsonProperty("capacity")
     private Integer capacity;
     @JsonProperty("levelSpeed")
-    private Integer levelSpeed;
+    private Double levelSpeed;
     @JsonProperty("openingTime")
-    private Integer openingTime;
+    private Double openingTime;
     @JsonProperty("closingTime")
-    private Integer closingTime;
+    private Double closingTime;
     @JsonProperty("range")
     private List<Range> range = new ArrayList<Range>();
     @JsonProperty("startLevel")
@@ -46,7 +46,7 @@ public class Lift {
     private int usersGettingIn;
     private int usersGettingOut;
     private List<User> handlingUsers;
-    private int boardingDelay;
+    private double boardingDelay;
 
     /**
      * @return The id
@@ -84,7 +84,7 @@ public class Lift {
      * @return The levelSpeed
      */
     @JsonProperty("levelSpeed")
-    public Integer getLevelSpeed() {
+    public Double getLevelSpeed() {
         return levelSpeed;
     }
 
@@ -92,7 +92,7 @@ public class Lift {
      * @param levelSpeed The levelSpeed
      */
     @JsonProperty("levelSpeed")
-    public void setLevelSpeed(Integer levelSpeed) {
+    public void setLevelSpeed(Double levelSpeed) {
         this.levelSpeed = levelSpeed;
     }
 
@@ -100,7 +100,7 @@ public class Lift {
      * @return The openingTime
      */
     @JsonProperty("openingTime")
-    public Integer getOpeningTime() {
+    public Double getOpeningTime() {
         return openingTime;
     }
 
@@ -108,7 +108,7 @@ public class Lift {
      * @param openingTime The openingTime
      */
     @JsonProperty("openingTime")
-    public void setOpeningTime(Integer openingTime) {
+    public void setOpeningTime(Double openingTime) {
         this.openingTime = openingTime;
     }
 
@@ -116,7 +116,7 @@ public class Lift {
      * @return The closingTime
      */
     @JsonProperty("closingTime")
-    public Integer getClosingTime() {
+    public Double getClosingTime() {
         return closingTime;
     }
 
@@ -124,7 +124,7 @@ public class Lift {
      * @param closingTime The closingTime
      */
     @JsonProperty("closingTime")
-    public void setClosingTime(Integer closingTime) {
+    public void setClosingTime(Double closingTime) {
         this.closingTime = closingTime;
     }
 
@@ -274,11 +274,11 @@ public class Lift {
         this.handlingUsers.remove(u);
     }
 
-    public int getBoardingDelay() {
+    public double getBoardingDelay() {
         return boardingDelay;
     }
 
-    public void setBoardingDelay(int boardingDelay) {
+    public void setBoardingDelay(double boardingDelay) {
         this.boardingDelay = boardingDelay;
     }
 
