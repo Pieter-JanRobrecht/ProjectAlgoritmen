@@ -11,6 +11,8 @@ import java.io.InputStream;
 
 public class Application extends javafx.application.Application {
 
+    private Controller vorige;
+
     @Override
     public void start(Stage primaryStage) {
         reset(primaryStage);
@@ -49,7 +51,14 @@ public class Application extends javafx.application.Application {
             primaryStage.show();
 
             //Ophalen van de controller horende bij de view klasse
-            viewController = loader.<Controller>getController() ;
+            viewController = loader.<Controller>getController();
+            if(vorige != null) {
+                if(vorige.getFile() != null) {
+                    viewController.setFile(vorige.getFile());
+                }
+            }
+            vorige = viewController;
+
             assert(viewController != null);
 
             //Link tussen controller en view
