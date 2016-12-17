@@ -285,7 +285,7 @@ public class Simulation {
                                         //System.out.println("\t!!\t DEBUG - user (" + u.getId() + ") - " + u.getSourceId() + ", " + u.getDestinationId() + ", " + l.getCurrentLevel());
                                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") joined elevator");
-                                            l.setCurrentUsers(l.getCurrentLevel() + 1);
+                                            l.setCurrentUsers(l.getCurrentUsers() + 1);
 
                                             thisTurnTransition.getChildren().addAll(GUIController.userEnterElevator(u, l));
 
@@ -313,7 +313,7 @@ public class Simulation {
 
                                             sq.getChildren().addAll(GUIController.userExitElevator(u, l));
 
-                                            l.setCurrentUsers(l.getCurrentLevel() - 1);
+                                            l.setCurrentUsers(l.getCurrentUsers() - 1);
                                             u.setInElevator(false);
                                             if (u.getOriginalDestination() == -1 || u.getOriginalDestination() == l.getCurrentLevel()) {
                                                 u.setFinished(true);

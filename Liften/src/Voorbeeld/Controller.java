@@ -60,7 +60,7 @@ public class Controller {
 
     private ManagementSystem ms = null;
 
-    public static final int ANIMATIE_DUUR = 1000;
+    public static final int ANIMATIE_DUUR = 200;
     private static final int AFSTAND_TUSSEN_LIFTEN = 70;
     private static final int LENGTE_GANG = 200;
     private int AANTAL_VERDIEPINGEN;
