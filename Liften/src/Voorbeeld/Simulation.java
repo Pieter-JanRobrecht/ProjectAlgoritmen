@@ -7,10 +7,9 @@ import Model.ManagementSystem;
 import Model.User;
 import javafx.animation.ParallelTransition;
 import javafx.animation.SequentialTransition;
+import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,14 +37,22 @@ public class Simulation {
     public Simulation(ManagementSystem ms) {
         File hulp = null;
         try {
-            hulp = new File(Simulation.class.getClassLoader().getResource("output.csv").toURI());
+            try {
+                InputStream in = Controller.class.getClassLoader().getResourceAsStream("testLiftHopping.json");
+                hulp = new File("test");
+                OutputStream outputStream = new FileOutputStream(hulp);
+                IOUtils.copy(in, outputStream);
+                outputStream.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             writer = new FileWriter(hulp);
 
             CSVUtils.writeLine(writer, Arrays.asList("LiftId", "Time", "LevelId", "UserId", "OpenDoor"));
             writer.flush();
 
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
