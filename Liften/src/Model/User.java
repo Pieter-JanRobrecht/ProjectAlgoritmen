@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javafx.scene.shape.Sphere;
 
+import DataGenereren.Exclude;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "id",
@@ -33,15 +35,19 @@ public class User {
     private Double unboardingTime;
     @JsonProperty("timeout")
     private Integer timeout;
-    @JsonProperty("source-id")
+   // @JsonProperty("source-id")
+    @SerializedName("source-id")
     private Integer sourceId;
-    @JsonProperty("destination-id")
+    //@JsonProperty("destination-id")
+    @SerializedName("destination-id")
     private Integer destinationId;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
+//    @JsonIgnore
+//    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    @Exclude
     private boolean inElevator;
+    @Exclude
     private boolean finished;
+    @Exclude
     private boolean handled;
 
     @JsonIgnore
@@ -121,7 +127,7 @@ public class User {
 
     /**
      * 
-     * @param boardingTime
+     * @param tempBoardingTime
      *     The boardingTime
      */
     @JsonProperty("boardingTime")
@@ -209,15 +215,15 @@ public class User {
         this.destinationId = destinationId;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+//    @JsonAnyGetter
+//    public Map<String, Object> getAdditionalProperties() {
+//        return this.additionalProperties;
+//    }
+//
+//    @JsonAnySetter
+//    public void setAdditionalProperty(String name, Object value) {
+//        this.additionalProperties.put(name, value);
+//    }
 
 	public boolean isInElevator() {
 		return inElevator;

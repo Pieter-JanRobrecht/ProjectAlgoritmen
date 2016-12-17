@@ -1,0 +1,295 @@
+{
+  "levels": [
+    {
+      "id": 0
+    },
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    },
+    {
+      "id": 3
+    },
+    {
+      "id": 4
+    }
+  ],
+  "lifts": [
+    {
+      "id": 0,
+      "capacity": 4,
+      "levelSpeed": 5.0,
+      "openingTime": 2.3866694283387027,
+      "closingTime": 1.795645086271572,
+      "range": [
+        {
+          "id": 0
+        },
+        {
+          "id": 4
+        }
+      ],
+      "startLevel": 0
+    },
+    {
+      "id": 1,
+      "capacity": 4,
+      "levelSpeed": 5.0,
+      "openingTime": 1.843212037869244,
+      "closingTime": 1.9482058602161474,
+      "range": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 4
+        }
+      ],
+      "startLevel": 2
+    },
+    {
+      "id": 2,
+      "capacity": 4,
+      "levelSpeed": 5.0,
+      "openingTime": 1.793300825076368,
+      "closingTime": 2.184054759408711,
+      "range": [
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        }
+      ],
+      "startLevel": 2
+    },
+    {
+      "id": 3,
+      "capacity": 4,
+      "levelSpeed": 5.0,
+      "openingTime": 2.091271512979814,
+      "closingTime": 1.6129307589121136,
+      "range": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 4
+        }
+      ],
+      "startLevel": 4
+    },
+    {
+      "id": 4,
+      "capacity": 4,
+      "levelSpeed": 5.0,
+      "openingTime": 2.3458832695424365,
+      "closingTime": 1.6382314218684402,
+      "range": [
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        }
+      ],
+      "startLevel": 3
+    }
+  ],
+  "users": [
+    {
+      "id": 0,
+      "arrivalTime": 7.0,
+      "boardingTime": 1.824148647945683,
+      "unboardingTime": 2.1430376266026965,
+      "timeout": 115,
+      "source-id": 2,
+      "destination-id": 3
+    },
+    {
+      "id": 1,
+      "arrivalTime": 16.0,
+      "boardingTime": 3.9896599911691633,
+      "unboardingTime": 4.461907450293854,
+      "timeout": 110,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 2,
+      "arrivalTime": 20.0,
+      "boardingTime": 1.8473920822979677,
+      "unboardingTime": 1.7549783353990867,
+      "timeout": 116,
+      "source-id": 4,
+      "destination-id": 1
+    },
+    {
+      "id": 3,
+      "arrivalTime": 21.0,
+      "boardingTime": 3.822168906865204,
+      "unboardingTime": 4.302160870554182,
+      "timeout": 108,
+      "source-id": 3,
+      "destination-id": 1
+    },
+    {
+      "id": 4,
+      "arrivalTime": 28.0,
+      "boardingTime": 2.094498101533178,
+      "unboardingTime": 1.791911338811271,
+      "timeout": 99,
+      "source-id": 2,
+      "destination-id": 4
+    },
+    {
+      "id": 5,
+      "arrivalTime": 29.0,
+      "boardingTime": 1.866211644579261,
+      "unboardingTime": 1.8859290779922548,
+      "timeout": 94,
+      "source-id": 2,
+      "destination-id": 4
+    },
+    {
+      "id": 6,
+      "arrivalTime": 38.0,
+      "boardingTime": 1.6883030862574935,
+      "unboardingTime": 1.961384416470598,
+      "timeout": 105,
+      "source-id": 4,
+      "destination-id": 2
+    },
+    {
+      "id": 7,
+      "arrivalTime": 42.0,
+      "boardingTime": 1.6291363273864885,
+      "unboardingTime": 2.170771515188401,
+      "timeout": 100,
+      "source-id": 4,
+      "destination-id": 1
+    },
+    {
+      "id": 8,
+      "arrivalTime": 46.0,
+      "boardingTime": 2.2784013561053937,
+      "unboardingTime": 1.869818016899177,
+      "timeout": 110,
+      "source-id": 3,
+      "destination-id": 0
+    },
+    {
+      "id": 9,
+      "arrivalTime": 49.0,
+      "boardingTime": 4.220586350241586,
+      "unboardingTime": 3.9963724772355813,
+      "timeout": 102,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 10,
+      "arrivalTime": 51.0,
+      "boardingTime": 1.6005238509538384,
+      "unboardingTime": 1.8870525101189881,
+      "timeout": 94,
+      "source-id": 1,
+      "destination-id": 0
+    },
+    {
+      "id": 11,
+      "arrivalTime": 51.0,
+      "boardingTime": 1.9027325640658037,
+      "unboardingTime": 2.355174589505019,
+      "timeout": 89,
+      "source-id": 1,
+      "destination-id": 0
+    },
+    {
+      "id": 12,
+      "arrivalTime": 52.0,
+      "boardingTime": 2.0518683409314153,
+      "unboardingTime": 2.029208798216754,
+      "timeout": 99,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 13,
+      "arrivalTime": 55.0,
+      "boardingTime": 2.1047063384648115,
+      "unboardingTime": 1.753735658013874,
+      "timeout": 115,
+      "source-id": 4,
+      "destination-id": 1
+    },
+    {
+      "id": 14,
+      "arrivalTime": 62.0,
+      "boardingTime": 1.8788696653733032,
+      "unboardingTime": 1.6608628668968701,
+      "timeout": 82,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 15,
+      "arrivalTime": 65.0,
+      "boardingTime": 2.209574956673136,
+      "unboardingTime": 1.6312407563635776,
+      "timeout": 94,
+      "source-id": 4,
+      "destination-id": 3
+    },
+    {
+      "id": 16,
+      "arrivalTime": 71.0,
+      "boardingTime": 4.564211926998663,
+      "unboardingTime": 4.342746876478715,
+      "timeout": 116,
+      "source-id": 3,
+      "destination-id": 0
+    },
+    {
+      "id": 17,
+      "arrivalTime": 77.0,
+      "boardingTime": 2.2656195963489814,
+      "unboardingTime": 1.6967192937707656,
+      "timeout": 92,
+      "source-id": 0,
+      "destination-id": 4
+    },
+    {
+      "id": 18,
+      "arrivalTime": 86.0,
+      "boardingTime": 1.7306382487114602,
+      "unboardingTime": 2.2144655835569584,
+      "timeout": 91,
+      "source-id": 2,
+      "destination-id": 0
+    },
+    {
+      "id": 19,
+      "arrivalTime": 90.0,
+      "boardingTime": 1.7675909325975963,
+      "unboardingTime": 2.1593792472092326,
+      "timeout": 98,
+      "source-id": 2,
+      "destination-id": 4
+    }
+  ]
+}
