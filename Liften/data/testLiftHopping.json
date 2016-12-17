@@ -1,0 +1,70 @@
+{
+  "levels": [
+    {
+      "id": 0
+    },
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    },
+    {
+      "id": 3
+    },
+    {
+      "id": 4
+    }
+  ],
+  "lifts": [
+    {
+      "id": 0,
+      "capacity": 8,
+      "levelSpeed": 2,
+      "openingTime": 1,
+      "closingTime": 1,
+      "range": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        }
+      ],
+      "startLevel": 0
+    },
+    {
+      "id": 1,
+      "capacity": 8,
+      "levelSpeed": 2,
+      "openingTime": 1,
+      "closingTime": 1,
+      "range": [
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        }
+      ],
+      "startLevel": 3
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "arrivalTime": 5,
+      "boardingTime": 1,
+      "unboardingTime": 1,
+      "timeout": 100,
+      "source-id": 1,
+      "destination-id": 4
+    }
+  ]
+}
