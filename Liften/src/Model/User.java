@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import javafx.scene.shape.Sphere;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -43,8 +44,11 @@ public class User {
     private boolean finished;
     private boolean handled;
 
+    @JsonIgnore
+    private Sphere sphere;
     private int originalSource = -1;
     private int originalDestination = -1;
+    
     private boolean liftHopper;
 
     private boolean up;
@@ -292,5 +296,13 @@ public class User {
                 ", originalDestination=" + originalDestination +
                 ", liftHopper=" + liftHopper +
                 '}';
+    }
+
+    public Sphere getSphere() {
+        return sphere;
+    }
+
+    public void setSphere(Sphere sphere) {
+        this.sphere = sphere;
     }
 }

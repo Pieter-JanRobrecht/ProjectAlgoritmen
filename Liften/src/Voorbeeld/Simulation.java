@@ -1,21 +1,49 @@
+package Voorbeeld;
+
+import CSV.CSVUtils;
+import Controller.ElevatorController;
+import Model.Lift;
+import Model.ManagementSystem;
+import Model.User;
+import javafx.animation.ParallelTransition;
+import javafx.animation.SequentialTransition;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import Controller.ElevatorController;
-import Model.*;
 
 public class Simulation {
     private int mainTicker;
     private ElevatorController ec;
     private List<User> queue;
     private HashMap<User, Lift> database;
+    private Controller GUIController;
+    private FileWriter writer;
 
     public Simulation() {
         System.out.println("Please initiate using the correct setup");
     }
 
     public Simulation(ManagementSystem ms) {
+        File hulp = null;
+        try {
+            hulp = new File(Simulation.class.getClassLoader().getResource("output.csv").toURI());
+            writer = new FileWriter(hulp);
+
+            CSVUtils.writeLine(writer, Arrays.asList("LiftId", "Time", "LevelId", "UserId", "OpenDoor"));
+            writer.flush();
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         ec = new ElevatorController(ms); // is dit copy by reference or copy by
         // value? (call..)
         mainTicker = 0;
@@ -55,6 +83,7 @@ public class Simulation {
 
         // while(!ec.getUsers().isEmpty()) {
         while (ec.getUsers().size() != 0 || database.size() != 0 || queue.size() != 0) {
+            ParallelTransition thisTurnTransition = new ParallelTransition();
             ArrayList<User> removingUsers = new ArrayList<>();
 
             System.out.println("\nGametick (" + mainTicker + ") \t queue size: " + queue.size() + " \t");
@@ -69,10 +98,12 @@ public class Simulation {
                 if (!tempUser.isFinished()) {
                     Lift tempLift = assignElevator(tempUser);
                     if (tempLift != null) {
-                        System.out.println("\tE\t DEBUG - Elevator found, user " + tempUser.getId() + " assigned elevator "
+
+                        thisTurnTransition.getChildren().addAll(GUIController.moveUserToElevator(tempUser, tempLift));
+
+                        System.out.println("\tE\t DEBUG - Elevator found, " + tempUser.getId() + " assigned elevator "
                                 + tempLift.getId());
                         database.put(tempUser, tempLift);
-
                         if (tempLift.getDirection() == 0 && tempLift.getDestination() == -1) {
                             if (tempUser.getSourceId() > tempLift.getCurrentLevel()) {
                                 tempLift.setMovingTimer(mainTicker);
@@ -84,9 +115,9 @@ public class Simulation {
                                 tempLift.setDestination(tempUser.getSourceId());
                             }
                         }
-
                     } else if (((tempUser.getTimeout() + tempUser.getArrivalTime()) < mainTicker) && !tempUser.isInElevator()) {
                         System.out.println("\tR\t DEBUG - removing user " + tempUser.getId() + " due to timeout: " + (tempUser.getTimeout() + tempUser.getArrivalTime()) + " < " + mainTicker);
+                        thisTurnTransition.getChildren().addAll(GUIController.userLeaveHall(tempUser));
                     } else {
                         System.out.println("\tE\t DEBUG - Elevator not found");
                         nextQueue.add(tempUser);
@@ -125,8 +156,7 @@ public class Simulation {
              * first.. in gametick 13 te mode was set from boardingIN to
              * closingIN, the person unboarding receives closingIN as mode
              * instead of real mode boardingIN which causes him to be out of the
-             * system 1 tick earlier.
-             * This is sort of a bug, but it does not
+             * system 1 tick earlier This is sort of a bug, but it does not
              * interfere with the timing of the rest of the system. As the
              * person boarding will handle the closing of the elevator within
              * appropriate timing.
@@ -141,6 +171,28 @@ public class Simulation {
                 for (User u : database.keySet()) {
                     Lift l = database.get(u);
 
+                    /*
+                    if (!u.isInElevator() && l.getDirection() == 0) {
+                        // + ") is not in elevator yet.");
+                        if (l.getCurrentLevel() < u.getSourceId()) {
+                            l.setDirection(1);
+                        } else if (l.getCurrentLevel() > u.getSourceId()) {
+                            l.setDirection(-1);
+                        } else if (l.getCurrentLevel() == u.getSourceId()) {
+                            l.setDirection(0);
+                        }
+                    } else {
+                        // System.out.println("\t\t DEBUG - user (" + u.getId()
+                        // + ") is in elevator.");
+                        if (l.getCurrentLevel() < u.getDestinationId()) {
+                            l.setDirection(1);
+                        } else if (l.getCurrentLevel() > u.getDestinationId()) {
+                            l.setDirection(-1);
+                        } else if (l.getCurrentLevel() == u.getDestinationId()) {
+                            l.setDirection(0);
+                        }
+                    }
+                    */
                     if (l.getHandlingUsers().contains(u) && !u.isHandled()) {
                         if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) { // UITSTAPPEN
                             System.out.println(
@@ -152,6 +204,9 @@ public class Simulation {
                             l.setBoardingDelay(l.getBoardingDelay() + u.getUnboardingTime());
                         }
                     } else {
+//						System.out.println(
+//								"\t\t DEBUG - in elevator ("+l.getId()+"): user " + u.getId() + " | " + u.isInElevator() + " | " + l.getCurrentLevel() + "/"
+//										+ u.getSourceId() + " | " + l.getCurrentLevel() + "/" + u.getDestinationId());
                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // INSTAPPEN
                             System.out.println(
                                     "\tSTATUS\t DEBUG - Elevator (" + l.getId() + ") is adding user (" + u.getId() + ").");
@@ -178,13 +233,12 @@ public class Simulation {
                 for (Lift l : ec.getLifts()) {
                     System.out.println();
                     System.out.println("\t\t DEBUG - Elevator (" + l.getId() + ") contains "
-                            + l.getHandlingUsers().size() + " users, from " + l.getCurrentLevel()
-                            + " is heading to: " + l.getDestination() + " direction(" + l.getDirection() + ")");
+                            + l.getHandlingUsers().size() + " users.");
                     // debug:
                     for (User u : l.getHandlingUsers()) {
                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
                             System.out.println("\tUser (" + u.getId() + ") should be enterring.. Elevator (" + l.getId()
-                                    + ") mode: " + l.getMode());
+                                    + ") mode: " + l.getMode() + " on level " + l.getCurrentLevel());
                         } else if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) { // uitstappen
                             System.out.println("\tUser (" + u.getId() + ") should be leaving.. Elevator (" + l.getId()
                                     + ") mode: " + l.getMode());
@@ -228,9 +282,13 @@ public class Simulation {
                                     removingUsers = new ArrayList<>();
 
                                     for (User u : l.getHandlingUsers()) {
+                                        //System.out.println("\t!!\t DEBUG - user (" + u.getId() + ") - " + u.getSourceId() + ", " + u.getDestinationId() + ", " + l.getCurrentLevel());
                                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") joined elevator");
                                             l.setCurrentUsers(l.getCurrentUsers() + 1);
+
+                                            thisTurnTransition.getChildren().addAll(GUIController.userEnterElevator(u, l));
+
                                             u.setInElevator(true);
                                             if (l.getUsersGettingIn() == 0)
                                                 throw new Exception();
@@ -245,16 +303,21 @@ public class Simulation {
                                                     l.setDirection(-1);
                                                 }
                                             }
-
                                         } else if (u.getDestinationId() == l.getCurrentLevel()) { // uitstappen
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") left elevator");
                                             //System.out.println("\t\t DEBUG - " + u.toString());
 
-                                            l.setCurrentUsers(l.getCurrentUsers() - 1);
 
+                                            thisTurnTransition.getChildren().addAll(GUIController.moveUserToLevel(u, l.getCurrentLevel()));
+                                            SequentialTransition sq = new SequentialTransition();
+
+                                            sq.getChildren().addAll(GUIController.userExitElevator(u, l));
+
+                                            l.setCurrentUsers(l.getCurrentUsers() - 1);
                                             u.setInElevator(false);
                                             if (u.getOriginalDestination() == -1 || u.getOriginalDestination() == l.getCurrentLevel()) {
                                                 u.setFinished(true);
+                                                sq.getChildren().addAll(GUIController.userLeaveHall(u));
                                             } else {
                                                 //reset user using the new source / old dest and put back in pool
                                                 u.setArrivalTime((double) mainTicker);
@@ -271,6 +334,7 @@ public class Simulation {
                                                 l.setDestination(-1);
                                                 l.setDirection(0);
                                             }
+                                            thisTurnTransition.getChildren().addAll(sq);
                                         }
                                     }
 
@@ -286,6 +350,8 @@ public class Simulation {
                                     }
                                 }
                                 break;
+
+
                             default:
                                 System.out
                                         .println("\t!\t DEBUG - (" + l.getMode() + ").. this mode is not an elevator mode");
@@ -293,9 +359,10 @@ public class Simulation {
                         }
                     }
                 }
+
                 System.out.println();
                 removingUsers = new ArrayList<>();
-                // 6. follow-up from 5 -> remove handled/timed-out users
+                // 6. follow-up from 4 -> remove handled/timed-out users
                 for (User u : database.keySet())
                     if (u.isFinished()) {
                         removingUsers.add(u);
@@ -308,7 +375,7 @@ public class Simulation {
                 for (Lift l : ec.getLifts()) {
                     //System.out.println("\t!!!\t DEBUG - " + l.toString());
                     if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() <= mainTicker && (l.getUsersGettingIn() + l.getUsersGettingOut()) == 0) {
-                        l.setNextLevel();
+                        l.setNextLevel(thisTurnTransition,GUIController);
                         l.setMovingTimer(mainTicker);
                         System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
                                 + ", next movement in atleast " + (l.getMovingTimer() + l.getLevelSpeed()));
@@ -316,17 +383,62 @@ public class Simulation {
                 }
             }
 
+            System.out.println("\t\t GUI - End of gametick adding parallelmovement");
+            GUIController.sequence.getChildren().addAll(thisTurnTransition);
             mainTicker++;
         }
         System.out.println("DEBUG - queue size: " + queue.size() + " | Userlist size: " + ec.getUsers().size());
+
+        System.out.println("\t\t GUI - Playing everything");
+        GUIController.sequence.play();
+    }
+
+
+    private void writeToCsv(Lift tempLift, boolean open) {
+        String users = createUserString(tempLift);
+        ArrayList<String> info = new ArrayList<>();
+
+        info.add(tempLift.getId() + "");
+        info.add(mainTicker + "");
+        info.add(tempLift.getCurrentLevel() + "");
+        info.add(users);
+        if (open) {
+            info.add("true");
+        } else {
+            info.add("false");
+        }
+
+        try {
+            CSVUtils.writeLine(writer, info);
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String createUserString(Lift tempLift) {
+        StringBuilder users = new StringBuilder();
+        for (int i = 0; i < tempLift.getHandlingUsers().size(); i++) {
+            users.append(tempLift.getHandlingUsers().get(i).getId());
+            if (i != tempLift.getHandlingUsers().size() - 1) {
+                users.append(",");
+            }
+        }
+        return users.toString();
     }
 
     public void addValidUsers(int time) {
         // Adding valid users to the queue
         for (int i = 0; i < ec.getUsers().size(); i++) {
+            // System.out.println("\t\t DEBUG addValidUsers - " +
+            // ec.getUsers().get(i).getArrivalTime() + " < " + time + " => "
+            // + (ec.getUsers().get(i).getArrivalTime() < mainTicker));
             if (ec.getUsers().get(i).getArrivalTime() < time) {
                 System.out.println("\t\t DEBUG - Adding " + ec.getUsers().get(i).toString());
                 queue.add(ec.getUsers().get(i));
+
+                GUIController.makeUserOnLevel(ec.getUsers().get(i), ec.getUsers().get(i).getSourceId());
+
                 ec.getUsers().remove(i);
             } else {
                 i = ec.getUsers().size() + 1;
@@ -338,6 +450,10 @@ public class Simulation {
         List<User> returnList = new ArrayList<>();
         // Adding valid users to the returnList
         for (int i = 0; i < ec.getUsers().size(); i++) {
+            // System.out.println("\t\t DEBUG getValidUsers - " +
+            // ec.getUsers().get(i).getArrivalTime() + " < " + time + " => "
+            // + (ec.getUsers().get(i).getArrivalTime() < mainTicker) + " (to
+            // returnList)");
             if (ec.getUsers().get(i).getArrivalTime() < time) {
                 System.out.println("\t\t DEBUG - Adding " + ec.getUsers().get(i).toString() + " (to returnList)");
                 returnList.add(ec.getUsers().get(i));
@@ -352,7 +468,9 @@ public class Simulation {
     public Lift assignElevator(User u) {
         Lift returnLift = null;
         int distance = ec.getLevels().size() + 100;
-        // first check if there are no idle elevators || WE DO CHECK ON CAPACITY, BUG-PREVENTION
+
+        // first check if there are no idle elevators
+        // || WE DO CHECK ON CAPACITY, BUG-PREVENTION
         for (Lift l : ec.getLifts()) {
             if (l.getDirection() == 0 && l.isInRange(u.getSourceId()) && l.isInRange(u.getDestinationId())) {
                 if (distance > Math.abs(u.getSourceId() - l.getCurrentLevel())
@@ -483,5 +601,13 @@ public class Simulation {
         }
 
         return returnLift;
+    }
+
+    public void setGUIController(Controller GUIController) {
+        this.GUIController = GUIController;
+    }
+
+    public int getMainTicker() {
+        return mainTicker;
     }
 }

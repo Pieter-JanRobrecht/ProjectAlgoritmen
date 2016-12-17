@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import Voorbeeld.Simulation;
 import Model.User;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -26,7 +27,7 @@ public class Main {
 
         try {
             ms = (ManagementSystem) objectMapper.readValue(file, ManagementSystem.class);
-            for(User u : ms.getUsers())
+            for (User u : ms.getUsers())
                 u.initialize();
         } catch (JsonParseException e) {
             // TODO Auto-generated catch block
@@ -38,18 +39,16 @@ public class Main {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-//        if (ms != null) {
-//        	System.out.println(ms.getLevels().toString());
-//        	System.out.println("\n");
-//        	System.out.println(ms.getLifts().toString());
-//        	System.out.println("\n");
-//        	System.out.println("Aantal users: " + ms.getUsers().size());
-//        }
+        System.out.println(ms.getLevels().toString());
+        System.out.println("\n");
+        System.out.println(ms.getLifts().toString());
+        System.out.println("\n");
+        System.out.println("Aantal users: " + ms.getUsers().size());
 
         Simulation sim = new Simulation(ms);
         sim.startSimulationSimple();
-
     }
 
 }
+
+

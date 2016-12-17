@@ -1,16 +1,15 @@
 package Model;
 
+import Voorbeeld.Controller;
+import com.fasterxml.jackson.annotation.*;
+import javafx.animation.ParallelTransition;
+import javafx.scene.shape.Box;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({"id", "capacity", "currentUsers", "levelSpeed", "openingTime", "closingTime", "range",
@@ -47,6 +46,9 @@ public class Lift {
     private int usersGettingOut;
     private List<User> handlingUsers;
     private double boardingDelay;
+
+    @JsonIgnore
+    private Box box;
 
     /**
      * @return The id
@@ -297,9 +299,12 @@ public class Lift {
         System.out.println("\t.\t DEBUG - initiated " + toString());
     }
 
-    public void setNextLevel() {
+    @JsonIgnore
+    public void setNextLevel(ParallelTransition transition, Controller GUIController) {
+        transition.getChildren().addAll(GUIController.moveElevator(GUIController.getMs().getLifts().get(id), direction));
+
         if (direction == 1) {
-            System.out.println("\t^\t DEBUG - Elevator (" + id + ") is ascending!");
+            System.out.println("\t^\t DEBUG - Elevator (" + id + ") is ascending! Current level is "+currentLevel);
             for (int i = 0; i < range.size(); i++) {
                 if (range.get(i).getId() == currentLevel) {
                     if (i + 1 < range.size())
@@ -348,4 +353,11 @@ public class Lift {
                 + usersGettingOut + ", handlingUsers=" + handlingUsers + ", boardingDelay=" + boardingDelay + "]";
     }
 
+    public Box getBox() {
+        return box;
+    }
+
+    public void setBox(Box box) {
+        this.box = box;
+    }
 }
