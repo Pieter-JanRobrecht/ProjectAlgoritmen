@@ -24,12 +24,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Sphere;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -509,8 +509,14 @@ public class Controller {
     public void makeWorld() {
         if(file == null) {
             try {
-                file = new File(Controller.class.getClassLoader().getResource("testLiftHopping.json").toURI());
-            } catch (URISyntaxException e) {
+                InputStream in = Controller.class.getClassLoader().getResourceAsStream("testLiftHopping.json");
+                file = new File("test");
+                        OutputStream outputStream = new FileOutputStream(file);
+                IOUtils.copy(in, outputStream);
+                outputStream.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -562,12 +568,16 @@ public class Controller {
     }
 
     public void fileChooser() {
+        FileChooser fileChooser = new FileChooser();
         try {
-            System.out.println("Setting file to original.json");
-            file = new File(Controller.class.getClassLoader().getResource("original.json").toURI());
+            fileChooser.setInitialDirectory(
+                    new File(Controller.class.getClassLoader().getResource(".").toURI())
+            );
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+        fileChooser.setTitle("Open File");
+        file = fileChooser.showOpenDialog((Stage) anchorPane.getScene().getWindow());
     }
 
     public File getFile() {
