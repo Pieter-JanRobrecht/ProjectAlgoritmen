@@ -137,7 +137,7 @@ public class GenDataController {
 			public void changed(ObservableValue<? extends Number> observable,
 					Number oldValue, Number newValue) {
 				
-				outputTextAreaLevels1.setText("NOT IMPLEMENTED YET") ;
+				outputTextAreaLevels1.setText(""+newValue.intValue() ) ;
 			}
 		});
 		liftSlider1.valueProperty().addListener(new ChangeListener<Number>() {
@@ -210,7 +210,8 @@ public class GenDataController {
 		int timeout=100;
 
 		boolean [] levelsReached;
-		double chanceOfStopOnFloor=0;//1-levelsSlider1.getValue()/100; //0= stops on every floor 0.5= stops on roughly half of the floors
+	//	double chanceOfStopOnFloor=0;//1-levelsSlider1.getValue()/100; //0= stops on every floor 0.5= stops on roughly half of the floors
+		double chanceOfStopOnFloor=1-levelsSlider1.getValue()/100; //0= stops on every floor 0.5= stops on roughly half of the floors
 
 
 		int amountOfLevels=(int)levelsSlider.getValue();

@@ -80,7 +80,7 @@
                         <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <Slider fx:id="userSlider" blockIncrement="1.0" majorTickUnit="100.0" max="1000.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="10.0" />
+                  <Slider fx:id="userSlider" blockIncrement="1.0" majorTickUnit="100.0" max="200.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="10.0" />
                   <TextField fx:id="outputTextAreaUser" />
                   <Label alignment="TOP_LEFT" layoutX="129.0" layoutY="41.0" text="Percentage minder mobiele mensen" />
                   <Slider fx:id="userSlider1" blockIncrement="1.0" layoutX="10.0" layoutY="58.0" majorTickUnit="10.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
