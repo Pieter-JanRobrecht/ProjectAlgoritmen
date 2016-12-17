@@ -56,4 +56,16 @@ public class Range {
 		return "Range [id=" + id + "]";
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Range range = (Range) o;
+
+        return id != null ? id.equals(range.id) : range.id == null;
+
+    }
+
+
 }

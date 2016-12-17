@@ -138,6 +138,14 @@ public class Lift {
         return range;
     }
 
+    public boolean isInRange(int i) {
+        for(Range r : range) {
+            if(r.getId() == i)
+                return true;
+        }
+        return false;
+    }
+
     /**
      * @param range The range
      */
