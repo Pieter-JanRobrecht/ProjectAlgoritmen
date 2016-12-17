@@ -86,6 +86,8 @@ public class Controller {
     private double mouseDeltaX;
     private double mouseDeltaY;
 
+    private File file = null;
+
     public void buildCamera() {
         System.out.println("buildCamera()");
         root.getChildren().add(cameraXform);
@@ -471,11 +473,12 @@ public class Controller {
     }
 
     public void makeWorld() {
-        File file = null;
-        try {
-            file = new File(Controller.class.getClassLoader().getResource("testLiftHopping.json").toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        if(file == null) {
+            try {
+                file = new File(Controller.class.getClassLoader().getResource("testLiftHopping.json").toURI());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -522,6 +525,23 @@ public class Controller {
     private void initValues() {
         AANTAL_VERDIEPINGEN = ms.getLevels().size();
         AANTAL_LIFTEN = ms.getLifts().size();
+    }
+
+    public void fileChooser() {
+        try {
+            System.out.println("Setting file to original.json");
+            file = new File(Controller.class.getClassLoader().getResource("original.json").toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public ManagementSystem getMs() {
