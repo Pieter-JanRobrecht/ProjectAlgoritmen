@@ -104,13 +104,15 @@ public class Simulation {
                         System.out.println("\tE\t DEBUG - Elevator found, " + tempUser.getId() + " assigned elevator "
                                 + tempLift.getId());
                         database.put(tempUser, tempLift);
-                        if (tempLift.getDirection() == 0) {
+                        if (tempLift.getDirection() == 0 && tempLift.getDestination() == -1) {
                             if (tempUser.getSourceId() > tempLift.getCurrentLevel()) {
+                                tempLift.setMovingTimer(mainTicker);
                                 tempLift.setDirection(1);
-                                tempLift.setDestination(tempUser.getDestinationId());
+                                tempLift.setDestination(tempUser.getSourceId());
                             } else if (tempUser.getSourceId() < tempLift.getCurrentLevel()) {
+                                tempLift.setMovingTimer(mainTicker);
                                 tempLift.setDirection(-1);
-                                tempLift.setDestination(tempUser.getDestinationId());
+                                tempLift.setDestination(tempUser.getSourceId());
                             }
                         }
                     } else if (((tempUser.getTimeout() + tempUser.getArrivalTime()) < mainTicker) && !tempUser.isInElevator()) {
@@ -292,6 +294,15 @@ public class Simulation {
                                                 throw new Exception();
                                             l.setUsersGettingIn(l.getUsersGettingIn() - 1);
 
+                                            System.out.println("\t!!!\t DEBUG - Amount of users in elevator: " + l.getCurrentUsers());
+                                            if (l.getCurrentUsers() == 1) {
+                                                l.setDestination(u.getDestinationId());
+                                                if (l.getCurrentLevel() < u.getDestinationId()) {
+                                                    l.setDirection(1);
+                                                } else {
+                                                    l.setDirection(-1);
+                                                }
+                                            }
                                         } else if (u.getDestinationId() == l.getCurrentLevel()) { // uitstappen
                                             System.out.println("\t\t DEBUG - User (" + u.getId() + ") left elevator");
                                             //System.out.println("\t\t DEBUG - " + u.toString());
@@ -319,6 +330,10 @@ public class Simulation {
                                                 throw new Exception();
                                             l.setUsersGettingOut(l.getUsersGettingOut() - 1);
 
+                                            if (l.getCurrentUsers() == 0) {
+                                                l.setDestination(-1);
+                                                l.setDirection(0);
+                                            }
                                             thisTurnTransition.getChildren().addAll(sq);
                                         }
                                     }
@@ -357,13 +372,13 @@ public class Simulation {
                     database.remove(u);
 
                 // 7. handle elevator movements
-                for (Lift lift : ec.getLifts()) {
+                for (Lift l : ec.getLifts()) {
                     //System.out.println("\t!!!\t DEBUG - " + l.toString());
-                    if (lift.getDirection() != 0 && lift.getMovingTimer() + lift.getLevelSpeed() <= mainTicker && (lift.getUsersGettingIn() + lift.getUsersGettingOut()) == 0) {
-                        lift.setNextLevel(thisTurnTransition,GUIController);
-                        lift.setMovingTimer(mainTicker);
+                    if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() <= mainTicker && (l.getUsersGettingIn() + l.getUsersGettingOut()) == 0) {
+                        l.setNextLevel(thisTurnTransition,GUIController);
+                        l.setMovingTimer(mainTicker);
                         System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
-                                + ", next movement in atleast " + (lift.getMovingTimer() + lift.getLevelSpeed()));
+                                + ", next movement in atleast " + (l.getMovingTimer() + l.getLevelSpeed()));
                     }
                 }
             }
