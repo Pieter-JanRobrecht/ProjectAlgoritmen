@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.annotations.SerializedName;
 import javafx.scene.shape.Sphere;
 
 import DataGenereren.Exclude;
@@ -125,11 +126,7 @@ public class User {
         return boardingTime;
     }
 
-    /**
-     * 
-     * @param tempBoardingTime
-     *     The boardingTime
-     */
+
     @JsonProperty("boardingTime")
     public void setBoardingTime(Double boardingTime) {
         this.boardingTime = boardingTime;
@@ -291,7 +288,6 @@ public class User {
                 ", timeout=" + timeout +
                 ", sourceId=" + sourceId +
                 ", destinationId=" + destinationId +
-                ", additionalProperties=" + additionalProperties +
                 ", inElevator=" + inElevator +
                 ", finished=" + finished +
                 ", handled=" + handled +
