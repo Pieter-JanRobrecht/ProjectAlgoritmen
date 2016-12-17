@@ -79,6 +79,7 @@ public class Simulation {
         database = new HashMap<User, Lift>();
         for (Lift l : ec.getLifts()) {
             l.initiateLift();
+            writeToCsv(l,null,false);
         }
 
         // while(!ec.getUsers().isEmpty()) {
@@ -252,11 +253,14 @@ public class Simulation {
                             case "idle":
                                 l.setMode("openen");
                                 l.setOperationTimer(mainTicker);
+
+                                writeToCsv(l,null,false);
                                 break;
                             case "openen":
                                 if (l.getOperationTimer() + l.getOperationTimer() >= mainTicker) {
                                     l.setMode("boarding");
                                     l.setOperationTimer(mainTicker);
+                                    writeToCsv(l,null,true);
                                 }
                                 break;
                             case "boarding":
@@ -265,6 +269,8 @@ public class Simulation {
                                     if ((u.getSourceId() == l.getCurrentLevel() && !u.isInElevator())
                                             || u.getDestinationId() == l.getCurrentLevel()) {
                                         delay += u.getBoardingTime();
+
+                                        writeToCsv(l,u,true);
                                     }
                                 }
 
@@ -349,6 +355,7 @@ public class Simulation {
                                         }
                                     }
                                 }
+                                writeToCsv(l,null,false);
                                 break;
 
 
@@ -394,8 +401,13 @@ public class Simulation {
     }
 
 
-    private void writeToCsv(Lift tempLift, boolean open) {
-        String users = createUserString(tempLift);
+    private void writeToCsv(Lift tempLift, User u, boolean open) {
+        String users = null;
+        try {
+            users = createUserString(tempLift,u);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         ArrayList<String> info = new ArrayList<>();
 
         info.add(tempLift.getId() + "");
@@ -416,15 +428,36 @@ public class Simulation {
         }
     }
 
-    private String createUserString(Lift tempLift) {
-        StringBuilder users = new StringBuilder();
-        for (int i = 0; i < tempLift.getHandlingUsers().size(); i++) {
+    private String createUserString(Lift tempLift, User u) throws Exception {
+        StringBuilder users = null;
+        List<User> list = new ArrayList<>(tempLift.getHandlingUsers());
+        if(u != null){
+            int index = -1;
+            for (int i = 0; i <list.size();i++){
+                if(list.get(i).getId() == u.getId()){
+                    index = i;
+                }
+            }
+            if(index == -1)
+                throw new Exception();
+
+            list.remove(index);
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            users = new StringBuilder();
             users.append(tempLift.getHandlingUsers().get(i).getId());
             if (i != tempLift.getHandlingUsers().size() - 1) {
                 users.append(",");
             }
         }
-        return users.toString();
+        if(users!=null){
+            return users.toString();
+        }else{
+            users = new StringBuilder();
+            users.append("null");
+            return users.toString();
+        }
     }
 
     public void addValidUsers(int time) {
