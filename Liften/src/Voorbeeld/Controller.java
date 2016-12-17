@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Sphere;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -562,12 +563,16 @@ public class Controller {
     }
 
     public void fileChooser() {
+        FileChooser fileChooser = new FileChooser();
         try {
-            System.out.println("Setting file to original.json");
-            file = new File(Controller.class.getClassLoader().getResource("original.json").toURI());
+            fileChooser.setInitialDirectory(
+                    new File(Controller.class.getClassLoader().getResource(".").toURI())
+            );
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+        fileChooser.setTitle("Open File");
+        file = fileChooser.showOpenDialog((Stage) anchorPane.getScene().getWindow());
     }
 
     public File getFile() {
