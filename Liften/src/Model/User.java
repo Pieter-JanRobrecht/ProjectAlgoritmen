@@ -11,13 +11,13 @@ import javafx.scene.shape.Sphere;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "id",
-    "arrivalTime",
-    "boardingTime",
-    "unboardingTime",
-    "timeout",
-    "source-id",
-    "destination-id"
+        "id",
+        "arrivalTime",
+        "boardingTime",
+        "unboardingTime",
+        "timeout",
+        "source-id",
+        "destination-id"
 })
 public class User {
 
@@ -31,13 +31,13 @@ public class User {
     private Double unboardingTime;
     @JsonProperty("timeout")
     private Integer timeout;
-   // @JsonProperty("source-id")
+    // @JsonProperty("source-id")
     @SerializedName("source-id")
     private Integer sourceId;
     //@JsonProperty("destination-id")
     @SerializedName("destination-id")
     private Integer destinationId;
-//    @JsonIgnore
+    //    @JsonIgnore
 //    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
     @Exclude
     private boolean inElevator;
@@ -48,33 +48,36 @@ public class User {
 
     @JsonIgnore
     private Sphere sphere;
+    @Exclude
     private int originalSource = -1;
+    @Exclude
     private int originalDestination = -1;
-    
+
+    @Exclude
     private boolean liftHopper;
 
+    @Exclude
     private boolean up;
-    
+
     public User() {
-    	inElevator = false;
-    	finished = false;
-    	handled = false;
+        inElevator = false;
+        finished = false;
+        handled = false;
     }
 
     public void initialize() {
         originalDestination = destinationId;
         originalSource = sourceId;
         liftHopper = false;
-        if(destinationId > sourceId) {
+        if (destinationId > sourceId) {
             up = true;
         } else {
             up = false;
         }
     }
+
     /**
-     * 
-     * @return
-     *     The id
+     * @return The id
      */
     @JsonProperty("id")
     public Integer getId() {
@@ -82,9 +85,7 @@ public class User {
     }
 
     /**
-     * 
-     * @param id
-     *     The id
+     * @param id The id
      */
     @JsonProperty("id")
     public void setId(Integer id) {
@@ -92,9 +93,7 @@ public class User {
     }
 
     /**
-     * 
-     * @return
-     *     The arrivalTime
+     * @return The arrivalTime
      */
     @JsonProperty("arrivalTime")
     public Double getArrivalTime() {
@@ -102,9 +101,7 @@ public class User {
     }
 
     /**
-     * 
-     * @param arrivalTime
-     *     The arrivalTime
+     * @param arrivalTime The arrivalTime
      */
     @JsonProperty("arrivalTime")
     public void setArrivalTime(Double arrivalTime) {
@@ -112,9 +109,7 @@ public class User {
     }
 
     /**
-     * 
-     * @return
-     *     The boardingTime
+     * @return The boardingTime
      */
     @JsonProperty("boardingTime")
     public Double getBoardingTime() {
@@ -128,9 +123,7 @@ public class User {
     }
 
     /**
-     * 
-     * @return
-     *     The unboardingTime
+     * @return The unboardingTime
      */
     @JsonProperty("unboardingTime")
     public Double getUnboardingTime() {
@@ -138,9 +131,7 @@ public class User {
     }
 
     /**
-     * 
-     * @param unboardingTime
-     *     The unboardingTime
+     * @param unboardingTime The unboardingTime
      */
     @JsonProperty("unboardingTime")
     public void setUnboardingTime(Double unboardingTime) {
@@ -148,9 +139,7 @@ public class User {
     }
 
     /**
-     * 
-     * @return
-     *     The timeout
+     * @return The timeout
      */
     @JsonProperty("timeout")
     public Integer getTimeout() {
@@ -158,9 +147,7 @@ public class User {
     }
 
     /**
-     * 
-     * @param timeout
-     *     The timeout
+     * @param timeout The timeout
      */
     @JsonProperty("timeout")
     public void setTimeout(Integer timeout) {
@@ -168,9 +155,7 @@ public class User {
     }
 
     /**
-     * 
-     * @return
-     *     The sourceId
+     * @return The sourceId
      */
     @JsonProperty("source-id")
     public Integer getSourceId() {
@@ -178,9 +163,7 @@ public class User {
     }
 
     /**
-     * 
-     * @param sourceId
-     *     The source-id
+     * @param sourceId The source-id
      */
     @JsonProperty("source-id")
     public void setSourceId(Integer sourceId) {
@@ -188,9 +171,7 @@ public class User {
     }
 
     /**
-     * 
-     * @return
-     *     The destinationId
+     * @return The destinationId
      */
     @JsonProperty("destination-id")
     public Integer getDestinationId() {
@@ -198,9 +179,7 @@ public class User {
     }
 
     /**
-     * 
-     * @param destinationId
-     *     The destination-id
+     * @param destinationId The destination-id
      */
     @JsonProperty("destination-id")
     public void setDestinationId(Integer destinationId) {
@@ -217,29 +196,29 @@ public class User {
 //        this.additionalProperties.put(name, value);
 //    }
 
-	public boolean isInElevator() {
-		return inElevator;
-	}
+    public boolean isInElevator() {
+        return inElevator;
+    }
 
-	public void setInElevator(boolean inElevator) {
-		this.inElevator = inElevator;
-	}
+    public void setInElevator(boolean inElevator) {
+        this.inElevator = inElevator;
+    }
 
-	public boolean isFinished() {
-		return finished;
-	}
+    public boolean isFinished() {
+        return finished;
+    }
 
-	public void setFinished(boolean finished) {
-		this.finished = finished;
-	}
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
 
-	public boolean isHandled() {
-		return handled;
-	}
+    public boolean isHandled() {
+        return handled;
+    }
 
-	public void setHandled(boolean handled) {
-		this.handled = handled;
-	}
+    public void setHandled(boolean handled) {
+        this.handled = handled;
+    }
 
     public int getOriginalSource() {
         return originalSource;
@@ -286,9 +265,6 @@ public class User {
                 ", inElevator=" + inElevator +
                 ", finished=" + finished +
                 ", handled=" + handled +
-                ", originalSource=" + originalSource +
-                ", originalDestination=" + originalDestination +
-                ", liftHopper=" + liftHopper +
                 ", originalSource=" + originalSource +
                 ", originalDestination=" + originalDestination +
                 ", liftHopper=" + liftHopper +

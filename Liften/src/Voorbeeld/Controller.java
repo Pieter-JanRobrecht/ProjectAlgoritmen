@@ -300,7 +300,7 @@ public class Controller {
 
             viewController.setController(this);
         } catch (IOException e) {
-            System.err.println("Error loading EventHandlerDemo.fxml!");
+            System.err.println("Error loading Setup.fxml!");
             e.printStackTrace();
         }
     }
