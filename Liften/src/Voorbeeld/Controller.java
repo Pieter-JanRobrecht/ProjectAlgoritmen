@@ -265,7 +265,7 @@ public class Controller {
 
     @FXML
     void startSimulatie(ActionEvent event) {
-        sim = new Simulation(ms);
+        sim = new Simulation(ms, anchorPane);
         sim.setGUIController(this);
         try {
             sim.startSimulationSimple();

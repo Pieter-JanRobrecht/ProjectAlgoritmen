@@ -7,6 +7,9 @@ import Model.ManagementSystem;
 import Model.User;
 import javafx.animation.ParallelTransition;
 import javafx.animation.SequentialTransition;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -35,7 +38,7 @@ public class Simulation {
         System.out.println("Please initiate using the correct setup");
     }
 
-    public Simulation(ManagementSystem ms) {
+    public Simulation(ManagementSystem ms, AnchorPane anchorPane) {
         wachttijden = new ArrayList<>();
         maxWachtTijd = 0;
         totaleAfhandelTijd = 0;
@@ -45,17 +48,18 @@ public class Simulation {
 
         File hulp = null;
         try {
+
+            FileChooser fileChooser = new FileChooser();
             try {
-                InputStream in = Controller.class.getClassLoader().getResourceAsStream("testLiftHopping.json");
-                hulp = new File("test");
-                OutputStream outputStream = new FileOutputStream(hulp);
-                IOUtils.copy(in, outputStream);
-                outputStream.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+                fileChooser.setInitialDirectory(
+                        new File(Controller.class.getClassLoader().getResource(".").toURI())
+                );
+            } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
+            fileChooser.setTitle("Open CSV File");
+            hulp = fileChooser.showOpenDialog((Stage) anchorPane.getScene().getWindow());
+
             writer = new FileWriter(hulp);
 
             CSVUtils.writeLine(writer, Arrays.asList("LiftId", "Time", "LevelId", "UserId", "OpenDoor"));
@@ -101,7 +105,7 @@ public class Simulation {
         database = new HashMap<User, Lift>();
         for (Lift l : ec.getLifts()) {
             l.initiateLift();
-            writeToCsv(l,null,false);
+            writeToCsv(l, null, false);
         }
 
         // while(!ec.getUsers().isEmpty()) {
@@ -234,10 +238,10 @@ public class Simulation {
                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // INSTAPPEN
                             System.out.println(
                                     "\tSTATUS\t DEBUG - Elevator (" + l.getId() + ") is adding user (" + u.getId() + ").");
-                            System.out.println(u.getTimeout() +" ... "+ u.getArrivalTime() +" ... "+ mainTicker);
+                            System.out.println(u.getTimeout() + " ... " + u.getArrivalTime() + " ... " + mainTicker);
                             int wachtTijd = mainTicker - (int) Math.ceil(u.getArrivalTime());
                             wachttijden.add(wachtTijd);
-                            if(maxWachtTijd < wachtTijd)
+                            if (maxWachtTijd < wachtTijd)
                                 maxWachtTijd = wachtTijd;
                             l.addHandlingUser(u);
                             l.setUsersGettingIn(l.getUsersGettingIn() + 1);
@@ -282,13 +286,13 @@ public class Simulation {
                                 l.setMode("openen");
                                 l.setOperationTimer(mainTicker);
 
-                                writeToCsv(l,null,false);
+                                writeToCsv(l, null, false);
                                 break;
                             case "openen":
                                 if (l.getOperationTimer() + l.getOperationTimer() >= mainTicker) {
                                     l.setMode("boarding");
                                     l.setOperationTimer(mainTicker);
-                                    writeToCsv(l,null,true);
+                                    writeToCsv(l, null, true);
                                 }
                                 break;
                             case "boarding":
@@ -298,7 +302,7 @@ public class Simulation {
                                             || u.getDestinationId() == l.getCurrentLevel()) {
                                         delay += u.getBoardingTime();
 
-                                        writeToCsv(l,u,true);
+                                        writeToCsv(l, u, true);
                                     }
                                 }
 
@@ -384,7 +388,7 @@ public class Simulation {
                                         }
                                     }
                                 }
-                                writeToCsv(l,null,false);
+                                writeToCsv(l, null, false);
                                 break;
 
 
@@ -411,7 +415,7 @@ public class Simulation {
                 for (Lift l : ec.getLifts()) {
                     //System.out.println("\t!!!\t DEBUG - " + l.toString());
                     if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() <= mainTicker && (l.getUsersGettingIn() + l.getUsersGettingOut()) == 0) {
-                        l.setNextLevel(thisTurnTransition,GUIController);
+                        l.setNextLevel(thisTurnTransition, GUIController);
                         l.setMovingTimer(mainTicker);
                         System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
                                 + ", next movement in atleast " + (l.getMovingTimer() + l.getLevelSpeed()));
@@ -420,7 +424,7 @@ public class Simulation {
             }
 
             System.out.println("\t\t GUI - End of gametick adding parallelmovement");
-            if(GUIController == null)
+            if (GUIController == null)
                 System.out.println("k aooo");
             GUIController.sequence.getChildren().addAll(thisTurnTransition);
             mainTicker++;
@@ -453,7 +457,7 @@ public class Simulation {
     private void writeToCsv(Lift tempLift, User u, boolean open) {
         String users = null;
         try {
-            users = createUserString(tempLift,u);
+            users = createUserString(tempLift, u);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -480,14 +484,14 @@ public class Simulation {
     private String createUserString(Lift tempLift, User u) throws Exception {
         StringBuilder users = null;
         List<User> list = new ArrayList<>(tempLift.getHandlingUsers());
-        if(u != null){
+        if (u != null) {
             int index = -1;
-            for (int i = 0; i <list.size();i++){
-                if(list.get(i).getId() == u.getId()){
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getId() == u.getId()) {
                     index = i;
                 }
             }
-            if(index == -1)
+            if (index == -1)
                 throw new Exception();
 
             list.remove(index);
@@ -500,9 +504,9 @@ public class Simulation {
                 users.append(",");
             }
         }
-        if(users!=null){
+        if (users != null) {
             return users.toString();
-        }else{
+        } else {
             users = new StringBuilder();
             users.append("null");
             return users.toString();
@@ -719,7 +723,7 @@ public class Simulation {
 
     public int getTotaleWachttijd() {
         int sum = 0;
-        for(int i : wachttijden) {
+        for (int i : wachttijden) {
             sum += i;
         }
         return sum;

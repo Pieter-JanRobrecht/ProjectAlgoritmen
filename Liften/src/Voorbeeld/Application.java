@@ -1,10 +1,12 @@
 package Voorbeeld;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,6 +67,12 @@ public class Application extends javafx.application.Application {
             anchorPane = viewController.getAnchorPane();
             viewController.setApplication(this);
 
+            primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    System.exit(0);
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import Model.ManagementSystem;
+import javafx.scene.layout.AnchorPane;
 
 public class Main {
 
@@ -45,7 +46,7 @@ public class Main {
         System.out.println("\n");
         System.out.println("Aantal users: " + ms.getUsers().size());
 
-        Simulation sim = new Simulation(ms);
+        Simulation sim = new Simulation(ms, new AnchorPane());
         sim.startSimulationSimple();
     }
 
