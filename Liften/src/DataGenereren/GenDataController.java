@@ -1,7 +1,7 @@
 package DataGenereren;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,6 +49,7 @@ import Model.User;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class GenDataController {
@@ -373,7 +374,18 @@ public class GenDataController {
 
         try {
             //write converted json data to a file named "test.json"
-            FileWriter writer = new FileWriter("data/test.json");
+            FileChooser fileChooser = new FileChooser();
+            try {
+                fileChooser.setInitialDirectory(
+                        new File(Controller.class.getClassLoader().getResource(".").toURI())
+                );
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            fileChooser.setTitle("Kies JSON File");
+            File hulp = fileChooser.showOpenDialog(new Stage());
+
+            FileWriter writer = new FileWriter(hulp);
             writer.write(json);
             writer.close();
 
