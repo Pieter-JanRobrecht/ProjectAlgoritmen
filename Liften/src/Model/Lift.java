@@ -234,6 +234,8 @@ public class Lift {
     }
 
     public void setDestination(int destination) {
+        if(destination != -1 && !isInRange(destination))
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         this.destination = destination;
     }
 
@@ -323,9 +325,24 @@ public class Lift {
         System.out.println("\t.\t DEBUG - initiated " + toString());
     }
 
+    public int getNextLevelDifference() {
+        int teller = 0;
+        for(int i = 0; i < range.size(); i++) {
+            if(currentLevel == range.get(i).getId())
+                teller = i;
+        }
+
+        if(teller == 0 || teller == range.size()-1) {
+            System.out.println("Something is wrong?");
+            return -1;
+        }
+
+        return Math.abs(currentLevel - range.get(teller+direction).getId());
+    }
+
     //@JsonIgnore
     public void setNextLevel(ParallelTransition transition, Controller GUIController, Simulation s) {
-        transition.getChildren().addAll(GUIController.moveElevator(GUIController.getMs().getLifts().get(id), direction));
+        int vorigVerdiep = currentLevel;
 
         if (direction == 1) {
             System.out.println("\t^\t DEBUG - Elevator (" + id + ") is ascending! Current level is " + currentLevel);
@@ -352,6 +369,9 @@ public class Lift {
             System.out.println("\t!\t DEBUG - something went wrong, setting next level whilst idling: ");
             System.out.println("\t\t\t" + toString());
         }
+
+        int distance = Math.abs(vorigVerdiep - currentLevel);
+        transition.getChildren().addAll(GUIController.moveElevator(GUIController.getMs().getLifts().get(id), direction*distance));
     }
 
     public boolean hasUsersOnFloor() {

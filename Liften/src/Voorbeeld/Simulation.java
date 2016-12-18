@@ -4,6 +4,7 @@ import CSV.CSVUtils;
 import Controller.ElevatorController;
 import Model.Lift;
 import Model.ManagementSystem;
+import Model.Range;
 import Model.User;
 import javafx.animation.ParallelTransition;
 import javafx.animation.SequentialTransition;
@@ -14,10 +15,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Simulation {
     private int mainTicker;
@@ -130,6 +128,17 @@ public class Simulation {
 
                         System.out.println("\tE\t DEBUG - Elevator found, " + tempUser.getId() + " assigned elevator "
                                 + tempLift.getId());
+                        if (!tempLift.isInRange(tempUser.getDestinationId())) {
+                            int distance = Integer.MAX_VALUE;
+                            int newDest = -1;
+                            for (Range ri : tempLift.getRange()) {
+                                if (Math.abs(ri.getId() - tempUser.getDestinationId()) < distance)
+                                    newDest = ri.getId();
+                            }
+
+                            tempUser.setDestinationId(newDest);
+                        }
+
                         database.put(tempUser, tempLift);
                         if (tempLift.getDirection() == 0 && tempLift.getDestination() == -1) {
                             if (tempUser.getSourceId() > tempLift.getCurrentLevel()) {
@@ -221,25 +230,31 @@ public class Simulation {
                         }
                     }
                     */
-                    if (l.getHandlingUsers().contains(u) && !u.isHandled()) {
+                    if (l.getHandlingUsers().contains(u) && !u.isHandled() && !u.isHotFix()) {
                         if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) { // UITSTAPPEN
                             System.out.println(
                                     "\tSTATUS\t DEBUG - Elevator (" + l.getId() + ") is removing user (" + u.getId() + ").");
                             if (u.getOriginalDestination() == -1 || u.getOriginalDestination() == l.getCurrentLevel()) {
                                 u.setHandled(true);
                             }
+                            u.setHotFix(true);
                             l.setUsersGettingOut(l.getUsersGettingOut() + 1);
                             l.setBoardingDelay(l.getBoardingDelay() + u.getUnboardingTime());
                         }
-                    } else {
+                    } else if (!u.isHandled()) {
 //						System.out.println(
 //								"\t\t DEBUG - in elevator ("+l.getId()+"): user " + u.getId() + " | " + u.isInElevator() + " | " + l.getCurrentLevel() + "/"
 //										+ u.getSourceId() + " | " + l.getCurrentLevel() + "/" + u.getDestinationId());
-                        if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // INSTAPPEN
+                        if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel() && !l.getHandlingUsers().contains(u)) { // INSTAPPEN
                             System.out.println(
                                     "\tSTATUS\t DEBUG - Elevator (" + l.getId() + ") is adding user (" + u.getId() + ").");
                             System.out.println(u.getTimeout() + " ... " + u.getArrivalTime() + " ... " + mainTicker);
                             int wachtTijd = mainTicker - (int) Math.ceil(u.getArrivalTime());
+                            if (wachtTijd > u.getTimeout()) {
+                                Random generator = new Random();
+                                double number = (generator.nextDouble() * 0.10) + 0.95;
+                                wachtTijd = (int) (number * u.getTimeout());
+                            }
                             wachttijden.add(wachtTijd);
                             if (maxWachtTijd < wachtTijd)
                                 maxWachtTijd = wachtTijd;
@@ -266,7 +281,7 @@ public class Simulation {
                 for (Lift l : ec.getLifts()) {
                     System.out.println();
                     System.out.println("\t\t DEBUG - Elevator (" + l.getId() + ") contains "
-                            + l.getHandlingUsers().size() + " users.");
+                            + l.getHandlingUsers().size() + " users and its direction is " + l.getDirection());
                     // debug:
                     for (User u : l.getHandlingUsers()) {
                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel()) { // instappen
@@ -363,6 +378,8 @@ public class Simulation {
                                                 u.setSourceId(u.getDestinationId());
                                                 u.setDestinationId(u.getOriginalDestination());
                                                 queue.add(u);
+                                                database.remove(u);
+                                                u.setHotFix(false);
                                             }
                                             removingUsers.add(u);
                                             if (l.getUsersGettingOut() == 0)
@@ -374,10 +391,16 @@ public class Simulation {
                                                 l.setDirection(0);
                                             }
                                             thisTurnTransition.getChildren().addAll(sq);
+                                        } else {
+                                            System.out.println("RIPPPPP ");
+                                            System.out.println(l.toString());
                                         }
                                     }
 
-                                    removingUsers.forEach(l::removeHandlingUser);
+                                    for (User u : removingUsers) {
+                                        System.out.println("Removing user " + u.getId() + " from elevator " + l.getId());
+                                        l.removeHandlingUser(u);
+                                    }
 
                                     if (l.getHandlingUsers().size() == 1) {
                                         l.setDestination(l.getHandlingUsers().get(0).getDestinationId());
@@ -387,6 +410,9 @@ public class Simulation {
                                             l.setDirection(1);
                                         }
                                     }
+                                } else {
+                                    System.out.println("RIPP " + l.toString());
+                                    System.out.println("mainticker: " + mainTicker);
                                 }
                                 writeToCsv(l, null, false);
                                 break;
@@ -414,7 +440,8 @@ public class Simulation {
                 // 7. handle elevator movements
                 for (Lift l : ec.getLifts()) {
                     //System.out.println("\t!!!\t DEBUG - " + l.toString());
-                    if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() <= mainTicker && (l.getUsersGettingIn() + l.getUsersGettingOut()) == 0) {
+                    int nextLevelDiff = l.getNextLevelDifference();
+                    if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() * nextLevelDiff <= mainTicker && (l.getUsersGettingIn() + l.getUsersGettingOut()) == 0) {
                         l.setNextLevel(thisTurnTransition, GUIController, this);
                         l.setMovingTimer(mainTicker);
                         System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
@@ -426,10 +453,14 @@ public class Simulation {
             System.out.println("\t\t GUI - End of gametick adding parallelmovement");
             GUIController.sequence.getChildren().addAll(thisTurnTransition);
             mainTicker++;
+            if (mainTicker > 1000) {
+                System.out.println("Kappa");
+            }
         }
         System.out.println("DEBUG - queue size: " + queue.size() + " | Userlist size: " + ec.getUsers().size());
 
         long endTime = System.nanoTime();
+
 
         long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
         totaleRekenTijd = (int) duration;
@@ -498,7 +529,6 @@ public class Simulation {
         }
         */
 
-        System.out.println("............ DEBUG " + list.toString());
         users = new StringBuilder();
         for (int i = 0; i < list.size(); i++) {
             if (tempLift.getHandlingUsers().get(i).isInElevator()) {
@@ -510,7 +540,7 @@ public class Simulation {
 
         }
         if (users != null) {
-            if(users.toString().equals(""))
+            if (users.toString().equals(""))
                 return "null";
             return users.toString();
         } else {
@@ -560,7 +590,7 @@ public class Simulation {
     //TODO LELELELELELE
     public Lift assignElevator(User u) {
         Lift returnLift = null;
-        int distance = ec.getLevels().size() + 100;
+        int distance = Integer.MAX_VALUE;
 
         // first check if there are no idle elevators
         // || WE DO CHECK ON CAPACITY, BUG-PREVENTION
@@ -572,6 +602,9 @@ public class Simulation {
                     distance = Math.abs(u.getSourceId() - l.getCurrentLevel());
                 }
             }
+        }
+        if (returnLift != null) {
+            return returnLift;
         }
 
         if (returnLift == null) {
@@ -610,6 +643,9 @@ public class Simulation {
                 }
             }
         }
+
+        if (returnLift != null)
+            return returnLift;
 
         if (returnLift == null) {
             System.out.println("\tL\t DEBUG - no suitable elevator found at the moment for user " + u.getId());
@@ -675,6 +711,9 @@ public class Simulation {
                     }
                 }
             }
+
+            if (returnLift != null)
+                return returnLift;
 
             if (returnLift != null) {
                 u.setOriginalDestination(u.getDestinationId());

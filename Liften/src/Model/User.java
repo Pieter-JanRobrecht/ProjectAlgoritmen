@@ -59,10 +59,14 @@ public class User {
     @Exclude
     private boolean up;
 
+    @Exclude
+    private boolean hotFix;
+
     public User() {
         inElevator = false;
         finished = false;
         handled = false;
+        hotFix = false;
     }
 
     public void initialize() {
@@ -250,6 +254,14 @@ public class User {
 
     public void setUp(boolean up) {
         this.up = up;
+    }
+
+    public boolean isHotFix() {
+        return hotFix;
+    }
+
+    public void setHotFix(boolean hotFix) {
+        this.hotFix = hotFix;
     }
 
     @Override
