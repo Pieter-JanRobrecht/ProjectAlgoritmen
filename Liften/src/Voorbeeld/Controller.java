@@ -583,6 +583,7 @@ public class Controller {
         }
         fileChooser.setTitle("Open File");
         file = fileChooser.showOpenDialog((Stage) anchorPane.getScene().getWindow());
+        resetWorld(new ActionEvent());
     }
 
     public File getFile() {
