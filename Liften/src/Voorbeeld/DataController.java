@@ -46,12 +46,12 @@ public class DataController {
     }
 
     public void showData() {
-        aantalHop.setText(simulation.getAantalLiftHoppers() + " gameticks");
+        aantalHop.setText(simulation.getAantalLiftHoppers() + "");
         totAfhandel.setText(simulation.getTotaleAfhandelTijd() + " gameticks");
         maxWacht.setText(simulation.getMaxWachtTijd() + " gameticks");
         totWacht.setText(simulation.getTotaleWachttijd() + " gameticks");
-        totReken.setText(simulation.getTotaleRekenTijd() + " gameticks");
-        totTimeout.setText(simulation.getAantalTimeouts() + " gameticks");
+        totReken.setText(simulation.getTotaleRekenTijd() + " ms");
+        totTimeout.setText(simulation.getAantalTimeouts() + "");
 
         XYChart.Series series1 = new XYChart.Series();
         for (int i = 0; i < simulation.getWachttijden().size(); i++) {
