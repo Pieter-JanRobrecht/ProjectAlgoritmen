@@ -62,7 +62,7 @@ public class Simulation {
 
             writer = new FileWriter(hulp);
 
-            CSVUtils.writeLine(writer, Arrays.asList("LiftId", "Time", "LevelId", "UserId", "OpenDoor"));
+            CSVUtils.writeLine(writer, Arrays.asList("LiftId", "Time", "LevelId", "UserIds", "OpenDoor"));
             writer.flush();
 
         } catch (IOException e) {
@@ -415,7 +415,7 @@ public class Simulation {
                 for (Lift l : ec.getLifts()) {
                     //System.out.println("\t!!!\t DEBUG - " + l.toString());
                     if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() <= mainTicker && (l.getUsersGettingIn() + l.getUsersGettingOut()) == 0) {
-                        l.setNextLevel(thisTurnTransition, GUIController);
+                        l.setNextLevel(thisTurnTransition, GUIController, this);
                         l.setMovingTimer(mainTicker);
                         System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
                                 + ", next movement in atleast " + (l.getMovingTimer() + l.getLevelSpeed()));
@@ -424,8 +424,6 @@ public class Simulation {
             }
 
             System.out.println("\t\t GUI - End of gametick adding parallelmovement");
-            if (GUIController == null)
-                System.out.println("k aooo");
             GUIController.sequence.getChildren().addAll(thisTurnTransition);
             mainTicker++;
         }
@@ -454,15 +452,15 @@ public class Simulation {
     }
 
 
-    private void writeToCsv(Lift tempLift, User u, boolean open) {
-        String users = null;
+    public void writeToCsv(Lift tempLift, User u, boolean open) {
+        String users = "null";
         try {
             users = createUserString(tempLift, u);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ArrayList<String> info = new ArrayList<>();
 
+        ArrayList<String> info = new ArrayList<>();
         info.add(tempLift.getId() + "");
         info.add(mainTicker + "");
         info.add(tempLift.getCurrentLevel() + "");
@@ -473,6 +471,7 @@ public class Simulation {
             info.add("false");
         }
 
+        System.out.println("\tCSV\t writing: " + info);
         try {
             CSVUtils.writeLine(writer, info);
             writer.flush();
@@ -484,6 +483,7 @@ public class Simulation {
     private String createUserString(Lift tempLift, User u) throws Exception {
         StringBuilder users = null;
         List<User> list = new ArrayList<>(tempLift.getHandlingUsers());
+        /*
         if (u != null) {
             int index = -1;
             for (int i = 0; i < list.size(); i++) {
@@ -496,15 +496,22 @@ public class Simulation {
 
             list.remove(index);
         }
+        */
 
+        System.out.println("............ DEBUG " + list.toString());
+        users = new StringBuilder();
         for (int i = 0; i < list.size(); i++) {
-            users = new StringBuilder();
-            users.append(tempLift.getHandlingUsers().get(i).getId());
-            if (i != tempLift.getHandlingUsers().size() - 1) {
-                users.append(",");
+            if (tempLift.getHandlingUsers().get(i).isInElevator()) {
+                if (!users.toString().equals("")) {
+                    users.append(",");
+                }
+                users.append(tempLift.getHandlingUsers().get(i).getId());
             }
+
         }
         if (users != null) {
+            if(users.toString().equals(""))
+                return "null";
             return users.toString();
         } else {
             users = new StringBuilder();

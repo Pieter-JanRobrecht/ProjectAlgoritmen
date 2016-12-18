@@ -1,6 +1,7 @@
 package Model;
 
 import Voorbeeld.Controller;
+import Voorbeeld.Simulation;
 import com.fasterxml.jackson.annotation.*;
 import javafx.animation.ParallelTransition;
 import javafx.scene.shape.Box;
@@ -325,7 +326,7 @@ public class Lift {
     }
 
     @JsonIgnore
-    public void setNextLevel(ParallelTransition transition, Controller GUIController) {
+    public void setNextLevel(ParallelTransition transition, Controller GUIController, Simulation s) {
         transition.getChildren().addAll(GUIController.moveElevator(GUIController.getMs().getLifts().get(id), direction));
 
         if (direction == 1) {
@@ -337,6 +338,7 @@ public class Lift {
                     i = range.size();
                 }
             }
+            s.writeToCsv(this, null, false);
         } else if (direction == -1) {
             System.out.println("\tv\t DEBUG - Elevator (" + id + ") is decending!");
             for (int i = 0; i < range.size(); i++) {
@@ -346,6 +348,8 @@ public class Lift {
                     i = range.size();
                 }
             }
+
+            s.writeToCsv(this, null, false);
         } else {
             System.out.println("\t!\t DEBUG - something went wrong, setting next level whilst idling: ");
             System.out.println("\t\t\t" + toString());
