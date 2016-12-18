@@ -1,7 +1,7 @@
 package DataGenereren;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,6 +49,7 @@ import Model.User;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class GenDataController {
@@ -196,6 +197,8 @@ public class GenDataController {
     }
 
     public void generateJson() {
+
+
         double offsetPercentage = (offSetCheckbox.isSelected()) ? variableSlider.getValue() / 100 : 0;
 
         Random random = new Random();
@@ -370,10 +373,20 @@ public class GenDataController {
         // and returned as JSON formatted string
         String json = gson.toJson(msObj);
 
+        FileChooser fileChooser = new FileChooser();
+        try {
+            fileChooser.setInitialDirectory(
+                    new File(Controller.class.getClassLoader().getResource(".").toURI())
+            );
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        fileChooser.setTitle("Open File");
+        File file = fileChooser.showOpenDialog((Stage) levelsSlider.getScene().getWindow());
 
         try {
             //write converted json data to a file named "test.json"
-            FileWriter writer = new FileWriter("data/test.json");
+            FileWriter writer = new FileWriter(file);
             writer.write(json);
             writer.close();
 
