@@ -39,18 +39,19 @@ public class DataController {
 
     @FXML
     private LineChart<String, Number> grafiek;
+    private Controller controller;
 
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
     }
 
     public void showData() {
-        aantalHop.setText(simulation.getAantalLiftHoppers() + "");
-        totAfhandel.setText(simulation.getTotaleAfhandelTijd() + "");
-        maxWacht.setText(simulation.getMaxWachtTijd() + "");
-        totWacht.setText(simulation.getTotaleWachttijd() + "");
-        totReken.setText(simulation.getTotaleRekenTijd() + "");
-        totTimeout.setText(simulation.getAantalTimeouts() + "");
+        aantalHop.setText(simulation.getAantalLiftHoppers() + " gameticks");
+        totAfhandel.setText(simulation.getTotaleAfhandelTijd() + " gameticks");
+        maxWacht.setText(simulation.getMaxWachtTijd() + " gameticks");
+        totWacht.setText(simulation.getTotaleWachttijd() + " gameticks");
+        totReken.setText(simulation.getTotaleRekenTijd() + " gameticks");
+        totTimeout.setText(simulation.getAantalTimeouts() + " gameticks");
 
         XYChart.Series series1 = new XYChart.Series();
         for (int i = 0; i < simulation.getWachttijden().size(); i++) {

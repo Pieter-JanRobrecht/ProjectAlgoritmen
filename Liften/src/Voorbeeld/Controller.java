@@ -307,6 +307,8 @@ public class Controller {
 
     @FXML
     void resetWorld(ActionEvent event) {
+        sequence.pause();
+        sequence.getChildren().removeAll();
         application.reset((Stage) anchorPane.getScene().getWindow());
     }
 
@@ -626,5 +628,9 @@ public class Controller {
 
         dataController.setSimulation(sim);
         dataController.showData();
+    }
+
+    public SequentialTransition getSequence() {
+        return sequence;
     }
 }
