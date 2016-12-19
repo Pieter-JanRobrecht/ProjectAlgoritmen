@@ -230,6 +230,10 @@ public class Simulation {
                         }
                     }
                     */
+                    if (u.getId() == 136) {
+                        System.out.println(l.toString());
+                        System.out.println(u.toString());
+                    }
                     if (l.getHandlingUsers().contains(u) && !u.isHandled() && !u.isHotFix()) {
                         if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) { // UITSTAPPEN
                             System.out.println(
@@ -248,7 +252,7 @@ public class Simulation {
                         if (!u.isInElevator() && u.getSourceId() == l.getCurrentLevel() && !l.getHandlingUsers().contains(u)) { // INSTAPPEN
                             System.out.println(
                                     "\tSTATUS\t DEBUG - Elevator (" + l.getId() + ") is adding user (" + u.getId() + ").");
-                            System.out.println(u.getTimeout() + " ... " + u.getArrivalTime() + " ... " + mainTicker);
+                            //System.out.println(u.getTimeout() + " ... " + u.getArrivalTime() + " ... " + mainTicker);
                             int wachtTijd = mainTicker - (int) Math.ceil(u.getArrivalTime());
                             if (wachtTijd > u.getTimeout()) {
                                 Random generator = new Random();
@@ -266,16 +270,25 @@ public class Simulation {
 
                     if (u.isFinished() || ((u.getTimeout() + u.getArrivalTime()) < mainTicker) && !u.isInElevator()) {
                         if (u.getTimeout() + u.getArrivalTime() > mainTicker) {
-                            System.out.println("\tR\t DEBUG - removing user " + u.getId() + " due to timeout: " + (u.getTimeout() + u.getArrivalTime()) + " < " + mainTicker);
+                            System.out.println("\tRR\t DEBUG - removing user " + u.getId() + " due to timeout: " + (u.getTimeout() + u.getArrivalTime()) + " < " + mainTicker);
                             removingUsers.add(u);
                         } else {
                             removingUsers.add(u);
-                            System.out.println("\tR\t DEBUG - removing user " + u.getId());
+                            System.out.println("\tRR\t DEBUG - removing user " + u.getId());
                         }
                     }
                 }
-                for (User u : removingUsers)
+                for (User u : removingUsers) {
                     queue.remove(u);
+                    boolean isInHandling = false;
+                    for(Lift li : ec.getLifts()) {
+                        if(li.getHandlingUsers().contains(u)) {
+                            isInHandling = true;
+                        }
+                    }
+                    if(!isInHandling)
+                        database.remove(u);
+                }
 
                 // 5. handle elevator handlings
                 for (Lift l : ec.getLifts()) {
@@ -304,7 +317,7 @@ public class Simulation {
                                 writeToCsv(l, null, false);
                                 break;
                             case "openen":
-                                if (l.getOperationTimer() + l.getOperationTimer() >= mainTicker) {
+                                if (l.getOperationTimer() + l.getOpeningTime() <= mainTicker) {
                                     l.setMode("boarding");
                                     l.setOperationTimer(mainTicker);
                                     writeToCsv(l, null, true);
@@ -321,13 +334,13 @@ public class Simulation {
                                     }
                                 }
 
-                                if (l.getOperationTimer() + delay >= mainTicker) {
+                                if (l.getOperationTimer() + delay <= mainTicker) {
                                     l.setMode("closing");
                                     l.setOperationTimer(mainTicker);
                                 }
                                 break;
                             case "closing":
-                                if (l.getOperationTimer() + l.getClosingTime() >= mainTicker) {
+                                if ((l.getOperationTimer() + l.getClosingTime()) <= mainTicker) {
                                     l.setMode("idle");
                                     l.setMovingTimer(mainTicker);
                                     l.setBoardingDelay(0);
@@ -343,6 +356,7 @@ public class Simulation {
                                             thisTurnTransition.getChildren().addAll(GUIController.userEnterElevator(u, l));
 
                                             u.setInElevator(true);
+                                            u.setHotFix(false);
                                             if (l.getUsersGettingIn() == 0)
                                                 throw new Exception();
                                             l.setUsersGettingIn(l.getUsersGettingIn() - 1);
@@ -412,7 +426,8 @@ public class Simulation {
                                     }
                                 } else {
                                     System.out.println("RIPP " + l.toString());
-                                    System.out.println("mainticker: " + mainTicker);
+                                    System.out.println("mainticker: " + mainTicker + " ||| " + ((l.getOperationTimer() + l.getClosingTime()) >= mainTicker)
+                                            + " en " + l.getOperationTimer() + " + " + l.getClosingTime());
                                 }
                                 writeToCsv(l, null, false);
                                 break;
@@ -427,15 +442,21 @@ public class Simulation {
                 }
 
                 System.out.println();
-                removingUsers = new ArrayList<>();
+                ArrayList<User> removingUserx = new ArrayList<>();
                 // 6. follow-up from 4 -> remove handled/timed-out users
                 for (User u : database.keySet())
                     if (u.isFinished()) {
-                        removingUsers.add(u);
+                        removingUserx.add(u);
                         System.out.println("\tR\t DEBUG - removing user " + u.getId());
+                        System.out.println("debug... " + removingUserx.toString());
                     }
-                for (User u : removingUsers)
+
+                for (User u : removingUserx) {
+                    System.out.println("\tR\t DEBUG - removing user " + u.getId());
                     database.remove(u);
+                    if (database.containsKey(u))
+                        System.out.println("dafuq");
+                }
 
                 // 7. handle elevator movements
                 for (Lift l : ec.getLifts()) {
@@ -668,6 +689,7 @@ public class Simulation {
                     if (l.getDirection() == 0 && l.isInRange(u.getSourceId())) {
                         for (int i = 0; i < l.getRange().size(); i++) {
                             if (l.getRange().get(i).getId() - u.getSourceId() < afstand && l.getRange().get(i).getId() - u.getSourceId() > 0) {
+                                System.out.println("Kappaaaa");
                                 returnLift = l;
                                 afstand = l.getRange().get(i).getId() - u.getSourceId();
                             }
@@ -675,6 +697,9 @@ public class Simulation {
                     }
                 }
 
+
+                if (returnLift != null)
+                    return returnLift;
 
                 //not found? kijken naar liften die in use zijn maar mss wel bruikbaar zijn
                 if (returnLift == null) {

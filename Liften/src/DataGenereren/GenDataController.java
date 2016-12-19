@@ -214,7 +214,7 @@ public class GenDataController {
 
         double boardingTime = variableSlider1.getValue();
         double unboardingTime = variableSlider2.getValue();
-        int timeout = 100;
+        int timeout = 200;
 
         boolean[] levelsReached;
         //	double chanceOfStopOnFloor=0;//1-levelsSlider1.getValue()/100; //0= stops on every floor 0.5= stops on roughly half of the floors

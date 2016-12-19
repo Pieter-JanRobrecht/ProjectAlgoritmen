@@ -333,7 +333,6 @@ public class Lift {
         }
 
         if(teller == 0 || teller == range.size()-1) {
-            System.out.println("Something is wrong?");
             return -1;
         }
 
