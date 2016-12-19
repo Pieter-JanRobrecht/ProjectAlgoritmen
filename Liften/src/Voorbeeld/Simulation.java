@@ -230,10 +230,6 @@ public class Simulation {
                         }
                     }
                     */
-                    if (u.getId() == 136) {
-                        System.out.println(l.toString());
-                        System.out.println(u.toString());
-                    }
                     if (l.getHandlingUsers().contains(u) && !u.isHandled() && !u.isHotFix()) {
                         if (u.isInElevator() && u.getDestinationId() == l.getCurrentLevel()) { // UITSTAPPEN
                             System.out.println(
