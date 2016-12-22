@@ -421,6 +421,10 @@ public class Simulation {
                                             + " en " + l.getOperationTimer() + " + " + l.getClosingTime());
                                 }
                                 writeToCsv(l, null, false);
+
+
+                                l.setMovingTimer(mainTicker);
+
                                 break;
 
 
@@ -454,6 +458,7 @@ public class Simulation {
                     //System.out.println("\t!!!\t DEBUG - " + l.toString());
                     int nextLevelDiff = l.getNextLevelDifference();
                     if (l.getDirection() != 0 && l.getMovingTimer() + l.getLevelSpeed() * nextLevelDiff <= mainTicker && (l.getUsersGettingIn() + l.getUsersGettingOut()) == 0) {
+                        System.out.println(l.toString());
                         l.setNextLevel(thisTurnTransition, GUIController, this);
                         l.setMovingTimer(mainTicker);
                         System.out.println("\tI\t DEBUG - setting movingTimer at " + mainTicker
@@ -677,7 +682,7 @@ public class Simulation {
                     if (l.getDirection() == 0 && l.isInRange(u.getSourceId())) {
                         for (int i = 0; i < l.getRange().size(); i++) {
                             if (l.getRange().get(i).getId() - u.getSourceId() < afstand && l.getRange().get(i).getId() - u.getSourceId() > 0) {
-                                System.out.println("Kappaaaa");
+                                //System.out.println("Kappaaaa");
                                 returnLift = l;
                                 afstand = l.getRange().get(i).getId() - u.getSourceId();
                             }

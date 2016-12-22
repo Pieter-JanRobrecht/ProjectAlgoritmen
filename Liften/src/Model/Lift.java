@@ -333,7 +333,7 @@ public class Lift {
         }
 
         if(teller == 0 || teller == range.size()-1) {
-            return -1;
+            return 1;
         }
 
         return Math.abs(currentLevel - range.get(teller+direction).getId());
