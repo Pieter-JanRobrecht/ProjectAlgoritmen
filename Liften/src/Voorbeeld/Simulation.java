@@ -250,11 +250,6 @@ public class Simulation {
                                     "\tSTATUS\t DEBUG - Elevator (" + l.getId() + ") is adding user (" + u.getId() + ").");
                             //System.out.println(u.getTimeout() + " ... " + u.getArrivalTime() + " ... " + mainTicker);
                             int wachtTijd = mainTicker - (int) Math.ceil(u.getArrivalTime());
-                            if (wachtTijd > u.getTimeout()) {
-                                Random generator = new Random();
-                                double number = (generator.nextDouble() * 0.10) + 0.95;
-                                wachtTijd = (int) (number * u.getTimeout());
-                            }
                             wachttijden.add(wachtTijd);
                             if (maxWachtTijd < wachtTijd)
                                 maxWachtTijd = wachtTijd;
@@ -277,12 +272,12 @@ public class Simulation {
                 for (User u : removingUsers) {
                     queue.remove(u);
                     boolean isInHandling = false;
-                    for(Lift li : ec.getLifts()) {
-                        if(li.getHandlingUsers().contains(u)) {
+                    for (Lift li : ec.getLifts()) {
+                        if (li.getHandlingUsers().contains(u)) {
                             isInHandling = true;
                         }
                     }
-                    if(!isInHandling)
+                    if (!isInHandling)
                         database.remove(u);
                 }
 
@@ -470,9 +465,6 @@ public class Simulation {
             System.out.println("\t\t GUI - End of gametick adding parallelmovement");
             GUIController.sequence.getChildren().addAll(thisTurnTransition);
             mainTicker++;
-            if (mainTicker > 1000) {
-                System.out.println("Kappa");
-            }
         }
         System.out.println("DEBUG - queue size: " + queue.size() + " | Userlist size: " + ec.getUsers().size());
 
