@@ -271,6 +271,18 @@ public class GenDataController {
 
 
             }
+            boolean [] templevelsreached=new boolean [amountOfLevels];
+            while (range.size()<2 ) {
+            	int k= random.nextInt(amountOfLevels) ; 
+            	
+            	Range extra= new Range(); 
+            	if (templevelsreached[k]!=true) { 
+            		extra.setId(k); 
+            		templevelsreached[k] = true; 
+            		levelsReached[k]=true;
+            		range.add(extra);
+            	}	
+            	}
             lft.setRange(range);
             lft.setStartLevel(range.get(random.nextInt(range.size())).getId());
             lifts.add(lft);
